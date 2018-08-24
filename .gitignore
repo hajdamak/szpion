@@ -31,4 +31,6 @@ public
 
 yarn.lock
 
+.cache
+
 .idea
