@@ -1,0 +1,78 @@
+@charset "utf-8";
+@import '~bulma/bulma';
+
+body {
+}
+
+#logo {
+  background-color: red;
+  border-radius: 40px;
+  font-weight: bold;
+  color: white;
+  padding: 6px;
+}
+
+#navigator {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.table tbody {
+  tr.parent-issue {
+    background-color: rgba(220, 220, 220, 0.99) !important;
+  }
+
+  td {
+    //&.remaining {
+    //	background-color: #edf29c !important;
+    //}
+    //
+    //&.remaining-zero {
+    //	background-color: #ffd5a9 !important;
+    //}
+
+    &.in-progress {
+      background-color: #b8cef2;
+    }
+
+    &.finished {
+      background-color: #aff725;
+    }
+
+    &.user-rafalh, &.user-dusting {
+      background-color: #f2cf43 !important;
+    }
+
+    &.user-przemyslawd {
+      background-color: #c2f0b1 !important;
+    }
+
+    &.user-katarzynakw {
+      background-color: #f2d0d8 !important;
+    }
+
+    &.user-krzysztofw {
+      background-color: #b8cef2 !important;
+    }
+
+    &.user-tomaszh {
+      background-color: #b5fffd !important;
+    }
+
+    &.user-grzegorzwi {
+      background-color: #ffa786 !important;
+    }
+
+    &.user-patrykt {
+      background-color: #fcff8f !important;
+    }
+  }
+}

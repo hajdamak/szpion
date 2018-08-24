@@ -1,50 +1,41 @@
 {
   "name": "szpion",
-  "version": "0.1",
+  "version": "0.2",
   "description": "Daily Sprint Invigilation",
-  "main": "''",
-  "scripts": {
-    "build": "webpack --config webpack.production.config.js --progress --profile --colors",
-    "start": "webpack-dev-server --progress --profile --colors",
-    "lint": "eslint --ext js --ext jsx src || exit 0",
-    "dev": " webpack-dashboard -- webpack-dev-server --progress --profile --colors"
-  },
+  "author": "Rafał Hajdacki",
+  "license": "MIT",
+  "homepage": "https://github.com/rhajdacki/szpion#readme",
+  "main": "server/main.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/rhajdacki/szpion"
   },
-  "author": "Rafał Hajdacki",
-  "license": "MIT",
-  "homepage": "https://github.com/rhajdacki/szpion#readme",
+  "scripts": {
+    "dev": "yarn dev-compile-watch & yarn dev-client-watch & yarn dev-server-watch & yarn dev-server-start",
+    "dev-server": "yarn dev-server-watch & yarn dev-server-start",
+    "dev-server-start": "supervisor -w build/server build/server/main.js",
+    "dev-compile-watch": "tsc --watch",
+    "dev-server-watch": "parcel watch --target node --out-dir ./build/server ./source/server/main.ts",
+    "dev-client-watch": "parcel serve --target browser --out-dir ./build/client ./source/client/index.html",
+    "start-prod": "echo Not_implemented && exit 1",
+    "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url ."
+  },
   "dependencies": {
-    "bootstrap": "^3.3.7",
-    "react-bootstrap": "^0.30.8",
-    "node-sass": "^3.13.0",
-    "react": "15.4.1",
-    "react-dom": "15.4.1",
-    "sass-loader": "^4.0.2",
-    "whatwg-fetch": "^2.0.1"
+    "@hyperapp/html": "^1.1.1",
+    "@types/koa": "^2.0.46",
+    "@types/koa-router": "^7.0.31",
+    "bulma": "0.7.1",
+    "hyperapp": "^1.2.8",
+    "koa": "^2.5.2",
+    "koa-better-http-proxy": "^0.2.4",
+    "koa-router": "^7.4.0",
+    "node-sass": "^4.9.3",
+    "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
-    "babel-core": "^6.23.1",
-    "babel-loader": "^6.3.2",
-    "babel-plugin-transform-class-properties": "^6.22.0",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-plugin-transform-runtime": "^6.22.0",
-    "babel-preset-es2015": "6.22.0",
-    "babel-preset-react": "^6.23.0",
-    "babel-runtime": "^6.22.0",
-    "css-loader": "0.26.1",
-    "extract-text-webpack-plugin": "^v2.0.0-rc.1",
-    "file-loader": "^0.10.0",
-    "html-webpack-plugin": "^2.26.0",
-    "postcss-loader": "^1.2.2",
-    "react-hot-loader": "^3.0.0-beta.6",
-    "style-loader": "0.13.1",
-    "url-loader": "0.5.7",
-    "webpack": "^2.2.1",
-    "webpack-cleanup-plugin": "^0.4.2",
-    "webpack-dashboard": "^0.3.0",
-    "webpack-dev-server": "^2.4.1"
+    "cross-env": "^5.1.6",
+    "parcel-bundler": "^1.9.7",
+    "supervisor": "^0.12.0",
+    "typescript": "^3.0.1"
   }
 }
