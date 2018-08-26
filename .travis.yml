@@ -1,0 +1,25 @@
+language: node_js
+node_js:
+- "8"
+- "10"
+
+env:
+- NODE_ENV=development
+
+before_install:
+- npm i -g codecov
+
+install:
+- yarn install
+
+cache:
+  directories:
+  - "node_modules"
+
+script:
+- yarn compile
+- yarn test
+- codecov
+
+notifications:
+email: false

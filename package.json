@@ -19,8 +19,8 @@
     "dev-client-watch": "parcel serve --target browser --out-dir ./build/client ./source/client/index.html",
     "start-prod": "echo Not_implemented && exit 1",
     "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url .",
-    "test": "jest"
-
+    "compile": "tsc",
+    "test": "jest --coverage"
   },
   "dependencies": {
     "@hyperapp/html": "^1.1.1",
