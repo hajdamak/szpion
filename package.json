@@ -18,7 +18,9 @@
     "dev-server-watch": "parcel watch --target node --out-dir ./build/server ./source/server/main.ts",
     "dev-client-watch": "parcel serve --target browser --out-dir ./build/client ./source/client/index.html",
     "start-prod": "echo Not_implemented && exit 1",
-    "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url ."
+    "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url .",
+    "test": "jest"
+
   },
   "dependencies": {
     "@hyperapp/html": "^1.1.1",
@@ -33,9 +35,26 @@
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.1",
     "cross-env": "^5.1.6",
+    "jest": "^23.5.0",
     "parcel-bundler": "^1.9.7",
     "supervisor": "^0.12.0",
+    "ts-jest": "^23.1.4",
     "typescript": "^3.0.1"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }
