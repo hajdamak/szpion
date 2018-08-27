@@ -1,9 +1,11 @@
+console.log("Szpion server starts... ");
+
+import { config } from './config';
 import proxy from 'koa-better-http-proxy';
 import Koa from 'koa';
 import Router from 'koa-router';
- import { config } from '../config';
 
-console.log("Szpion server starts... " + config.version)
+console.log("Using JIRA : " + config().jiraHost)
 
 const app =  new Koa();
 
@@ -14,6 +16,11 @@ router.get('/test', (ctx, next) => {
     ctx.body = 'Test';
 });
 
+router.get('/config', (ctx, next) => {
+    console.log("Accessing config API.");
+    ctx.body = JSON.stringify(config());
+});
+
 app.use(router.routes());
 
 const isJIRARequest = (path : string) : boolean => path.startsWith("/rest") || path.startsWith("/image");
@@ -21,7 +28,7 @@ const isJIRARequest = (path : string) : boolean => path.startsWith("/rest") || p
 // JIRA proxy
 app.use(
     proxy(
-        config.jiraHost,
+        config().jiraHost,
         {
             filter: ctx => isJIRARequest(ctx.path),
             https: true
@@ -41,3 +48,4 @@ app.use(
 );
 
 app.listen(1212);
+

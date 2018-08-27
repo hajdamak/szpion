@@ -1,4 +1,3 @@
-import { config } from "../config";
 import 'whatwg-fetch';
 
 
@@ -136,7 +135,7 @@ const getBoard = async (init) => {
 }
 
 
-export const getData = async () => {
+export const getData = async (config) => {
 
     console.log("Gettting data...");
 

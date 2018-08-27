@@ -7,6 +7,7 @@ import { readableDuration } from './utils';
 import { getData } from './data';
 
 const state = {
+    config: {},
 	data: {
         boardName: "",
         sprintName: "",
@@ -18,15 +19,25 @@ const state = {
 	}
 }
 
+
 const actions = {
 	loadData: () => async (state, actions) => {
-        console.log("loadData");
-		const result = await getData();
+        console.log("Loading configuration ...");
+        const configJson = await fetch('/config');
+        const config = await configJson.json();
+        actions.updateConfig(config);
+
+        console.log("Loading data ...");
+		const result = await getData(config);
 		console.log("after loadData");
 		actions.updateData(result);
 	},
+    updateConfig: config => state => {
+        console.log("Config updated.")
+        return { config: config };
+    },
 	updateData: data => state => {
-		console.log("updateData")
+		console.log("Data updated.")
         return { data: data };
 	},
 }
