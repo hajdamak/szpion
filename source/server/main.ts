@@ -21,7 +21,7 @@ const isJIRARequest = (path : string) : boolean => path.startsWith("/rest") || p
 // JIRA proxy
 app.use(
     proxy(
-        'jira.coconet.de',
+        config.jiraHost,
         {
             filter: ctx => isJIRARequest(ctx.path),
             https: true

@@ -60,4 +60,4 @@ crashlytics-build.properties
 /dist/
 
 # Configuration
-/source/config.ts
+# /source/config.ts

@@ -258,7 +258,7 @@ export const getData = async () => {
                 return {
                     key: issue.key,
                     parent: issue.fields.parent ? issue.fields.parent.key : "",
-                    url: `https://jira.coconet.de/browse/${issue.key}`,
+                    url: `https://${config.jiraHost}/browse/${issue.key}`,
                     priorityIconUrl: issue.fields.priority.iconUrl,
                     issuetypeIconUrl: issue.fields.issuetype.iconUrl,
                     assignee: issue.fields.assignee.displayName,
