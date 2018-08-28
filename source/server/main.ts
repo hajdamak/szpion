@@ -1,9 +1,11 @@
 console.log("Szpion server starts... ");
 
-import { config } from './config';
 import proxy from 'koa-better-http-proxy';
 import Koa from 'koa';
 import Router from 'koa-router';
+
+import { config } from './config';
+import { getData } from './data';
 
 console.log("Using JIRA : " + config().jiraHost)
 
@@ -20,6 +22,13 @@ router.get('/config', (ctx, next) => {
     console.log("Accessing config API.");
     ctx.body = JSON.stringify(config());
 });
+
+router.get('/data', async (ctx, next) => {
+    console.log("Accessing data API.");
+    const data = await getData(config());
+    ctx.body = JSON.stringify(data);
+});
+
 
 app.use(router.routes());
 

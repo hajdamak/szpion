@@ -4,7 +4,6 @@ import { h, app } from "hyperapp";
 
 // import TimeTable from './timeTable.tsx';
 import { readableDuration } from './utils';
-import { getData } from './data';
 
 const state = {
     config: {},
@@ -28,7 +27,9 @@ const actions = {
         actions.updateConfig(config);
 
         console.log("Loading data ...");
-		const result = await getData(config);
+        const resultJson = await fetch('/data');
+        const result = await resultJson.json();
+
 		console.log("after loadData");
 		actions.updateData(result);
 	},

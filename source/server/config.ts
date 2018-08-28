@@ -2,14 +2,16 @@ import os from 'os';
 import fs from 'fs';
 import process from 'process';
 
-interface Config {
+export interface Config {
     jiraHost: string;
     jiraBasicAuthToken: string;
+    jiraURL: string
 }
 
 const defaultConfig : Config = {
     jiraHost: 'localhost',
-    jiraBasicAuthToken: 'empty'
+    jiraBasicAuthToken: 'empty',
+    jiraURL: `http://${this.jiraHost}`
 }
 
 let configStore : Config | null = null;

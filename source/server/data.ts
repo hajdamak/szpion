@@ -1,5 +1,6 @@
-import 'whatwg-fetch';
+import fetch from 'node-fetch';
 
+import { Config } from './config';
 
 // Array.prototype.scan = function (callback, initialValue) {
 //     return this.reduce(
@@ -123,9 +124,9 @@ const calculateSprintMembershipPeriods = (issue, sprintName, issueEnded) => {
 
 };
 
-const getBoard = async (init) => {
+const getBoard = async (init, config) => {
     // Get all boards
-    const boardsResponse = await fetch(`/rest/greenhopper/1.0/rapidview`, init);
+    const boardsResponse = await fetch(`${config.jiraURL}/rest/greenhopper/1.0/rapidview`, init);
 
     console.log("Got rapid : ");
     const boardsJson = await boardsResponse.json();
@@ -135,7 +136,7 @@ const getBoard = async (init) => {
 }
 
 
-export const getData = async (config) => {
+export const getData = async (config: Config) => {
 
     console.log("Gettting data...");
 
@@ -152,12 +153,12 @@ export const getData = async (config) => {
     let endDate = null;
     let summaryIssueTimeSpent = {};
 
-    const board = await getBoard(init);
+    const board = await getBoard(init, config);
 
     // Get all sprint for board
-    const sprintsResponse = await fetch(`/rest/greenhopper/1.0/sprintquery/${board.id}`, init);
+    const sprintsResponse = await fetch(`${config.jiraURL}/rest/greenhopper/1.0/sprintquery/${board.id}`, init);
     const sprintsJson = await sprintsResponse.json();
-
+    console.log("Received");
 
             const sprint = sprintsJson.sprints[sprintsJson.sprints.length - 1];
             sprintId = sprint.id;
@@ -171,8 +172,8 @@ export const getData = async (config) => {
 
     // Get issues belonging to sprint and sprint report with start and end dates
     return Promise.all([
-                fetch(`/rest/api/2/search?jql=${query}&fields=${fields}&expand=${expand}&maxResults=${maxResults}`,	init),
-                fetch(`/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=${board.id}&sprintId=${sprintId}`,	init)
+                fetch(`${config.jiraURL}/rest/api/2/search?jql=${query}&fields=${fields}&expand=${expand}&maxResults=${maxResults}`,	init),
+                fetch(`${config.jiraURL}/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=${board.id}&sprintId=${sprintId}`,	init)
     ]).then(
 
         ([searchResponse, reportResponse]) => Promise.all([searchResponse.json(), reportResponse.json()])
@@ -273,7 +274,7 @@ export const getData = async (config) => {
             });
 
             return Promise.all(
-                [issues, ...searchJson.issues.map(issue => fetch(`/rest/api/2/issue/${issue.key}/worklog`, init))]
+                [issues, ...searchJson.issues.map(issue => fetch(`${config.jiraURL}/rest/api/2/issue/${issue.key}/worklog`, init))]
             );
 
         }
