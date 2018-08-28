@@ -42,8 +42,7 @@ const actions = {
 }
 
 const view = (state, actions) => (
-    <div className="container-fluid">
-    <div oncreate={actions.loadData}>
+    <div className="container-fluid" oncreate={actions.loadData}>
 
         <div>
 
@@ -87,60 +86,14 @@ const view = (state, actions) => (
 
 
     </div>
-    </div>
 )
 
 
 
 app(state, actions, view, document.body);
 
-const organize = (issues) => {
-    let map = {};
-    for (let i = 0; i < issues.length; ++i) {
-        let issue = issues[i];
-        map[issue.key] = i;
-    }
-
-    let roots = [];
-    for (let i = 0; i < issues.length; ++i) {
-        let issue = issues[i];
-        issue.children = [];
-        if (issue.parent !== "") {
-            let parentIndex = map[issue.parent];
-            if (parentIndex !== undefined) {
-                issues[parentIndex].children.push(issue);
-            } else {
-                roots.push(issue);
-            }
-        } else {
-            roots.push(issue);
-        }
-    }
-
-    issues.splice(0, issues.length);
-    issues.push.apply(issues, roots);
-
-    // group by assignee
-    roots.sort((a, b) => -a.assigneeId.localeCompare(b.assigneeId));
-
-    let toRender = [];
-    roots.map( (root) => {
-        if (root.children.length > 0) {
-            toRender.push(root);
-            root.children.map( (child) => {
-                toRender.push(child);
-            })
-        } else {
-            toRender.unshift(root);
-        }
-    });
-    return toRender;
-}
-
 
 const IssuesTable = ({ issues }) => {
-
-    const issuesOrganized = organize(issues);
 
     return(
         <table className="table is-striped is-narrow is-fullwidth">
@@ -164,8 +117,9 @@ const IssuesTable = ({ issues }) => {
             </tr>
             </thead>
             <tbody>
-            {issuesOrganized.map(issue =>
-                <tr key={issue.key} className={issue.children.length > 0 ? "parent-issue" : ""}>
+            {issues.map(issue =>
+                // className={issue.children.length > 0 ? "parent-issue" : ""}>
+                <tr key={issue.key} >
                     <td><img src={issue.issuetypeIconUrl}/></td>
                     <td className="text-nowrap"><a href={issue.url}>{issue.key}</a></td>
                     <td className="text-nowrap">{issue.parent}</td>

@@ -2,15 +2,6 @@ import fetch from 'node-fetch';
 
 import { Config } from './config';
 
-// Array.prototype.scan = function (callback, initialValue) {
-//     return this.reduce(
-//         (result, currentValue, index) => {
-//             const prev = (index == 0) ? initialValue : result[index -1];
-//             return [...result, callback(prev, currentValue)];
-//         }
-//         , []);
-// };
-
 Array.prototype.zip = function (array) {
     return this.map( (element, index) => [element, array[index]]);
 }
@@ -134,6 +125,8 @@ const getBoard = async (init, config) => {
     const view = boardsJson.views.find(view => view.name === "MVAP - Team RafalH");
     return { id: view.id, name: view.name };
 }
+
+
 
 
 export const getData = async (config: Config) => {
@@ -328,10 +321,10 @@ export const getData = async (config: Config) => {
 
             const result = {
                 boardName: board.name,
-                    sprintName: sprintName,
+                sprintName: sprintName,
                 startDate: startDate,
                 endDate: endDate,
-                issues: resultIssues,
+                issues: resultIssues, // organize(resultIssues),
                 summary: summaryIssueTimeSpent
             }
 
@@ -341,4 +334,48 @@ export const getData = async (config: Config) => {
         }
     )
 
+}
+
+const organize = (issues) => {
+    let map = {};
+    for (let i = 0; i < issues.length; ++i) {
+        let issue = issues[i];
+        map[issue.key] = i;
+        issue.children  = [];
+    }
+
+    let roots = [];
+    for (let i = 0; i < issues.length; ++i) {
+        let issue = issues[i];
+        issue.children = [];
+        if (issue.parent !== "") {
+            let parentIndex = map[issue.parent];
+            if (parentIndex !== undefined) {
+                issues[parentIndex].children.push(issue);
+            } else {
+                roots.push(issue);
+            }
+        } else {
+            roots.push(issue);
+        }
+    }
+
+    issues.splice(0, issues.length);
+    issues.push.apply(issues, roots);
+
+    // group by assignee
+    roots.sort((a, b) => -a.assigneeId.localeCompare(b.assigneeId));
+
+    let toRender = [];
+    roots.map( (root) => {
+        if (root.children.length > 0) {
+            toRender.push(root);
+            root.children.map( (child) => {
+                toRender.push(child);
+            })
+        } else {
+            toRender.unshift(root);
+        }
+    });
+    return toRender;
 }

@@ -11,12 +11,11 @@
     "url": "https://github.com/rhajdacki/szpion"
   },
   "scripts": {
-    "dev": "yarn dev-compile-watch & yarn dev-client-watch & yarn dev-server-watch & yarn dev-server-start",
-    "dev-server": "yarn dev-server-watch & yarn dev-server-start",
-    "dev-server-start": "supervisor -w build/server build/server/main.js",
-    "dev-compile-watch": "tsc --watch",
-    "dev-server-watch": "parcel watch --target node --out-dir ./build/server ./source/server/main.ts",
-    "dev-client-watch": "parcel serve --target browser --out-dir ./build/client ./source/client/index.html",
+    "dev": "yarn dev-compile & yarn dev-server & yarn dev-client",
+    "dev-client": "parcel serve --target browser --out-dir ./build/client ./source/client/index.html",
+    "dev-server": "nodemon --inspect -r ts-node/register source/server/main.ts",
+    "dev-compile": "tsc --watch",
+
     "start-prod": "echo Not_implemented && exit 1",
     "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url .",
     "compile": "tsc",
@@ -40,8 +39,9 @@
     "@types/jest": "^23.3.1",
     "cross-env": "^5.1.6",
     "jest": "^23.5.0",
+    "ts-node": "^7.0.1",
+    "nodemon": "^1.18.3",
     "parcel-bundler": "^1.9.7",
-    "supervisor": "^0.12.0",
     "ts-jest": "^23.1.4",
     "typescript": "^3.0.1"
   },
