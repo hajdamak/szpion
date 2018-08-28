@@ -251,7 +251,7 @@ export const getData = async (config: Config) => {
                 return {
                     key: issue.key,
                     parent: issue.fields.parent ? issue.fields.parent.key : "",
-                    url: `https://${config.jiraHost}/browse/${issue.key}`,
+                    url: `${config.jiraURL}/browse/${issue.key}`,
                     priorityIconUrl: issue.fields.priority.iconUrl,
                     issuetypeIconUrl: issue.fields.issuetype.iconUrl,
                     assignee: issue.fields.assignee.displayName,

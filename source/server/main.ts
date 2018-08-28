@@ -1,5 +1,3 @@
-console.log("Szpion server starts... ");
-
 import proxy from 'koa-better-http-proxy';
 import Koa from 'koa';
 import Router from 'koa-router';
@@ -7,12 +5,13 @@ import Router from 'koa-router';
 import { loadConfig } from './config';
 import { getData } from './data';
 
-const config = loadConfig();
+console.log("Szpion server starts... ");
 
-console.log("Using JIRA : " + config.jiraHost)
+const config  = loadConfig();
+
+console.log("Using JIRA : " + config.jiraURL)
 
 const app =  new Koa();
-
 const router = new Router();
 
 router.get('/test', (ctx, next) => {
@@ -22,7 +21,7 @@ router.get('/test', (ctx, next) => {
 
 router.get('/config', (ctx, next) => {
     console.log("Accessing config API.");
-    ctx.body = JSON.stringify(config);
+    ctx.body = JSON.stringify(config.clientConfig);
 });
 
 router.get('/data', async (ctx, next) => {
@@ -31,32 +30,13 @@ router.get('/data', async (ctx, next) => {
     ctx.body = JSON.stringify(data);
 });
 
-
 app.use(router.routes());
-
-const isJIRARequest = (path : string) : boolean => path.startsWith("/rest") || path.startsWith("/image");
-
-// JIRA proxy
-app.use(
-    proxy(
-        config.jiraHost,
-        {
-            filter: ctx => isJIRARequest(ctx.path),
-            https: true
-        },
-
-    )
-);
 
 // Parcel proxy
 app.use(
     proxy(
-        'http://localhost:1234',
-        {
-            filter: ctx => !isJIRARequest(ctx.path),
-        },
+        'http://localhost:1234', {}
     )
 );
 
 app.listen(1212);
-

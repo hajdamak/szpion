@@ -1,4 +1,5 @@
 {
   "jiraHost": "localhost",
-  "jiraBasicAuthToken": "empty"
+  "jiraBasicAuthToken": "empty",
+  "clientConfig": {}
 }

@@ -1,21 +1,24 @@
 //import './styles/index.scss';
 import { h, app } from "hyperapp";
 // import { div, h1, button } from "@hyperapp/html"
+import { ClientConfig } from "../common/model";
 
 import { readableDuration } from './utils';
 
-const state = {
-    config: {},
-	data: {
+class State {
+    config: ClientConfig = {};
+    data = {
         boardName: "",
         sprintName: "",
         startDate: "",
-        endDate: "",
+        endDate: "Aha",
         sprintTimeSpent: 0,
         issues: [],
         summary: {}
-	}
+    }
 }
+const state =  new State();
+
 
 const actions = {
 	loadData: () => async (state, actions) => {

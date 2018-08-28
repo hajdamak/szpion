@@ -2,10 +2,12 @@ import os from 'os';
 import fs from 'fs';
 import process from 'process';
 
+import { ClientConfig } from "../common/model";
+
 export interface Config {
-    jiraHost: string;
+    jiraURL: string;
     jiraBasicAuthToken: string;
-    jiraURL: string
+    clientConfig: ClientConfig;
 }
 
 export const loadConfig = (): Config => {
@@ -38,7 +40,7 @@ export const loadConfig = (): Config => {
 }
 
 const defaultConfig: Config = {
-    jiraHost: 'localhost',
+    jiraURL: `http://localhost`,
     jiraBasicAuthToken: 'empty',
-    jiraURL: `http://${this.jiraHost}`
+    clientConfig: {}
 }
