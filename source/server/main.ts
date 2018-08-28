@@ -4,10 +4,12 @@ import proxy from 'koa-better-http-proxy';
 import Koa from 'koa';
 import Router from 'koa-router';
 
-import { config } from './config';
+import { loadConfig } from './config';
 import { getData } from './data';
 
-console.log("Using JIRA : " + config().jiraHost)
+const config = loadConfig();
+
+console.log("Using JIRA : " + config.jiraHost)
 
 const app =  new Koa();
 
@@ -20,12 +22,12 @@ router.get('/test', (ctx, next) => {
 
 router.get('/config', (ctx, next) => {
     console.log("Accessing config API.");
-    ctx.body = JSON.stringify(config());
+    ctx.body = JSON.stringify(config);
 });
 
 router.get('/data', async (ctx, next) => {
     console.log("Accessing data API.");
-    const data = await getData(config());
+    const data = await getData(config);
     ctx.body = JSON.stringify(data);
 });
 
@@ -37,7 +39,7 @@ const isJIRARequest = (path : string) : boolean => path.startsWith("/rest") || p
 // JIRA proxy
 app.use(
     proxy(
-        config().jiraHost,
+        config.jiraHost,
         {
             filter: ctx => isJIRARequest(ctx.path),
             https: true

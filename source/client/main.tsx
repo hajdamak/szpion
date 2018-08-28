@@ -2,7 +2,6 @@
 import { h, app } from "hyperapp";
 // import { div, h1, button } from "@hyperapp/html"
 
-// import TimeTable from './timeTable.tsx';
 import { readableDuration } from './utils';
 
 const state = {
@@ -17,7 +16,6 @@ const state = {
         summary: {}
 	}
 }
-
 
 const actions = {
 	loadData: () => async (state, actions) => {
