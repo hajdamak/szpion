@@ -115,23 +115,123 @@ const calculateSprintMembershipPeriods = (issue, sprintName, issueEnded) => {
 
 };
 
-const getBoard = async (init, config) => {
+// Calculate sprint estimate.
+// Value is taken from:
+// - original estimate
+// - remaining estimate (if different than original estimate) and there are no remaining estimate changes in changelog.
+// - last remaining estimate change in changelog before issue is part of sprint.
+const calculateSprintEstimate = (issue, periods) => {
+    const issueInSprintStartDate = periods[0].start;
+
+    const remainingEstimateChanges = issue.changelog.histories.map(
+        history => {
+            return {
+                date: new Date(history.created),
+                estimate: history.items.reduce(
+                    (estimate, item) => {
+                        if (item.field === "timeestimate")
+                            return Number.parseInt(item.to);
+                        else
+                            return estimate;
+                    }, null
+                )
+            }
+        }
+    ).filter(
+        change => change.estimate !== null
+    );
+    console.log(`Remaining estimate changes : ${JSON.stringify(remainingEstimateChanges)}`);
+
+    const defaultSprintEstimate =
+        ((issue.fields.timetracking.originalEstimateSeconds != issue.fields.timetracking.remainingEstimateSeconds)
+            && (remainingEstimateChanges.length == 0))
+            ?
+            numberOr(issue.fields.timetracking.remainingEstimateSeconds, 0)
+            :
+            numberOr(issue.fields.timetracking.originalEstimateSeconds, 0);
+
+    const sprintEstimate = remainingEstimateChanges.reduce(
+        (estimate, change) => {
+            if (change.date.getTime() < issueInSprintStartDate.getTime())
+                return change.estimate;
+            else
+                return estimate;
+        }
+        , numberOr(defaultSprintEstimate, 0)
+    );
+
+    return sprintEstimate;
+}
+
+// Calculate issue availability periods in sprint.
+
+const calculateIssueAvailabiltyInSprint = (issue, sprintName, sprintStartDate, sprintEndDate) => {
+
+    console.log(`Checking periods for ${issue.key}`);
+    let periods = calculateSprintMembershipPeriods(issue, sprintName, sprintEndDate);
+    periods.forEach(period => {
+        console.log(" Period  : " + JSON.stringify(period));
+    });
+
+    periods = clipWithSprintPeriod(periods, sprintStartDate, sprintEndDate);
+    periods.forEach(period => {
+        console.log(" Clipped : " + JSON.stringify(period));
+    });
+
+    return periods
+}
+
+const getRHTeamBoard = async (init, config) => {
+    console.log("Gettting boards from JIRA...");
     // Get all boards
     const boardsResponse = await fetch(`${config.jiraURL}/rest/greenhopper/1.0/rapidview`, init);
-
-    console.log("Got rapid : ");
     const boardsJson = await boardsResponse.json();
-    console.log("Got rapid json : ");
+    console.log("Received boards from JIRA.");
     const view = boardsJson.views.find(view => view.name === "MVAP - Team RafalH");
     return { id: view.id, name: view.name };
 }
 
+const getLatestSprintFromBoard = async (init, config, boardId) => {
+    console.log("Gettting sprints from JIRA...");
+    // Get all sprints for board
+    const sprintsResponse = await fetch(`${config.jiraURL}/rest/greenhopper/1.0/sprintquery/${boardId}`, init);
+    const sprintsJson = await sprintsResponse.json();
+    console.log("Received sprints from JIRA.");
+    const sprintJson = sprintsJson.sprints[sprintsJson.sprints.length - 1];
+    return sprintJson;
+}
 
+const getIssuesFromSprint = async (init, config, sprintName) => {
+    console.log("Getting sprint issues from JIRA...");
+    const query = encodeURIComponent(`sprint="${sprintName}"`);
+    const fields = "summary,timetracking,created,customfield_11869,status,priority,issuetype,parent,assignee";
+    const expand = "changelog";
+    const maxResults = 99999;
+    const searchResponse =  await fetch(`${config.jiraURL}/rest/api/2/search?jql=${query}&fields=${fields}&expand=${expand}&maxResults=${maxResults}`, init);
+    const searchJson = await searchResponse.json();
+    console.log("Received sprint issues from JIRA.");
+    return searchJson;
+}
 
+const getSprintReport = async (init, config, boardId, sprintId) => {
+    console.log("Getting sprint report from JIRA...");
+    const reportResponse = await fetch(`${config.jiraURL}/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=${boardId}&sprintId=${sprintId}`, init);
+    const reportJson = await reportResponse.json();
+    console.log("Received sprint report from JIRA.");
+    return reportJson;
+}
+
+const getIssueWorklog = async (init, config, issue) => {
+    console.log(`Getting worklog from JIRA for issue ${issue.key} ...`);
+    const worklogResponse = await fetch(`${config.jiraURL}/rest/api/2/issue/${issue.key}/worklog`, init);
+    const worklogJson = await worklogResponse.json();
+    console.log(`Received worklog from JIRA for issue ${issue.key}.`);
+    return worklogJson;
+}
 
 export const getData = async (config: Config) => {
 
-    console.log("Gettting data...");
+    console.log("Getting sprint data from JIRA...");
 
     // fetch does not directly support Basic HTTP authentication. Therefore provide calculated token.
     const init = {
@@ -140,199 +240,118 @@ export const getData = async (config: Config) => {
         }
     };
 
-    let sprintId = 0;
-    let sprintName = "";
-    let startDate = null;
-    let endDate = null;
+    const boardJson = await getRHTeamBoard(init, config);
+    const boardId = boardJson.id;
+    const boardName = boardJson.name;
+
+    const sprintJson = await getLatestSprintFromBoard(init, config, boardId);
+    const sprintId = sprintJson.id;
+    const sprintName = sprintJson.name;
+
     let summaryIssueTimeSpent = {};
 
-    const board = await getBoard(init, config);
+    const [searchJson, reportJson] = await Promise.all([
+        getIssuesFromSprint(init, config, sprintName),
+        getSprintReport(init, config, boardId, sprintId)
+    ]);
 
-    // Get all sprint for board
-    const sprintsResponse = await fetch(`${config.jiraURL}/rest/greenhopper/1.0/sprintquery/${board.id}`, init);
-    const sprintsJson = await sprintsResponse.json();
-    console.log("Received");
+    const sprintStartDate = new Date(reportJson.sprint.startDate.toString());
+    const sprintEndDate = new Date(reportJson.sprint.endDate.toString());
 
-            const sprint = sprintsJson.sprints[sprintsJson.sprints.length - 1];
-            sprintId = sprint.id;
-            sprintName = sprint.name;
+    // Generate issues model for React's component
+    const issues = searchJson.issues.map(issue => {
+        console.log(`----------------------------------------------------------------`);
+        console.log(`Calculation for (${issue.key}) created (${issue.fields.created})`);
 
-            // https://127.0.0.1:8888/rest/api/2/search?jql=sprint+%3D+%22FIP-RafalH+32%22&fields=summary,timetracking,created,customfield_11869,status,priority,issuetype,parent&expand=changelog&maxResults=99999
-            const query = encodeURIComponent(`sprint="${sprint.name}"`);
-            const fields = "summary,timetracking,created,customfield_11869,status,priority,issuetype,parent,assignee";
-            const expand = "changelog";
-            const maxResults = 99999;
 
-    // Get issues belonging to sprint and sprint report with start and end dates
-    return Promise.all([
-                fetch(`${config.jiraURL}/rest/api/2/search?jql=${query}&fields=${fields}&expand=${expand}&maxResults=${maxResults}`,	init),
-                fetch(`${config.jiraURL}/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=${board.id}&sprintId=${sprintId}`,	init)
-    ]).then(
+        let issueToCheck = issue;
 
-        ([searchResponse, reportResponse]) => Promise.all([searchResponse.json(), reportResponse.json()])
-
-    ).then(
-
-        ([searchJson, reportJson]) => {
-            startDate = new Date(reportJson.sprint.startDate.toString());
-            endDate = new Date(reportJson.sprint.endDate.toString());
-
-            // Generate issues model for React's component
-            const issues = searchJson.issues.map(issue => {
-                console.log(`----------------------------------------------------------------`);
-                console.log(`Calculation for (${issue.key}) created (${issue.fields.created})`);
-
-                // Calculate issue availability periods in sprint.
-
-                let issueToCheck = issue;
-
-                // For subtasks use parent issue availability
-                if (issue.fields.issuetype.subtask) {
-                    issueToCheck = searchJson.issues.find(
-                        parentIssue => issue.fields.parent.key === parentIssue.key
-                    )
-                }
-
-                console.log(`Checking periods for ${issueToCheck.key}`);
-                let periods = calculateSprintMembershipPeriods(issueToCheck, sprintName, endDate);
-                periods.forEach(period => {
-                    console.log(" Period  : " + JSON.stringify(period));
-                });
-
-                periods =  clipWithSprintPeriod(periods, startDate, endDate);
-                periods.forEach(period => {
-                    console.log(" Clipped : " + JSON.stringify(period));
-                });
-
-                const issueInSprintStartDate = periods[0].start;
-
-                // Calculate sprint estimate.
-                // Value is taken from:
-                // - original estimate
-                // - remaining estimate (if different than original estimate) and there are no remaining estimate changes in changelog.
-                // - last remaining estimate change in changelog before issue is part of sprint.
-                const remainingEstimateChanges = issue.changelog.histories.map(
-                    history => {
-                        return {
-                            date: new Date(history.created),
-                            estimate: history.items.reduce(
-                                (estimate, item) => {
-                                    if (item.field === "timeestimate")
-                                        return Number.parseInt(item.to);
-                                    else
-                                        return estimate;
-                                }, null
-                            )
-                        }
-                    }
-                ).filter(
-                    change => change.estimate !== null
-                );
-                console.log(`Remaining estimate changes : ${JSON.stringify(remainingEstimateChanges)}`);
-
-                const defaultSprintEstimate =
-                    ((issue.fields.timetracking.originalEstimateSeconds != issue.fields.timetracking.remainingEstimateSeconds)
-                        && (remainingEstimateChanges.length == 0))
-                        ?
-                        numberOr(issue.fields.timetracking.remainingEstimateSeconds, 0)
-                        :
-                        numberOr(issue.fields.timetracking.originalEstimateSeconds, 0);
-
-                const sprintEstimate = remainingEstimateChanges.reduce(
-                    (estimate, change) => {
-                        if (change.date.getTime() < issueInSprintStartDate.getTime())
-                            return change.estimate;
-                        else
-                            return estimate;
-                    }
-                    , numberOr(defaultSprintEstimate, 0)
-                );
-
-                return {
-                    key: issue.key,
-                    parent: issue.fields.parent ? issue.fields.parent.key : "",
-                    url: `${config.jiraURL}/browse/${issue.key}`,
-                    priorityIconUrl: issue.fields.priority.iconUrl,
-                    issuetypeIconUrl: issue.fields.issuetype.iconUrl,
-                    assignee: issue.fields.assignee.displayName,
-                    assigneeId: issue.fields.assignee.name,
-                    summary: issue.fields.summary,
-                    originalEstimate: numberOr(issue.fields.timetracking.originalEstimateSeconds, 0),
-                    timeSpent: numberOr(issue.fields.timetracking.timeSpentSeconds, 0),
-                    remainingEstimate: numberOr(issue.fields.timetracking.remainingEstimateSeconds, 0),
-                    sprintEstimate: sprintEstimate,
-                    status: issue.fields.status.name,
-                    periods: periods
-                }
-            });
-
-            return Promise.all(
-                [issues, ...searchJson.issues.map(issue => fetch(`${config.jiraURL}/rest/api/2/issue/${issue.key}/worklog`, init))]
-            );
-
+        // For subtasks use parent issue availability
+        if (issue.fields.issuetype.subtask) {
+            issueToCheck = searchJson.issues.find(
+                parentIssue => issue.fields.parent.key === parentIssue.key
+            )
         }
 
-    ).then(
+        const periods = calculateIssueAvailabiltyInSprint(issueToCheck, sprintName, sprintStartDate, sprintEndDate);
 
-        ([issues, ...worklogResponses]) =>
-            Promise.all([issues, ...worklogResponses.map(worklogResponse => worklogResponse.json()) ])
+        const sprintEstimate = calculateSprintEstimate(issue, periods);
 
-    ).then(
-        ([issues, ...worklogJsons]) => {
-
-            const resultIssues = issues.zip(worklogJsons).map(
-                ([issue, worklogJson]) => {
-
-                    console.log(`----------${issue.key}----------------------------------------------------------`);
-                    console.log(`Periods  : ${JSON.stringify(issue.periods)}`);
-
-                    const sprintTimeSpent = worklogJson.worklogs.map(
-                        worklog => Object.assign({}, worklog, { startedDate : new Date(worklog.started) })
-                    ).filter(
-                        worklog => {
-                            console.log(`log - ${worklog.timeSpentSeconds} - ${worklog.startedDate}`);
-                            const res = isPartOfSprint(worklog, issue.periods);
-                            //const res =  (worklog.startedDate.getTime() > startDate.getTime()) && (worklog.startedDate.getTime() < endDate.getTime())
-                            if (res) {
-                                addUserTimeSpent(summaryIssueTimeSpent, worklog);
-                            }
-                            return res;
-                        }
-                    ).reduce(
-                        (sum, worklog) => sum + worklog.timeSpentSeconds
-                        , 0
-                    );
-                    console.log(`Worklogs sum for : ${sprintTimeSpent}`);
-
-                    const sprintWorkRatio =
-                        (sprintTimeSpent == 0 || issue.sprintEstimate == 0) ? 0 : Math.floor((sprintTimeSpent / issue.sprintEstimate) * 100);
-
-                    return Object.assign(
-                        {}, issue,
-                        {
-                            sprintTimeSpent : sprintTimeSpent,
-                            sprintWorkRatio : sprintWorkRatio
-                        })
-                }
-            );
-
-            console.log('>>>>>>>>>>>>>.individualTimeSpent : ', summaryIssueTimeSpent);
-
-
-            const result = {
-                boardName: board.name,
-                sprintName: sprintName,
-                startDate: startDate,
-                endDate: endDate,
-                issues: resultIssues, // organize(resultIssues),
-                summary: summaryIssueTimeSpent
-            }
-
-            return result;
-
-
+        return {
+            key: issue.key,
+            parent: issue.fields.parent ? issue.fields.parent.key : "",
+            url: `${config.jiraURL}/browse/${issue.key}`,
+            priorityIconUrl: issue.fields.priority.iconUrl,
+            issuetypeIconUrl: issue.fields.issuetype.iconUrl,
+            assignee: issue.fields.assignee.displayName,
+            assigneeId: issue.fields.assignee.name,
+            summary: issue.fields.summary,
+            originalEstimate: numberOr(issue.fields.timetracking.originalEstimateSeconds, 0),
+            timeSpent: numberOr(issue.fields.timetracking.timeSpentSeconds, 0),
+            remainingEstimate: numberOr(issue.fields.timetracking.remainingEstimateSeconds, 0),
+            sprintEstimate: sprintEstimate,
+            status: issue.fields.status.name,
+            periods: periods
         }
-    )
+    });
+
+    const worklogJsons = await Promise.all(
+        issues.map(issue => getIssueWorklog(init, config, issue))
+    );
+
+
+    const resultIssues = issues.zip(worklogJsons).map(
+        ([issue, worklogJson]) => {
+
+            console.log(`----------${issue.key}----------------------------------------------------------`);
+            console.log(`Periods  : ${JSON.stringify(issue.periods)}`);
+
+            const sprintTimeSpent = worklogJson.worklogs.map(
+                worklog => Object.assign({}, worklog, {startedDate: new Date(worklog.started)})
+            ).filter(
+                worklog => {
+                    console.log(`log - ${worklog.timeSpentSeconds} - ${worklog.startedDate}`);
+                    const res = isPartOfSprint(worklog, issue.periods);
+                    //const res =  (worklog.startedDate.getTime() > startDate.getTime()) && (worklog.startedDate.getTime() < endDate.getTime())
+                    if (res) {
+                        addUserTimeSpent(summaryIssueTimeSpent, worklog);
+                    }
+                    return res;
+                }
+            ).reduce(
+                (sum, worklog) => sum + worklog.timeSpentSeconds
+                , 0
+            );
+            console.log(`Worklogs sum for : ${sprintTimeSpent}`);
+
+            const sprintWorkRatio =
+                (sprintTimeSpent == 0 || issue.sprintEstimate == 0) ? 0 : Math.floor((sprintTimeSpent / issue.sprintEstimate) * 100);
+
+            return Object.assign(
+                {}, issue,
+                {
+                    sprintTimeSpent: sprintTimeSpent,
+                    sprintWorkRatio: sprintWorkRatio
+                })
+        }
+    );
+
+    console.log('>>>>>>>>>>>>>.individualTimeSpent : ', summaryIssueTimeSpent);
+
+
+    const result = {
+        boardName: boardName,
+        sprintName: sprintName,
+        startDate: sprintStartDate,
+        endDate: sprintEndDate,
+        issues: resultIssues, // organize(resultIssues),
+        summary: summaryIssueTimeSpent
+    }
+
+    return result;
+
+
+
 
 }
 
