@@ -1,20 +1,19 @@
 //import './styles/index.scss';
 import { h, app } from "hyperapp";
 // import { div, h1, button } from "@hyperapp/html"
-import { ClientConfig } from "../common/model";
 
+import { ClientConfig, Sprint, Issue } from "../common/model";
 import { readableDuration } from './utils';
 
 class State {
     config: ClientConfig = {};
-    data = {
+    data : Sprint = {
         boardName: "",
         sprintName: "",
-        startDate: "",
-        endDate: "Aha",
-        sprintTimeSpent: 0,
+        startDate: new Date(),
+        endDate: new Date(),
         issues: [],
-        summary: {}
+        summary: []
     }
 }
 const state =  new State();
@@ -22,7 +21,7 @@ const state =  new State();
 
 const actions = {
 	loadData: () => async (state, actions) => {
-        console.log("Loading configuration ...");
+	    console.log("Loading configuration ...");
         const configJson = await fetch('/config');
         const config = await configJson.json();
         actions.updateConfig(config);
