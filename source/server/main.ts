@@ -3,11 +3,13 @@ import Koa from 'koa';
 import Router from 'koa-router';
 
 import { loadConfig } from './config';
-import { getData } from './data';
+import { IssueSource } from "./issue-source";
+import { JiraIssueSource } from './jira-issue-source';
 
 console.log("Szpion server starts... ");
 
 const config  = loadConfig();
+const issueSource : IssueSource = new JiraIssueSource(config.jiraURL, config.jiraBasicAuthToken);
 
 console.log("Using JIRA : " + config.jiraURL)
 
@@ -26,8 +28,8 @@ router.get('/config', (ctx, next) => {
 
 router.get('/data', async (ctx, next) => {
     console.log("Accessing data API.");
-    const data = await getData(config);
-    ctx.body = JSON.stringify(data);
+    const sprint = await issueSource.fetchLatestSprint();
+    ctx.body = JSON.stringify(sprint);
 });
 
 app.use(router.routes());

@@ -3,7 +3,7 @@ import { h, app } from "hyperapp";
 // import { div, h1, button } from "@hyperapp/html"
 
 import { ClientConfig, Sprint, Issue } from "../common/model";
-import { readableDuration } from './utils';
+import { readableDuration } from '../common/utils';
 
 class State {
     config: ClientConfig = {};

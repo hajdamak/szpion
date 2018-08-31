@@ -14,3 +14,11 @@ export const readableDuration = (seconds) => {
 
 	return format(days, 'd') + format(hours, 'h', ' ') + format(minutes, 'm', ' ');
 }
+
+
+export const numberOr = (valueToCheck, alternative) => {
+    if (Number.isInteger(valueToCheck))
+        return valueToCheck;
+    else
+        return alternative;
+};
