@@ -1,20 +1,20 @@
-//import './styles/index.scss';
 import { h, app } from "hyperapp";
 // import { div, h1, button } from "@hyperapp/html"
-
-import { ClientConfig, Sprint, Issue } from "../common/model";
+import { ClientConfig, Sprint, SprintId, BoardId } from "../common/model";
 import { readableDuration } from '../common/utils';
 
 class State {
     config: ClientConfig = {};
-    data : Sprint = {
-        boardName: "",
-        sprintName: "",
+    boards: Array<BoardId> = [];
+    sprints: Array<SprintId> = [];
+    sprint : Sprint = {
+        board: { id: "", name: ""},
+        sprint: { id: "", name: ""},
         startDate: new Date(),
         endDate: new Date(),
         issues: [],
-        summary: []
-    }
+        users: []
+    };
 }
 const state =  new State();
 
@@ -26,71 +26,88 @@ const actions = {
         const config = await configJson.json();
         actions.updateConfig(config);
 
+        console.log("Loading boards ...");
+        const boardsJson = await fetch('/boards');
+        const boards = await boardsJson.json();
+        const board = boards[0];
+        actions.updateBoards(boards);
+
+        console.log("Loading sprints ...");
+        const sprintsJson = await fetch(`/boards/${board.id}/sprints`);
+        const sprints = await sprintsJson.json();
+        actions.updateSprints(sprints);
+
         console.log("Loading data ...");
-        const resultJson = await fetch('/data');
-        const result = await resultJson.json();
+        const sprintJson = await fetch('/sprint');
+        const sprint = await sprintJson.json();
 
 		console.log("after loadData");
-		actions.updateData(result);
+		actions.updateData(sprint);
 	},
     updateConfig: config => state => {
         console.log("Config updated.")
         return { config: config };
     },
-	updateData: data => state => {
+    updateBoards: boards => state => {
+        console.log("Boards updated.")
+        return { boards: boards };
+    },
+    updateSprints: sprints => state => {
+        console.log("Sprints updated.")
+        return { sprints: sprints };
+    },
+	updateData: sprint => state => {
 		console.log("Data updated.")
-        return { data: data };
+        return { sprint: sprint };
 	},
 }
 
 const view = (state, actions) => (
     <div className="container-fluid" oncreate={actions.loadData}>
-
-        <div>
-
-            <div className="columns">
-                <div className="column">
-                    <span id="logo">Szpion</span>
-                    <span> Daily Sprint Invigilation</span>
-                </div>
-                <div className="column">
-                    Board: <span>{ state.data.boardName }</span><br/>
-                    Sprint: <span>{ state.data.sprintName }</span><br/>
-                </div>
-                <div className="column">
-                    Sprint issues : { state.data.issues.filter(issue => !partof(issue.status, "Closed")).length }<br/>
-                    Sprint issues completed : { state.data.issues.filter(issue => partof(issue.status, "Closed")).length }<br/>
-                    Sprint issues not started : { countNotStarted(state.data.issues.filter(issue => partof(issue.status, "Open"))) }<br/>
-                </div>
-                <div className="column">
-                    Start date: <span>{ readableTime(state.data.startDate) }</span><br/>
-                    End date: <span>{ readableTime(state.data.endDate) }</span><br/>
-                </div>
-                <div className="column">
-                    Sprint estimate : { readableDuration(state.data.issues.reduce((sum, issue) => sum + issue.sprintEstimate, 0)) }<br/>
-                    Sprint time spent : { readableDuration(state.data.issues.reduce((sum, issue) => sum + issue.sprintTimeSpent, 0)) }<br/>
-                    Sprint remaining estimate : { readableDuration(state.data.issues.reduce((sum, issue) => sum + issue.remainingEstimate, 0)) }<br/>
-                </div>
+        <div className="columns">
+            <div className="column">
+                <span id="logo">Szpion</span>
+                <span> Daily Sprint Invigilation</span>
             </div>
+            <div className="column">
+                Board: <span>{state.sprint.board.name}</span><br/>
+                Sprint: <span>{state.sprint.sprint.name}</span><br/>
+            </div>
+            <div className="column">
+                Sprint issues : {state.sprint.issues.filter(issue => !partof(issue.status, "Closed")).length}<br/>
+                Sprint issues completed
+                : {state.sprint.issues.filter(issue => partof(issue.status, "Closed")).length}<br/>
+                Sprint issues not started
+                : {countNotStarted(state.sprint.issues.filter(issue => partof(issue.status, "Open")))}<br/>
+            </div>
+            <div className="column">
+                Start date: <span>{readableTime(state.sprint.startDate)}</span><br/>
+                End date: <span>{readableTime(state.sprint.endDate)}</span><br/>
+            </div>
+            <div className="column">
+                Sprint estimate
+                : {readableDuration(state.sprint.issues.reduce((sum, issue) => sum + issue.sprintEstimate, 0))}<br/>
+                Sprint time spent
+                : {readableDuration(state.sprint.issues.reduce((sum, issue) => sum + issue.sprintTimeSpent, 0))}<br/>
+                Sprint remaining estimate
+                : {readableDuration(state.sprint.issues.reduce((sum, issue) => sum + issue.remainingEstimate, 0))}<br/>
+            </div>
+        </div>
 
-            <IssuesTable
-                issues={ state.data.issues.filter(issue => !partof(issue.status, "Closed")).sort((a, b) => a.parent.localeCompare(b.parent)) } />
+        <h3>Issues</h3>
+        <IssuesTable
+            issues={state.sprint.issues.filter(issue => !partof(issue.status, "Closed"))}/>
 
-            <h3>Closed</h3>
-            <IssuesTable
-                issues={ state.data.issues.filter(issue => partof(issue.status, "Closed")).sort((a, b) => a.parent.localeCompare(b.parent)) } />
+        <h3>Closed issues</h3>
+        <IssuesTable
+            issues={state.sprint.issues.filter(issue => partof(issue.status, "Closed"))}/>
 
-
-            <h3>Time spent in sprint</h3>
-            <TimeTable summary={ state.data.summary } />
-
-		</div>
+        <h3>Users</h3>
+        <UsersTable users={state.sprint.users}/>
 
 
     </div>
 )
-
-
 
 app(state, actions, view, document.body);
 
@@ -98,12 +115,11 @@ app(state, actions, view, document.body);
 const IssuesTable = ({ issues }) => {
 
     return(
-        <table className="table is-striped is-narrow is-fullwidth">
+        <table className="table is-narrow is-fullwidth">
             <thead>
             <tr>
                 <th>T</th>
                 <th>Issue</th>
-                <th>Parent</th>
                 <th>P</th>
                 <th>Summary</th>
                 <th>Assignee</th>
@@ -118,38 +134,50 @@ const IssuesTable = ({ issues }) => {
                 <th>Status</th>
             </tr>
             </thead>
-            <tbody>
             {issues.map(issue =>
-                // className={issue.children.length > 0 ? "parent-issue" : ""}>
-                <tr key={issue.key} >
-                    <td><img src={issue.issuetypeIconUrl}/></td>
-                    <td className="text-nowrap"><a href={issue.url}>{issue.key}</a></td>
-                    <td className="text-nowrap">{issue.parent}</td>
-                    <td><img src={issue.priorityIconUrl}/></td>
-                    <td>{issue.summary}</td>
-                    <td className={`user-${issue.assigneeId}`}>{issue.assignee}</td>
-                    <td className="text-nowrap">{readableDuration(issue.originalEstimate)}</td>
-                    <td className="text-nowrap">{readableDuration(issue.timeSpent)}</td>
-
-                    <td className="text-nowrap">{readableDuration(issue.sprintEstimate)}</td>
-                    <td className="text-nowrap">{readableDuration(issue.sprintTimeSpent)}</td>
-                    <td className={`text-nowrap remaining${issue.remainingEstimate > 0 ? "" : "-zero"}`}>{readableDuration(issue.remainingEstimate)}</td>
-
-                    <td className="text-nowrap">
-                        {issue.sprintWorkRatio < 100 ? (
-                            <span className="green">{issue.sprintWorkRatio} %</span>
-                        ) : (
-                            <span className="red">{issue.sprintWorkRatio} %</span>
-                        )}
-                    </td>
-                    <td className={`text-nowrap ${calculateStatusClass(issue.status)}`}>{issue.status}</td>
-                </tr>
+                <tbody>
+                    <IssueRow issue={issue} />
+                    {issue.children.map(child =>
+                        <IssueRow issue={child} />
+                    )}
+                </tbody>
             )}
-            </tbody>
         </table>
     )
 
 }
+
+const IssueRow = ({ issue }) => (
+
+    <tr key={issue.key}
+        style={{
+            backgroundColor : issue.parent ? '#efefef' : '#ffffff',
+            borderTop: issue.parent ? '' : '1px solid #888888'
+        }}
+    >
+        <td><img src={issue.issuetypeIconUrl}/></td>
+        <td className="text-nowrap"><a href={issue.url}>{issue.key}</a></td>
+        {/*<td className="text-nowrap">{issue.parent}</td>*/}
+        <td><img src={issue.priorityIconUrl}/></td>
+        <td>{issue.summary}</td>
+        <td className={`user-${issue.assigneeId}`}>{issue.assignee}</td>
+        <td className="text-nowrap">{readableDuration(issue.originalEstimate)}</td>
+        <td className="text-nowrap">{readableDuration(issue.timeSpent)}</td>
+
+        <td className="text-nowrap">{readableDuration(issue.sprintEstimate)}</td>
+        <td className="text-nowrap">{readableDuration(issue.sprintTimeSpent)}</td>
+        <td className={`text-nowrap remaining${issue.remainingEstimate > 0 ? "" : "-zero"}`}>{readableDuration(issue.remainingEstimate)}</td>
+
+        <td className="text-nowrap">
+            {issue.sprintWorkRatio < 100 ? (
+                <span className="green">{issue.sprintWorkRatio} %</span>
+            ) : (
+                <span className="red">{issue.sprintWorkRatio} %</span>
+            )}
+        </td>
+        <td className={`text-nowrap ${calculateStatusClass(issue.status)}`}>{issue.status}</td>
+    </tr>
+)
 
 
 const readableTime = (date) => {
@@ -177,24 +205,23 @@ const partof = (toCheck, ...elements) => {
 };
 
 
-const TimeTable = ({summary}) => {
+const UsersTable = ({users}) => {
 
     return (
-        <table>
+        <table className="table is-striped is-narrow is-fullwidth">
             <thead>
             <tr>
-                <th>Who</th>
+                <th>User</th>
                 <th>Time spent</th>
             </tr>
             </thead>
             <tbody>
-            {Object.keys(summary).map(key =>
-                <tr key={key}>
-                    <td className={`user-${key} col-md-1`}>{summary[key].displayName}</td>
-                    <td className={`user-${key} col-md-6`}>{readableDuration(summary[key].sum)}</td>
+            {users.map(user =>
+                <tr>
+                    <td>{user.name}</td>
+                    <td>{readableDuration(user.timeSpent)}</td>
                 </tr>
             )}
-
             </tbody>
         </table>
     )

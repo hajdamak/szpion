@@ -22,3 +22,16 @@ export const numberOr = (valueToCheck, alternative) => {
     else
         return alternative;
 };
+
+Array.prototype.zip = function (array) {
+    return this.map( (element, index) => [element, array[index]]);
+}
+
+Object.defineProperty(Array.prototype, 'flatMap', {
+    value: function(f: Function) {
+        return this.reduce((ys: any, x: any) => {
+            return ys.concat(f.call(this, x))
+        }, [])
+    },
+    enumerable: false,
+})

@@ -16,21 +16,34 @@ console.log("Using JIRA : " + config.jiraURL)
 const app =  new Koa();
 const router = new Router();
 
-router.get('/test', (ctx, next) => {
-    console.log("Test request");
-    ctx.body = 'Test';
-});
 
 router.get('/config', (ctx, next) => {
     console.log("Accessing config API.");
-    ctx.body = JSON.stringify(config.clientConfig);
+    ctx.type = "json";
+    ctx.body = config.clientConfig;
 });
 
-router.get('/data', async (ctx, next) => {
-    console.log("Accessing data API.");
+router.get('/sprint', async (ctx, next) => {
+    console.log("Getting sprint.");
     const sprint = await issueSource.fetchLatestSprint();
-    ctx.body = JSON.stringify(sprint);
+    ctx.type = "json";
+    ctx.body = sprint;
 });
+
+router.get('/boards', async (ctx, next) => {
+    console.log("Getting boards");
+    const boards = await issueSource.fetchBoards();
+    ctx.type = "json";
+    ctx.body = boards;
+});
+
+router.get('/boards/:boardId/sprints', async (ctx, next) => {
+    console.log(`Getting sprint for board ${ctx.params.boardId}`);
+    const sprints = await issueSource.fetchSprintsFromBoard(ctx.params.boardId);
+    ctx.type = "json";
+    ctx.body = sprints;
+});
+
 
 app.use(router.routes());
 

@@ -1,20 +1,30 @@
 export interface ClientConfig {
+}
 
+export interface SprintId {
+    id: string;
+    name: string;
+}
+
+
+export interface BoardId {
+    id: string;
+    name: string;
 }
 
 export interface Sprint {
-    boardName: string;
-    sprintName: string;
+    board: BoardId;
+    sprint: SprintId;
     startDate: Date;
     endDate: Date;
     issues: Array<Issue>;
-    summary: Array<any>;
+    users: Array<User>;
 }
-
 
 export interface Issue {
     key: string;
-    parent: string;
+    parent: string | null;
+    children: Array<Issue> | null;
     url: string,
     priorityIconUrl: string;
     issuetypeIconUrl: string;
@@ -29,5 +39,17 @@ export interface Issue {
     sprintTimeSpent: number;
     sprintWorkRatio: number;
     periods: Array<any>;
+    worklogs: Array<WorkLog>;
+}
+
+export interface User {
+    name: string;
+    timeSpent: number;
+}
+
+export interface WorkLog {
+    author: string;
+    date: Date;
+    timeSpent: number;
 }
 
