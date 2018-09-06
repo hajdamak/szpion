@@ -5,6 +5,7 @@ import Router from 'koa-router';
 import { loadConfig } from './config';
 import { IssueSource } from "./issue-source";
 import { JiraIssueSource } from './jira-issue-source';
+import {parse} from "ts-node";
 
 console.log("Szpion server starts... ");
 
@@ -23,26 +24,38 @@ router.get('/config', (ctx, next) => {
     ctx.body = config.clientConfig;
 });
 
-router.get('/sprint', async (ctx, next) => {
-    console.log("Getting sprint.");
-    const sprint = await issueSource.fetchLatestSprint();
-    ctx.type = "json";
-    ctx.body = sprint;
-});
-
 router.get('/boards', async (ctx, next) => {
-    console.log("Getting boards");
+    console.log("Accessing boards API");
     const boards = await issueSource.fetchBoards();
     ctx.type = "json";
     ctx.body = boards;
 });
 
 router.get('/boards/:boardId/sprints', async (ctx, next) => {
-    console.log(`Getting sprint for board ${ctx.params.boardId}`);
+    console.log(`Aceessing sprints API for board ${ctx.params.boardId}`);
     const sprints = await issueSource.fetchSprintsFromBoard(ctx.params.boardId);
     ctx.type = "json";
     ctx.body = sprints;
 });
+
+router.get('/boards/:boardId/sprints/:sprintId', async (ctx, next) => {
+    console.log("Accessing sprint API.");
+    const sprint = await issueSource.fetchSprint(
+        parseInt(ctx.params.boardId),
+        parseInt(ctx.params.sprintId)
+    );
+    ctx.type = "json";
+    ctx.body = sprint;
+});
+
+
+router.get('/latestSprint', async (ctx, next) => {
+    console.log("Accessing sprint API.");
+    const sprint = await issueSource.fetchLatestSprint();
+    ctx.type = "json";
+    ctx.body = sprint;
+});
+
 
 
 app.use(router.routes());

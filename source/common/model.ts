@@ -2,13 +2,12 @@ export interface ClientConfig {
 }
 
 export interface SprintId {
-    id: string;
+    id: number;
     name: string;
 }
 
-
 export interface BoardId {
-    id: string;
+    id: number;
     name: string;
 }
 
