@@ -16,6 +16,11 @@ export interface SprintDetails {
     readonly sprint: Sprint;
     readonly startDate: Date;
     readonly endDate: Date;
+    readonly estimate: number,
+    readonly timeSpent: number,
+    readonly remainingEstimate: number,
+    readonly issuesCount: number,
+    readonly completedIssuesCount: number,
     readonly issues: Array<Issue>;
     readonly users: Array<User>;
 }

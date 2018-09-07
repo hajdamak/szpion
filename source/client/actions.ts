@@ -1,4 +1,4 @@
-import { ActionsType, ActionResult } from "hyperapp";
+import {ActionsType} from "hyperapp";
 
 import {Board, ClientConfig, SprintDetails, Sprint} from "../common/model";
 import {State} from "./state";
@@ -9,7 +9,7 @@ export class Actions implements ActionsType<State, Actions> {
         await actions.fetchConfig();
         await actions.fetchBoards();
         await actions.fetchSprints();
-        await actions.fetchSprint();
+        await actions.fetchSprintDetails();
     };
 
     fetchConfig = () => async (state: State, actions: Actions) => {
@@ -54,16 +54,16 @@ export class Actions implements ActionsType<State, Actions> {
         };
     };
 
-    fetchSprint = () => async (state: State, actions: Actions) => {
+    fetchSprintDetails = () => async (state: State, actions: Actions) => {
         console.log("Fetching sprint...");
         const sprintJson = await fetch(`/boards/${state.selectedBoardId}/sprints/${state.selectedSprintId}`);
         const sprint = await sprintJson.json();
-        actions.updateSprint(sprint);
+        actions.updateSprintDetails(sprint);
     };
 
-    updateSprint = (sprint: SprintDetails) => (state: State) => {
+    updateSprintDetails = (sprintDetails: SprintDetails) => (state: State) => {
         console.log("Sprint updated.")
-        return { sprint: sprint };
+        return { sprintDetails: sprintDetails };
     };
 
     changeBoard = (boardId: number) => async (state: State, actions: Actions) => {
@@ -71,7 +71,7 @@ export class Actions implements ActionsType<State, Actions> {
         if (boardId == state.selectedBoardId) return;
         actions.updateSelectedBoard(boardId);
         await actions.fetchSprints();
-        await actions.fetchSprint();
+        await actions.fetchSprintDetails();
     };
 
     updateSelectedBoard = (boardId: number) => (state: State) => {
@@ -83,7 +83,7 @@ export class Actions implements ActionsType<State, Actions> {
         console.log(`Changing sprint to ${sprintId} ...`);
         if (sprintId == state.selectedSprintId) return;
         actions.updateSelectedSprint(sprintId);
-        await actions.fetchSprint();
+        await actions.fetchSprintDetails();
     };
 
     updateSelectedSprint = (sprintId: number) => (state: State) => {

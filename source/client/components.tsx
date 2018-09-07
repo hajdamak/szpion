@@ -9,49 +9,52 @@ export const view: View<State, Actions> = (state: State, actions: Actions) => (
 
 	<div className="container-fluid" oncreate={actions.init}>
 
-		<Selector title="Boards" items={state.boards} onchange={(itemId) => () => actions.changeBoard(itemId)} />
-		<Selector title="Sprints" items={state.sprints} onchange={(itemId) => () => actions.changeSprint(itemId)} />
+		<Selector title="Boards" items={state.boards} onchange={(itemId) => () => actions.changeBoard(itemId)}/>
+		<Selector title="Sprints" items={state.sprints} onchange={(itemId) => () => actions.changeSprint(itemId)}/>
 
-		<div className="columns">
-			<div className="column">
-				<span id="logo">Szpion</span>
-				<span> Daily Sprint Invigilation</span>
-			</div>
-			<div className="column">
-				Board: <span>{state.sprint.board.name}</span><br/>
-				Sprint: <span>{state.sprint.sprint.name}</span><br/>
-			</div>
-			<div className="column">
-				Sprint issues : {state.sprint.issues.filter(issue => !partof(issue.status, "Closed")).length}<br/>
-				Sprint issues completed
-				: {state.sprint.issues.filter(issue => partof(issue.status, "Closed")).length}<br/>
-				Sprint issues not started
-				: {countNotStarted(state.sprint.issues.filter(issue => partof(issue.status, "Open")))}<br/>
-			</div>
-			<div className="column">
-				Start date: <span>{readableTime(state.sprint.startDate)}</span><br/>
-				End date: <span>{readableTime(state.sprint.endDate)}</span><br/>
-			</div>
-			<div className="column">
-				Sprint estimate
-				: {readableDuration(state.sprint.issues.reduce((sum, issue) => sum + issue.sprintEstimate, 0))}<br/>
-				Sprint time spent
-				: {readableDuration(state.sprint.issues.reduce((sum, issue) => sum + issue.sprintTimeSpent, 0))}<br/>
-				Sprint remaining estimate
-				: {readableDuration(state.sprint.issues.reduce((sum, issue) => sum + issue.remainingEstimate, 0))}<br/>
-			</div>
-		</div>
+		{state.sprintDetails ? (
+			<div>
+				<div className="columns">
+					<div className="column">
+						<span id="logo">Szpion</span>
+						<span> Daily Sprint Invigilation</span>
+					</div>
+					<div className="column">
+						Board: <span>{state.sprintDetails.board.name}</span><br/>
+						Sprint: <span>{state.sprintDetails.sprint.name}</span><br/>
+					</div>
+					<div className="column">
+						Sprint issues : {state.sprintDetails.issuesCount}<br/>
+						Sprint issues completed : {state.sprintDetails.completedIssuesCount}<br/>
+					</div>
+					<div className="column">
+						Start date: <span>{readableTime(state.sprintDetails.startDate)}</span><br/>
+						End date: <span>{readableTime(state.sprintDetails.endDate)}</span><br/>
+					</div>
+					<div className="column">
+						Sprint estimate
+						: {readableDuration(state.sprintDetails.issues.reduce((sum, issue) => sum + issue.sprintEstimate, 0))}<br/>
+						Sprint time spent
+						: {readableDuration(state.sprintDetails.issues.reduce((sum, issue) => sum + issue.sprintTimeSpent, 0))}<br/>
+						Sprint remaining estimate
+						: {readableDuration(state.sprintDetails.issues.reduce((sum, issue) => sum + issue.remainingEstimate, 0))}<br/>
+					</div>
+				</div>
 
-		<h3>Issues</h3>
-		<IssuesTable
-			issues={state.sprint.issues.filter(issue => !partof(issue.status, "Closed"))}/>
+				<h3>Issues</h3>
+				<IssuesTable
+					issues={state.sprintDetails.issues.filter(issue => !partof(issue.status, "Closed"))}/>
 
-		<h3>Closed issues</h3>
-		<IssuesTable
-			issues={state.sprint.issues.filter(issue => partof(issue.status, "Closed"))}/>
+				<h3>Closed issues</h3>
+				<IssuesTable
+					issues={state.sprintDetails.issues.filter(issue => partof(issue.status, "Closed"))}/>
 
-		<h3>Users</h3>
-		<UsersTable users={state.sprint.users}/>
+				<h3>Users</h3>
+				<UsersTable users={state.sprintDetails.users}/>
+			</div>
+		) : (
+			<div>Loading data</div>
+		)}
 
 	</div>
 )
@@ -161,10 +164,6 @@ const calculateStatusClass = (status: string) => {
 		return "in-progress";
 	}
 	return '';
-};
-
-const countNotStarted = (issues: Array<Issue>) => {
-	return issues.filter(issue => partof(issue.status, "Open") && (!issue.children || issue.children.length === 0)).length;
 };
 
 const partof = (toCheck: string, ...elements : Array<string>) => {

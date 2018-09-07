@@ -153,7 +153,6 @@ export class Jira {
                     () => issueJson
                 );
 
-
                 const periods = this.calculateIssueAvailabilityInSprint(issueToCheck, sprint.name, sprintStartDate, sprintEndDate);
                 console.log(`periods  : ${JSON.stringify(periods)}`);
 
@@ -193,6 +192,12 @@ export class Jira {
 
         const users = this.calculateUsersInfo(issues);
 
+        const issuesCount = issues.length;
+        const completedIssuesCount = issues.filter(issue => issue.status === "Closed").length;
+
+        const estimate = issues.reduce((sum, issue) => sum + issue.sprintEstimate, 0);
+        const timeSpent = issues.reduce((sum, issue) => sum + issue.sprintTimeSpent, 0);
+        const remainingEstimate = issues.reduce((sum, issue) => sum + issue.remainingEstimate, 0);
 
         const issuesWithChildren = issues.filter(
             issue => issue.parent == null
@@ -208,6 +213,11 @@ export class Jira {
             sprint: sprint,
             startDate: sprintStartDate,
             endDate: sprintEndDate,
+            estimate: estimate,
+            timeSpent: timeSpent,
+            remainingEstimate: remainingEstimate,
+            issuesCount: issuesCount,
+            completedIssuesCount: completedIssuesCount,
             issues: issuesWithChildren,
             users: users
         }
@@ -308,6 +318,8 @@ export class Jira {
             }
         }
 
+        console.log(` histories: ${JSON.stringify(issue.changelog.histories)}`)
+
         const points = issue.changelog.histories.map(
             history => {
                 const item = history.items.filter(item => item.field === "SprintDetails")[0];
@@ -367,7 +379,9 @@ export class Jira {
     // - original estimate
     // - remaining estimate (if different than original estimate) and there are no remaining estimate changes in changelog.
     // - last remaining estimate change in changelog before issue is part of sprint.
-    private readonly calculateSprintEstimate = (issue: IssueJson, periods: Array<Period>) => {
+    private readonly calculateSprintEstimate = (issue: IssueJson, periods: Array<Period>): number => {
+        if (periods.length == 0) return 0;
+
         const issueInSprintStartDate = periods[0].start;
 
         type Changes = { date: Date, estimate: number };
@@ -422,6 +436,7 @@ export class Jira {
         issue: IssueJson, sprintName: string, sprintStartDate: Date, sprintEndDate: Date): Array<Period> => {
         console.log(`Checking periods for ${issue.key}`);
         const periods = this.calculateSprintMembershipPeriods(issue, sprintName, sprintEndDate);
+        console.log(` original periods : ${JSON.stringify(periods)}`);
         const clippedPeriods = this.clipWithSprintPeriod(periods, sprintStartDate, sprintEndDate);
         return clippedPeriods;
     }

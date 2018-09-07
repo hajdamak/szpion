@@ -6,14 +6,7 @@ export class State {
     selectedBoardId: number|undefined;
     sprints: Array<Sprint> = [];
     selectedSprintId: number|undefined;
-    sprint : SprintDetails = {
-        board: { id: 0, name: ""},
-        sprint: { id: 0, name: ""},
-        startDate: new Date(),
-        endDate: new Date(),
-        issues: [],
-        users: []
-    };
+    sprintDetails: SprintDetails|undefined = undefined;
 }
 
 export const state = new State();
