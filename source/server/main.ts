@@ -3,14 +3,12 @@ import Koa from 'koa';
 import Router from 'koa-router';
 
 import { loadConfig } from './config';
-import { IssueSource } from "./issue-source";
-import { JiraIssueSource } from './jira-issue-source';
-import {parse} from "ts-node";
+import { Jira } from './jira';
 
 console.log("Szpion server starts... ");
 
 const config  = loadConfig();
-const issueSource : IssueSource = new JiraIssueSource(config.jiraURL, config.jiraBasicAuthToken);
+const issueSource = new Jira(config.jiraURL, config.jiraBasicAuthToken);
 
 console.log("Using JIRA : " + config.jiraURL)
 
@@ -47,16 +45,6 @@ router.get('/boards/:boardId/sprints/:sprintId', async (ctx, next) => {
     ctx.type = "json";
     ctx.body = sprint;
 });
-
-
-router.get('/latestSprint', async (ctx, next) => {
-    console.log("Accessing sprint API.");
-    const sprint = await issueSource.fetchLatestSprint();
-    ctx.type = "json";
-    ctx.body = sprint;
-});
-
-
 
 app.use(router.routes());
 

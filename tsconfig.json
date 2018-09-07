@@ -16,11 +16,13 @@
       "dom"
     ],
     "downlevelIteration": true,
-    // "strict": true,
-    // "noUnusedLocals": true,
-    // "noImplicitReturns": true,
-    // "noFallthroughCasesInSwitch": true
-    "allowJs": true,
+
+     "strict": true,
+//    "noImplicitReturns": true,
+//    "noUnusedLocals": true,
+//    "forceConsistentCasingInFileNames": true,
+//    "noFallthroughCasesInSwitch": true,
+//    "allowJs": true,
 
     "typeRoots" : ["./source/typings"]
   },

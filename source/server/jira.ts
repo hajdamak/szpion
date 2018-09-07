@@ -1,12 +1,100 @@
 import fetch from 'node-fetch';
 
-import { Sprint, Issue, WorkLog, User, BoardId, SprintId } from '../common/model';
-import { numberOr } from '../common/utils';
-import { IssueSource } from "./issue-source";
+import {SprintDetails, Issue, WorkLog, User, Board, Sprint} from '../common/model';
+import {ifElse, numberOr} from '../common/utils';
 
-export class JiraIssueSource implements IssueSource {
+type ViewsJson = {
+    views: [{
+        id: number,
+        name: string
 
-    private readonly init;
+    }]
+};
+
+type SprintsJson = {
+    sprints: [{
+        id: number,
+        name: string
+
+    }]
+};
+
+type SprintReportJson = {
+    sprint: {
+        startDate: string,
+        endDate: string,
+    }
+}
+
+type WorklogJson = {
+    started: string,
+    timeSpentSeconds: number,
+    author: {
+        displayName: string
+    }
+}
+
+type WorklogsJson = {
+    worklogs: [ WorklogJson ]
+}
+
+type SearchJson = {
+    issues: [IssueJson]
+}
+
+type IssueJson = {
+    key: string
+    fields: {
+        summary: string,
+        created: string,
+        issuetype: {
+            subtask: boolean,
+            iconUrl: string
+        },
+        parent: {
+            key: string
+        },
+        priority: {
+            iconUrl: string
+        },
+        status: {
+            name: string,
+        },
+        assignee: {
+            name: string,
+            displayName: string
+        },
+        timetracking: {
+            originalEstimateSeconds: number,
+            timeSpentSeconds: number,
+            remainingEstimateSeconds: number
+        },
+        customfield_11869?: [string]
+    },
+    changelog: {
+        histories: [{
+            created: string,
+            items: [{
+                field: string,
+                fromString?: string,
+                to?: string,
+                toString?: string
+            }]
+        }]
+    }
+}
+
+
+
+interface Period {
+    start: Date;
+    end: Date;
+}
+
+
+export class Jira {
+
+    private readonly init: any;
 
     constructor(
         private readonly jiraURL: string,
@@ -18,22 +106,30 @@ export class JiraIssueSource implements IssueSource {
         };
     }
 
-    public readonly fetchSprint = async (boardId: number, sprintId: number): Promise<Sprint> => {
+    public readonly fetchSprint = async (boardId: number, sprintId: number): Promise<SprintDetails> => {
         console.log(`Getting sprint ${sprintId} data of board ${boardId} from JIRA...`);
 
-        const boardJson = await this.fetchBoard(boardId);
-        const boardName = boardJson.name;
+        // Get board
+        const boards = await this.fetchBoards();
+        const board = boards.find(board => board.id === boardId);
+        if (!board) {
+            throw Error(`Can't find board ${boardId}`);
+        }
 
-        const sprintJson = await this.fetchSprintFromBoard(boardId, sprintId);
-        const sprintName = sprintJson.name;
+        // Get sprint
+        const sprints = await this.fetchSprintsFromBoard(boardId);
+        const sprint = sprints.find(sprint => sprint.id === sprintId);
+        if (!sprint) {
+            throw Error(`Can't find sprint ${sprintId}`);
+        }
 
         const [searchJson, reportJson] = await Promise.all([
-            this.fetchIssuesFromSprint(sprintName),
+            this.fetchIssuesFromSprint(sprint.name),
             this.fetchSprintReport(boardId, sprintId)
         ]);
 
-        const sprintStartDate = new Date(reportJson.sprint.startDate.toString());
-        const sprintEndDate = new Date(reportJson.sprint.endDate.toString());
+        const sprintStartDate = new Date(reportJson.sprint.startDate);
+        const sprintEndDate = new Date(reportJson.sprint.endDate);
 
         const worklogJsons = await Promise.all(
             searchJson.issues.map(issueJson => this.fetchIssueWorklog(issueJson.key))
@@ -44,16 +140,21 @@ export class JiraIssueSource implements IssueSource {
 
                 console.log(`-- ${issueJson.key} ----------------------------------------------------------`);
 
-                let issueToCheck = issueJson;
+                const issueToCheck = ifElse(
+                    issueJson.fields.issuetype.subtask,
+                    () => {
+                        const parentIssue = searchJson.issues.find(
+                            parentIssue => issueJson.fields.parent.key === parentIssue.key
+                        );
+                        if (!parentIssue)
+                            throw Error("Cant't find parent issue to calculate issue availability in sprint");
+                        return parentIssue
+                    },
+                    () => issueJson
+                );
 
-                // For subtasks use parent issue availability
-                if (issueJson.fields.issuetype.subtask) {
-                    issueToCheck = searchJson.issues.find(
-                        parentIssue => issueJson.fields.parent.key === parentIssue.key
-                    )
-                }
 
-                const periods = this.calculateIssueAvailabilityInSprint(issueToCheck, sprintName, sprintStartDate, sprintEndDate);
+                const periods = this.calculateIssueAvailabilityInSprint(issueToCheck, sprint.name, sprintStartDate, sprintEndDate);
                 console.log(`periods  : ${JSON.stringify(periods)}`);
 
                 const sprintEstimate = this.calculateSprintEstimate(issueJson, periods);
@@ -70,7 +171,7 @@ export class JiraIssueSource implements IssueSource {
                 return {
                     key: issueJson.key,
                     parent: issueJson.fields.parent ? issueJson.fields.parent.key : null,
-                    children: null,
+                    children: [],
                     url: `${this.jiraURL}/browse/${issueJson.key}`,
                     priorityIconUrl: issueJson.fields.priority.iconUrl,
                     issuetypeIconUrl: issueJson.fields.issuetype.iconUrl,
@@ -103,8 +204,8 @@ export class JiraIssueSource implements IssueSource {
         )
 
         return {
-            board: { id: boardId, name: boardName },
-            sprint: { id: sprintId, name: sprintName },
+            board: board,
+            sprint: sprint,
             startDate: sprintStartDate,
             endDate: sprintEndDate,
             issues: issuesWithChildren,
@@ -113,109 +214,11 @@ export class JiraIssueSource implements IssueSource {
 
     }
 
-
-    public readonly fetchLatestSprint = async (): Promise<Sprint> => {
-        console.log("Getting sprint data from JIRA...");
-
-        const boardJson = await this.fetchRHTeamBoard();
-        const boardId = boardJson.id;
-        const boardName = boardJson.name;
-
-        const sprintJson = await this.fetchLatestSprintFromBoard(boardId);
-        const sprintId = sprintJson.id;
-        const sprintName = sprintJson.name;
-
-        const [searchJson, reportJson] = await Promise.all([
-            this.fetchIssuesFromSprint(sprintName),
-            this.fetchSprintReport(boardId, sprintId)
-        ]);
-
-        const sprintStartDate = new Date(reportJson.sprint.startDate.toString());
-        const sprintEndDate = new Date(reportJson.sprint.endDate.toString());
-
-        const worklogJsons = await Promise.all(
-            searchJson.issues.map(issueJson => this.fetchIssueWorklog(issueJson.key))
-        );
-
-        const issues = searchJson.issues.zip(worklogJsons).map(
-            ([issueJson, worklogJson]): Issue => {
-
-                console.log(`-- ${issueJson.key} ----------------------------------------------------------`);
-
-                let issueToCheck = issueJson;
-
-                // For subtasks use parent issue availability
-                if (issueJson.fields.issuetype.subtask) {
-                    issueToCheck = searchJson.issues.find(
-                        parentIssue => issueJson.fields.parent.key === parentIssue.key
-                    )
-                }
-
-                const periods = this.calculateIssueAvailabilityInSprint(issueToCheck, sprintName, sprintStartDate, sprintEndDate);
-                console.log(`periods  : ${JSON.stringify(periods)}`);
-
-                const sprintEstimate = this.calculateSprintEstimate(issueJson, periods);
-                console.log(`sprintEstimate  : ${sprintEstimate}`);
-
-                const worklogs = this.calculateWorkLogsInSprint(worklogJson, periods);
-
-                const sprintTimeSpent = worklogs.reduce((sum, worklog) => sum + worklog.timeSpent, 0);
-                console.log(`sprintTimeSpent  : ${sprintTimeSpent}`);
-
-                const sprintWorkRatio =
-                    (sprintTimeSpent == 0 || sprintEstimate == 0) ? 0 : Math.floor((sprintTimeSpent / sprintEstimate) * 100);
-
-                return {
-                    key: issueJson.key,
-                    parent: issueJson.fields.parent ? issueJson.fields.parent.key : null,
-                    children: null,
-                    url: `${this.jiraURL}/browse/${issueJson.key}`,
-                    priorityIconUrl: issueJson.fields.priority.iconUrl,
-                    issuetypeIconUrl: issueJson.fields.issuetype.iconUrl,
-                    status: issueJson.fields.status.name,
-                    assignee: issueJson.fields.assignee.displayName,
-                    assigneeId: issueJson.fields.assignee.name,
-                    summary: issueJson.fields.summary,
-                    originalEstimate: numberOr(issueJson.fields.timetracking.originalEstimateSeconds, 0),
-                    timeSpent: numberOr(issueJson.fields.timetracking.timeSpentSeconds, 0),
-                    remainingEstimate: numberOr(issueJson.fields.timetracking.remainingEstimateSeconds, 0),
-                    sprintEstimate: sprintEstimate,
-                    sprintTimeSpent: sprintTimeSpent,
-                    sprintWorkRatio: sprintWorkRatio,
-                    periods: periods,
-                    worklogs: worklogs
-                }
-            }
-        );
-
-        const users = this.calculateUsersInfo(issues);
-
-
-        const issuesWithChildren = issues.filter(
-            issue => issue.parent == null
-        ).map(
-            issue => {
-                const children = issues.filter(child => issue.key === child.parent )
-                return { ...issue, children: children}
-            }
-        )
-
-        return {
-            board: { id: boardId, name: boardName },
-            sprint: { id: sprintId, name: sprintName },
-            startDate: sprintStartDate,
-            endDate: sprintEndDate,
-            issues: issuesWithChildren,
-            users: users
-        }
-
-    }
-
-    public readonly fetchBoards = async () : Promise<Array<BoardId>> => {
+    public readonly fetchBoards = async () : Promise<Array<Board>> => {
         console.log("Gettting boards from JIRA...");
         // Get all boards
         const boardsResponse = await this.fetchFromJira(`/rest/greenhopper/1.0/rapidview`);
-        const boardsJson = await boardsResponse.json();
+        const boardsJson: ViewsJson = await boardsResponse.json();
         console.log("Received boards from JIRA.");
         const boards = boardsJson.views.map(
             viewJson => ({
@@ -226,16 +229,15 @@ export class JiraIssueSource implements IssueSource {
         return boards;
     }
 
-    public readonly fetchSprintsFromBoard = async (boardId : string) : Promise<Array<SprintId>> => {
-        console.log("Gettting sprints from JIRA...");
-        // Get all sprints for board
+    public readonly fetchSprintsFromBoard = async (boardId : number) : Promise<Array<Sprint>> => {
+        console.log(`Getting sprints of board ${boardId} from JIRA...`);
         const sprintsResponse = await this.fetchFromJira(`/rest/greenhopper/1.0/sprintquery/${boardId}`);
-        const sprintsJson = await sprintsResponse.json();
+        const sprintsJson: SprintsJson = await sprintsResponse.json();
         console.log("Received sprints from JIRA.");
         const sprints = sprintsJson.sprints.map(
-            sprint => ({
-                id: sprint.id,
-                name: sprint.name
+            sprintJson => ({
+                id: sprintJson.id,
+                name: sprintJson.name
             })
         );
         return sprints.reverse();
@@ -246,46 +248,7 @@ export class JiraIssueSource implements IssueSource {
         return await fetch(`${this.jiraURL}${path}`, this.init);
     }
 
-    private readonly fetchBoard = async (boardId: number) => {
-        console.log(`Fetching board ${boardId} from JIRA...`);
-        const boardsResponse = await this.fetchFromJira(`/rest/greenhopper/1.0/rapidview`);
-        const boardsJson = await boardsResponse.json();
-        console.log("Received boards from JIRA.");
-        const view = boardsJson.views.find(view => view.id === boardId);
-        return { id: view.id, name: view.name };
-    }
-
-    private readonly fetchRHTeamBoard = async () => {
-        console.log("Gettting boards from JIRA...");
-        // Get all boards
-        const boardsResponse = await this.fetchFromJira(`/rest/greenhopper/1.0/rapidview`);
-        const boardsJson = await boardsResponse.json();
-        console.log("Received boards from JIRA.");
-        const view = boardsJson.views.find(view => view.name === "MVAP - Team RafalH");
-        return {id: view.id, name: view.name};
-    }
-
-    private readonly fetchSprintFromBoard = async (boardId: number, sprintId: number) => {
-        console.log(`Fetching sprint ${sprintId} of board ${boardId} from JIRA...`);
-        // Get all sprints for board
-        const sprintsResponse = await this.fetchFromJira(`/rest/greenhopper/1.0/sprintquery/${boardId}`);
-        const sprintsJson = await sprintsResponse.json();
-        console.log("Received sprints from JIRA.");
-        const sprintJson = sprintsJson.sprints.find(sprint => sprint.id === sprintId);
-        return sprintJson;
-    }
-
-    private readonly fetchLatestSprintFromBoard = async (boardId) => {
-        console.log("Gettting sprints from JIRA...");
-        // Get all sprints for board
-        const sprintsResponse = await this.fetchFromJira(`/rest/greenhopper/1.0/sprintquery/${boardId}`);
-        const sprintsJson = await sprintsResponse.json();
-        console.log("Received sprints from JIRA.");
-        const sprintJson = sprintsJson.sprints[sprintsJson.sprints.length - 1];
-        return sprintJson;
-    }
-
-    private readonly fetchIssuesFromSprint = async (sprintName) => {
+    private readonly fetchIssuesFromSprint = async (sprintName: string): Promise<SearchJson> => {
         console.log("Getting sprint issues from JIRA...");
         const query = encodeURIComponent(`sprint="${sprintName}"`);
         const fields = "summary,timetracking,created,customfield_11869,status,priority,issuetype,parent,assignee";
@@ -293,31 +256,29 @@ export class JiraIssueSource implements IssueSource {
         const maxResults = 99999;
         const searchResponse =
             await this.fetchFromJira(`/rest/api/2/search?jql=${query}&fields=${fields}&expand=${expand}&maxResults=${maxResults}`);
-        const searchJson = await searchResponse.json();
+        const searchJson: SearchJson = await searchResponse.json();
         console.log("Received sprint issues from JIRA.");
         return searchJson;
     }
 
-    private readonly fetchSprintReport = async (boardId: number, sprintId: number) => {
+    private readonly fetchSprintReport = async (boardId: number, sprintId: number): Promise<SprintReportJson> => {
         console.log("Getting sprint report from JIRA...");
         const reportResponse = await
             this.fetchFromJira(`/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=${boardId}&sprintId=${sprintId}`);
-        const reportJson = await reportResponse.json();
-        console.log(JSON.stringify(reportJson));
-        console.log("Received sprint report from JIRA.");
+        const reportJson: SprintReportJson = await reportResponse.json();
         return reportJson;
     }
 
-    private readonly fetchIssueWorklog = async (issueKey) => {
+    private readonly fetchIssueWorklog = async (issueKey: string): Promise<WorklogsJson> => {
         console.log(`Getting worklog from JIRA for issue ${issueKey} ...`);
         const worklogResponse = await this.fetchFromJira(`/rest/api/2/issue/${issueKey}/worklog`);
-        const worklogJson = await worklogResponse.json();
+        const worklogJson: WorklogsJson = await worklogResponse.json();
         console.log(`Received worklog from JIRA for issue ${issueKey}.`);
         return worklogJson;
     }
 
 
-    private readonly clipWithSprintPeriod = (periods, sprintStart, sprintEnd) => {
+    private readonly clipWithSprintPeriod = (periods: Array<Period>, sprintStart: Date, sprintEnd: Date) => {
         return periods.filter(
             // Get rid of periods completely outside of the sprint.
             period => {
@@ -336,19 +297,20 @@ export class JiraIssueSource implements IssueSource {
         )
     };
 
-    private readonly  calculateSprintMembershipPeriods = (issue, sprintName, issueEnded) => {
+    private readonly  calculateSprintMembershipPeriods =
+        (issue: IssueJson, sprintName: string, issueEnded: Date): Array<Period> => {
 
-        const inSprint = (sprintName) => {
+        const inSprint = (sprintName: string) => {
             if (issue.fields.customfield_11869) {
                 return issue.fields.customfield_11869.reduce((res, item) => item.includes(sprintName), false)
-            }	else {
+            } else {
                 return false;
             }
         }
 
         const points = issue.changelog.histories.map(
             history => {
-                const item = history.items.filter(item => item.field === "Sprint")[0];
+                const item = history.items.filter(item => item.field === "SprintDetails")[0];
                 if (item) {
                     const point = {
                         createdDate: new Date(history.created),
@@ -359,15 +321,15 @@ export class JiraIssueSource implements IssueSource {
 
                     // Avoid Sprint field modifications that do not change membership in searched sprint.
                     if (point.fromCurrentSprint && point.toCurrentSprint)
-                        return null;
+                        return undefined;
 
                     return point;
                 } else {
-                    return null;
+                    return undefined;
                 }
             }
         ).filter(
-            point => point != null
+            point => point != undefined
         )
 
         if ((points.length == 0) && inSprint(sprintName)) {
@@ -376,24 +338,28 @@ export class JiraIssueSource implements IssueSource {
 
         const periods = points.map(
             (currentPoint, index, points) => {
-                const previousPoint = points[index - 1];
+                if (!currentPoint) return undefined;
 
                 if ((index == 0) && currentPoint.fromCurrentSprint) {
                     return { start: new Date(issue.fields.created), end: currentPoint.createdDate };
                 } else if ((index == (points.length-1)) && currentPoint.toCurrentSprint) {
                     return { start: currentPoint.createdDate, end: issueEnded };
-                } else if ((index > 0) && previousPoint.toCurrentSprint && currentPoint.fromCurrentSprint) {
-                    return { start: previousPoint.createdDate, end: currentPoint.createdDate };
+                } else if ((index > 0)) {
+                    const previousPoint = points[index - 1];
+                    if (!previousPoint) return undefined;
+                    if (previousPoint.toCurrentSprint && currentPoint.fromCurrentSprint)
+                        return { start: previousPoint.createdDate, end: currentPoint.createdDate };
+                    else
+                        return undefined;
                 } else {
-                    return null;
+                    return undefined;
                 }
             }
         ).filter(
-            period => period != null
+            (period): period is Period => period != undefined
         )
 
         return periods;
-
     };
 
     // Calculate sprint estimate.
@@ -401,25 +367,32 @@ export class JiraIssueSource implements IssueSource {
     // - original estimate
     // - remaining estimate (if different than original estimate) and there are no remaining estimate changes in changelog.
     // - last remaining estimate change in changelog before issue is part of sprint.
-    private readonly calculateSprintEstimate = (issue, periods) => {
+    private readonly calculateSprintEstimate = (issue: IssueJson, periods: Array<Period>) => {
         const issueInSprintStartDate = periods[0].start;
 
-        const remainingEstimateChanges = issue.changelog.histories.map(
+        type Changes = { date: Date, estimate: number };
+
+        const remainingEstimateChanges: Array<Changes> = issue.changelog.histories.map(
             history => {
                 return {
                     date: new Date(history.created),
                     estimate: history.items.reduce(
-                        (estimate, item) => {
-                            if (item.field === "timeestimate")
-                                return Number.parseInt(item.to);
-                            else
+                        (estimate : undefined|number, item) => {
+                            if (item.field === "timeestimate") {
+                                if (item.to)
+                                    return Number.parseInt(item.to);
+                                else
+                                    return undefined;
+                            } else {
                                 return estimate;
-                        }, null
+                            }
+                        },
+                        undefined
                     )
                 }
             }
         ).filter(
-            change => change.estimate !== null
+            (change): change is Changes => change.estimate !== undefined
         );
         console.log(`Remaining estimate changes : ${JSON.stringify(remainingEstimateChanges)}`);
 
@@ -445,25 +418,17 @@ export class JiraIssueSource implements IssueSource {
     }
 
     // Calculate issue availability periods in sprint.
-    private readonly  calculateIssueAvailabilityInSprint = (issue, sprintName, sprintStartDate, sprintEndDate) => {
-
+    private readonly  calculateIssueAvailabilityInSprint = (
+        issue: IssueJson, sprintName: string, sprintStartDate: Date, sprintEndDate: Date): Array<Period> => {
         console.log(`Checking periods for ${issue.key}`);
-        let periods = this.calculateSprintMembershipPeriods(issue, sprintName, sprintEndDate);
-        periods.forEach(period => {
-            console.log(" Period  : " + JSON.stringify(period));
-        });
-
-        periods = this.clipWithSprintPeriod(periods, sprintStartDate, sprintEndDate);
-        periods.forEach(period => {
-            console.log(" Clipped : " + JSON.stringify(period));
-        });
-
-        return periods
+        const periods = this.calculateSprintMembershipPeriods(issue, sprintName, sprintEndDate);
+        const clippedPeriods = this.clipWithSprintPeriod(periods, sprintStartDate, sprintEndDate);
+        return clippedPeriods;
     }
 
-    private readonly calculateWorkLogsInSprint = (worklogJson, periods): Array<WorkLog> => {
+    private readonly calculateWorkLogsInSprint = (worklogsJson: WorklogsJson, periods: Array<Period>): Array<WorkLog> => {
 
-        const isWorkLogPartOfSprint = (worklogJson, periods) => {
+        const isWorkLogPartOfSprint = (worklogJson: WorklogJson, periods: Array<Period>) => {
             const startedDate = new Date(worklogJson.started);
             return periods.reduce(
                 (res, period) => {
@@ -471,12 +436,13 @@ export class JiraIssueSource implements IssueSource {
                     if ((startedDate.getTime() > period.start.getTime())
                         && (startedDate.getTime() < period.end.getTime()))
                         return true;
+                    return false;
                 },
                 false
             );
         };
 
-        return worklogJson.worklogs.filter(
+        return worklogsJson.worklogs.filter(
             worklogJson => isWorkLogPartOfSprint(worklogJson, periods)
         ).map(
             (worklogJson) : WorkLog => ({
@@ -494,8 +460,9 @@ export class JiraIssueSource implements IssueSource {
         const usersMap = issues.flatMap(
             issue => issue.worklogs
         ).reduce(
-            (summary: Map<string, number>, worklog) => {
-                const timeSpent = summary.has(worklog.author) ? summary.get(worklog.author) + worklog.timeSpent : 0;
+            (summary, worklog) => {
+                const worklogForUser = summary.get(worklog.author);
+                const timeSpent = worklogForUser ? worklogForUser + worklog.timeSpent : 0;
                 return new Map([...summary, [worklog.author, timeSpent]]);
             },
             new Map<string, number>()

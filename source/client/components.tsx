@@ -1,7 +1,12 @@
-import {readableDuration} from "../common/utils";
-import {h} from "hyperapp";
+import {h, View} from "hyperapp";
 
-export const view = (state, actions) => (
+import {readableDuration} from "../common/utils";
+import {State} from "./state";
+import {Actions} from "./actions";
+import {Issue, User} from "../common/model";
+
+export const view: View<State, Actions> = (state: State, actions: Actions) => (
+
 	<div className="container-fluid" oncreate={actions.init}>
 
 		<Selector title="Boards" items={state.boards} onchange={(itemId) => () => actions.changeBoard(itemId)} />
@@ -51,7 +56,9 @@ export const view = (state, actions) => (
 	</div>
 )
 
-const Selector = ({title, items, onchange}) => (
+type SelectorItem = { id: number, name: string }
+
+const Selector = ({title, items, onchange} : {title: string, items: Array<SelectorItem>, onchange:(item: number) => any}) => (
 	<div className="dropdown is-hoverable">
 		<div className="dropdown-trigger">
 			<button className="button" aria-haspopup="true" aria-controls="dropdown-menu">
@@ -77,7 +84,7 @@ const Selector = ({title, items, onchange}) => (
 )
 
 
-const IssuesTable = ({issues}) => (
+const IssuesTable = ({issues} : {issues: Array<Issue>}) => (
 	<table className="table is-narrow is-fullwidth">
 		<thead>
 		<tr>
@@ -110,7 +117,7 @@ const IssuesTable = ({issues}) => (
 
 
 
-const IssueRow = ({ issue }) => (
+const IssueRow = ({ issue } : { issue: Issue }) => (
 
 	<tr key={issue.key}
 			style={{
@@ -143,11 +150,11 @@ const IssueRow = ({ issue }) => (
 )
 
 
-const readableTime = (date) => {
+const readableTime = (date: Date) => {
 	return date.toLocaleString('pl', { hour12: false });
 };
 
-const calculateStatusClass = (status) => {
+const calculateStatusClass = (status: string) => {
 	if (status === "Implemented" || status === "Resolved") {
 		return "finished";
 	} else if (status === "In Progress") {
@@ -156,11 +163,11 @@ const calculateStatusClass = (status) => {
 	return '';
 };
 
-const countNotStarted = (issues) => {
+const countNotStarted = (issues: Array<Issue>) => {
 	return issues.filter(issue => partof(issue.status, "Open") && (!issue.children || issue.children.length === 0)).length;
 };
 
-const partof = (toCheck, ...elements) => {
+const partof = (toCheck: string, ...elements : Array<string>) => {
 	if (elements.find(element => element === toCheck))
 		return true;
 	else
@@ -168,7 +175,7 @@ const partof = (toCheck, ...elements) => {
 };
 
 
-const UsersTable = ({users}) => {
+const UsersTable = ({users} : {users: Array<User>}) => {
 
 	return (
 		<table className="table is-striped is-narrow is-fullwidth">

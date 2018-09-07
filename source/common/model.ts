@@ -1,54 +1,54 @@
 export interface ClientConfig {
 }
 
-export interface SprintId {
-    id: number;
-    name: string;
-}
-
-export interface BoardId {
-    id: number;
-    name: string;
-}
-
 export interface Sprint {
-    board: BoardId;
-    sprint: SprintId;
-    startDate: Date;
-    endDate: Date;
-    issues: Array<Issue>;
-    users: Array<User>;
+    readonly id: number;
+    readonly name: string;
+}
+
+export interface Board {
+    readonly id: number;
+    readonly name: string;
+}
+
+export interface SprintDetails {
+    readonly board: Board;
+    readonly sprint: Sprint;
+    readonly startDate: Date;
+    readonly endDate: Date;
+    readonly issues: Array<Issue>;
+    readonly users: Array<User>;
 }
 
 export interface Issue {
-    key: string;
-    parent: string | null;
-    children: Array<Issue> | null;
-    url: string,
-    priorityIconUrl: string;
-    issuetypeIconUrl: string;
-    assignee: string;
-    assigneeId: string;
-    summary: string;
-    status: string;
-    originalEstimate: number;
-    timeSpent: number;
-    remainingEstimate: number;
-    sprintEstimate: number;
-    sprintTimeSpent: number;
-    sprintWorkRatio: number;
-    periods: Array<any>;
-    worklogs: Array<WorkLog>;
+    readonly key: string;
+    readonly parent: string | null;
+    readonly children: Array<Issue>;
+    readonly url: string;
+    readonly priorityIconUrl: string;
+    readonly issuetypeIconUrl: string;
+    readonly assignee: string;
+    readonly assigneeId: string;
+    readonly summary: string;
+    readonly status: string;
+    readonly originalEstimate: number;
+    readonly timeSpent: number;
+    readonly remainingEstimate: number;
+    readonly sprintEstimate: number;
+    readonly sprintTimeSpent: number;
+    readonly sprintWorkRatio: number;
+    readonly periods: Array<any>;
+    readonly worklogs: Array<WorkLog>;
 }
 
 export interface User {
-    name: string;
-    timeSpent: number;
+    readonly name: string;
+    readonly timeSpent: number;
 }
 
 export interface WorkLog {
-    author: string;
-    date: Date;
-    timeSpent: number;
+    readonly author: string;
+    readonly date: Date;
+    readonly timeSpent: number;
 }
 
