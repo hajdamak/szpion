@@ -1,6 +1,6 @@
 {
   "name": "szpion",
-  "version": "0.2",
+  "version": "0.0.2",
   "description": "Daily Sprint Invigilation",
   "author": "Rafał Hajdacki",
   "license": "MIT",
@@ -11,7 +11,7 @@
     "url": "https://github.com/rhajdacki/szpion"
   },
   "scripts": {
-    "dev": "yarn dev-compile & yarn dev-server & yarn dev-client",
+    "dev": "npm run dev-server & npm run dev-client",
     "dev-client": "parcel serve --target browser --out-dir ./build/client ./source/client/index.html",
     "dev-server": "nodemon --inspect -r ts-node/register source/server/main.ts",
     "dev-compile": "tsc --watch",
