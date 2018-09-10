@@ -2,7 +2,7 @@ import os from 'os';
 import fs from 'fs';
 import process from 'process';
 
-import { ClientConfig } from "../common/model";
+import {ClientConfig} from "../common/model";
 
 export interface Config {
     jiraURL: string;

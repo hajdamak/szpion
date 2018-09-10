@@ -1,4 +1,17 @@
 
+export const getNumberFromLocalStorage = (name: string): number|undefined => {
+    const value = window.localStorage.getItem(name);
+    if (value)
+        return parseInt(name);
+    else
+        return undefined;
+}
+
+export const readableTime = (date: string): string => {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleString('pl', {hour12: false});
+};
+
 export const readableDuration = (seconds: number): string => {
 	if (seconds == 0) return "0m";
 
@@ -23,6 +36,20 @@ export type Lazy<T> = () => T;
 
 export const ifElse = <T, F>(expr: boolean, t: Lazy<T>, f: Lazy<F>) =>
     expr ? t() : f();
+
+export const orElse = <T>(optional : T|undefined, elseValue: T) => {
+    if (optional)
+        return optional;
+    else
+        return elseValue;
+}
+
+export const orElseNull = <T>(optional : T|null, elseValue: T) => {
+    if (optional)
+        return optional;
+    else
+        return elseValue;
+}
 
 
 Array.prototype.zip = function(array: any): any {

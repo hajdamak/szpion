@@ -16,16 +16,17 @@
       "dom"
     ],
     "downlevelIteration": true,
-
     "strict": true,
-    "noImplicitReturns": true,
+    "noImplicitReturns": true,
     "noUnusedLocals": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-
-    "typeRoots" : ["./source/typings"]
+    "typeRoots": [
+      "./source/typings",
+      "node_modules/@types"
+    ]
   },
   "include": [
-      "source"
+    "source"
   ]
 }

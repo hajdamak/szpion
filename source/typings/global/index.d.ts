@@ -1,5 +1,5 @@
 
-declare module 'node-fetch';
+//declare module 'node-fetch';
 
 interface Array<T> {
     zip<D>(array: Array<D>): Array<[T, D]>;

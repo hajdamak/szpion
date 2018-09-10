@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 import {SprintDetails, Issue, WorkLog, User, Board, Sprint} from '../common/model';
-import {ifElse, numberOr} from '../common/utils';
+import {ifElse, numberOr, orElse} from '../common/utils';
 
 type ViewsJson = {
     views: [{
@@ -35,7 +35,7 @@ type WorklogJson = {
 }
 
 type WorklogsJson = {
-    worklogs: [ WorklogJson ]
+    worklogs: [WorklogJson]
 }
 
 type SearchJson = {
@@ -83,7 +83,6 @@ type IssueJson = {
         }]
     }
 }
-
 
 
 interface Period {
@@ -203,16 +202,16 @@ export class Jira {
             issue => issue.parent == null
         ).map(
             issue => {
-                const children = issues.filter(child => issue.key === child.parent )
-                return { ...issue, children: children}
+                const children = issues.filter(child => issue.key === child.parent)
+                return {...issue, children: children}
             }
         )
 
         return {
             board: board,
             sprint: sprint,
-            startDate: sprintStartDate,
-            endDate: sprintEndDate,
+            startDate: sprintStartDate.toJSON(),
+            endDate: sprintEndDate.toJSON(),
             estimate: estimate,
             timeSpent: timeSpent,
             remainingEstimate: remainingEstimate,
@@ -224,11 +223,10 @@ export class Jira {
 
     }
 
-    public readonly fetchBoards = async () : Promise<Array<Board>> => {
+    public readonly fetchBoards = async (): Promise<Array<Board>> => {
         console.log("Gettting boards from JIRA...");
         // Get all boards
-        const boardsResponse = await this.fetchFromJira(`/rest/greenhopper/1.0/rapidview`);
-        const boardsJson: ViewsJson = await boardsResponse.json();
+        const boardsJson = await this.fetchFromJira<ViewsJson>(`/rest/greenhopper/1.0/rapidview`);
         console.log("Received boards from JIRA.");
         const boards = boardsJson.views.map(
             viewJson => ({
@@ -239,10 +237,9 @@ export class Jira {
         return boards;
     }
 
-    public readonly fetchSprintsFromBoard = async (boardId : number) : Promise<Array<Sprint>> => {
+    public readonly fetchSprintsFromBoard = async (boardId: number): Promise<Array<Sprint>> => {
         console.log(`Getting sprints of board ${boardId} from JIRA...`);
-        const sprintsResponse = await this.fetchFromJira(`/rest/greenhopper/1.0/sprintquery/${boardId}`);
-        const sprintsJson: SprintsJson = await sprintsResponse.json();
+        const sprintsJson = await this.fetchFromJira<SprintsJson>(`/rest/greenhopper/1.0/sprintquery/${boardId}`);
         console.log("Received sprints from JIRA.");
         const sprints = sprintsJson.sprints.map(
             sprintJson => ({
@@ -251,12 +248,13 @@ export class Jira {
             })
         );
         return sprints.reverse();
-    }
+    };
 
-
-    private readonly fetchFromJira = async (path: string) => {
-        return await fetch(`${this.jiraURL}${path}`, this.init);
-    }
+    private readonly fetchFromJira = async <T>(path: string): Promise<T> => {
+        const response = await fetch(`${this.jiraURL}${path}`, this.init);
+        const json: T = await response.json();
+        return json;
+    };
 
     private readonly fetchIssuesFromSprint = async (sprintName: string): Promise<SearchJson> => {
         console.log("Getting sprint issues from JIRA...");
@@ -264,29 +262,25 @@ export class Jira {
         const fields = "summary,timetracking,created,customfield_11869,status,priority,issuetype,parent,assignee";
         const expand = "changelog";
         const maxResults = 99999;
-        const searchResponse =
-            await this.fetchFromJira(`/rest/api/2/search?jql=${query}&fields=${fields}&expand=${expand}&maxResults=${maxResults}`);
-        const searchJson: SearchJson = await searchResponse.json();
+        const searchJson =
+            await this.fetchFromJira<SearchJson>(`/rest/api/2/search?jql=${query}&fields=${fields}&expand=${expand}&maxResults=${maxResults}`);
         console.log("Received sprint issues from JIRA.");
         return searchJson;
-    }
+    };
 
     private readonly fetchSprintReport = async (boardId: number, sprintId: number): Promise<SprintReportJson> => {
         console.log("Getting sprint report from JIRA...");
-        const reportResponse = await
-            this.fetchFromJira(`/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=${boardId}&sprintId=${sprintId}`);
-        const reportJson: SprintReportJson = await reportResponse.json();
+        const reportJson = await
+            this.fetchFromJira<SprintReportJson>(`/rest/greenhopper/1.0/rapid/charts/sprintreport?rapidViewId=${boardId}&sprintId=${sprintId}`);
         return reportJson;
-    }
+    };
 
     private readonly fetchIssueWorklog = async (issueKey: string): Promise<WorklogsJson> => {
         console.log(`Getting worklog from JIRA for issue ${issueKey} ...`);
-        const worklogResponse = await this.fetchFromJira(`/rest/api/2/issue/${issueKey}/worklog`);
-        const worklogJson: WorklogsJson = await worklogResponse.json();
+        const worklogJson = await this.fetchFromJira<WorklogsJson>(`/rest/api/2/issue/${issueKey}/worklog`);
         console.log(`Received worklog from JIRA for issue ${issueKey}.`);
         return worklogJson;
-    }
-
+    };
 
     private readonly clipWithSprintPeriod = (periods: Array<Period>, sprintStart: Date, sprintEnd: Date) => {
         return periods.filter(
@@ -300,79 +294,79 @@ export class Jira {
         ).map(
             // Fix periods partly in the sprint.
             period => {
-                const start =  (period.start.getTime() < sprintStart.getTime()) ? sprintStart : period.start;
-                const end =  (period.end.getTime() > sprintEnd.getTime()) ? sprintEnd : period.end;
-                return { start: start, end: end };
+                const start = (period.start.getTime() < sprintStart.getTime()) ? sprintStart : period.start;
+                const end = (period.end.getTime() > sprintEnd.getTime()) ? sprintEnd : period.end;
+                return {start: start, end: end};
             }
         )
     };
 
-    private readonly  calculateSprintMembershipPeriods =
+    private readonly calculateSprintMembershipPeriods =
         (issue: IssueJson, sprintName: string, issueEnded: Date): Array<Period> => {
 
-        const inSprint = (sprintName: string) => {
-            if (issue.fields.customfield_11869) {
-                return issue.fields.customfield_11869.reduce((res, item) => item.includes(sprintName), false)
-            } else {
-                return false;
-            }
-        }
+            const inSprint = (sprintName: string) => {
+                if (issue.fields.customfield_11869) {
+                    return issue.fields.customfield_11869.reduce((res, item) => item.includes(sprintName), false)
+                } else {
+                    return false;
+                }
+            };
 
-        console.log(` histories: ${JSON.stringify(issue.changelog.histories)}`)
+            console.log(` histories: ${JSON.stringify(issue.changelog.histories)}`)
 
-        const points = issue.changelog.histories.map(
-            history => {
-                const item = history.items.filter(item => item.field === "SprintDetails")[0];
-                if (item) {
-                    const point = {
-                        createdDate: new Date(history.created),
-                        fromCurrentSprint: item.fromString ? item.fromString.includes(sprintName) : false,
-                        toCurrentSprint: item.toString ? item.toString.includes(sprintName) : false,
-                        initial: false
+            const points = issue.changelog.histories.map(
+                history => {
+                    const item = history.items.filter(item => item.field === "SprintDetails")[0];
+                    if (item) {
+                        const point = {
+                            createdDate: new Date(history.created),
+                            fromCurrentSprint: item.fromString ? item.fromString.includes(sprintName) : false,
+                            toCurrentSprint: item.toString ? item.toString.includes(sprintName) : false,
+                            initial: false
+                        };
+
+                        // Avoid Sprint field modifications that do not change membership in searched sprint.
+                        if (point.fromCurrentSprint && point.toCurrentSprint)
+                            return undefined;
+
+                        return point;
+                    } else {
+                        return undefined;
                     }
-
-                    // Avoid Sprint field modifications that do not change membership in searched sprint.
-                    if (point.fromCurrentSprint && point.toCurrentSprint)
-                        return undefined;
-
-                    return point;
-                } else {
-                    return undefined;
                 }
+            ).filter(
+                point => point != undefined
+            )
+
+            if ((points.length == 0) && inSprint(sprintName)) {
+                return [{start: new Date(issue.fields.created), end: issueEnded}]
             }
-        ).filter(
-            point => point != undefined
-        )
 
-        if ((points.length == 0) && inSprint(sprintName)) {
-            return [{ start: new Date(issue.fields.created), end: issueEnded }]
-        }
+            const periods = points.map(
+                (currentPoint, index, points) => {
+                    if (!currentPoint) return undefined;
 
-        const periods = points.map(
-            (currentPoint, index, points) => {
-                if (!currentPoint) return undefined;
-
-                if ((index == 0) && currentPoint.fromCurrentSprint) {
-                    return { start: new Date(issue.fields.created), end: currentPoint.createdDate };
-                } else if ((index == (points.length-1)) && currentPoint.toCurrentSprint) {
-                    return { start: currentPoint.createdDate, end: issueEnded };
-                } else if ((index > 0)) {
-                    const previousPoint = points[index - 1];
-                    if (!previousPoint) return undefined;
-                    if (previousPoint.toCurrentSprint && currentPoint.fromCurrentSprint)
-                        return { start: previousPoint.createdDate, end: currentPoint.createdDate };
-                    else
+                    if ((index == 0) && currentPoint.fromCurrentSprint) {
+                        return {start: new Date(issue.fields.created), end: currentPoint.createdDate};
+                    } else if ((index == (points.length - 1)) && currentPoint.toCurrentSprint) {
+                        return {start: currentPoint.createdDate, end: issueEnded};
+                    } else if ((index > 0)) {
+                        const previousPoint = points[index - 1];
+                        if (!previousPoint) return undefined;
+                        if (previousPoint.toCurrentSprint && currentPoint.fromCurrentSprint)
+                            return {start: previousPoint.createdDate, end: currentPoint.createdDate};
+                        else
+                            return undefined;
+                    } else {
                         return undefined;
-                } else {
-                    return undefined;
+                    }
                 }
-            }
-        ).filter(
-            (period): period is Period => period != undefined
-        )
+            ).filter(
+                (period): period is Period => period != undefined
+            );
 
-        return periods;
-    };
+            return periods;
+        };
 
     // Calculate sprint estimate.
     // Value is taken from:
@@ -391,7 +385,7 @@ export class Jira {
                 return {
                     date: new Date(history.created),
                     estimate: history.items.reduce(
-                        (estimate : undefined|number, item) => {
+                        (estimate: undefined | number, item) => {
                             if (item.field === "timeestimate") {
                                 if (item.to)
                                     return Number.parseInt(item.to);
@@ -429,17 +423,17 @@ export class Jira {
         );
 
         return sprintEstimate;
-    }
+    };
 
     // Calculate issue availability periods in sprint.
-    private readonly  calculateIssueAvailabilityInSprint = (
+    private readonly calculateIssueAvailabilityInSprint = (
         issue: IssueJson, sprintName: string, sprintStartDate: Date, sprintEndDate: Date): Array<Period> => {
         console.log(`Checking periods for ${issue.key}`);
         const periods = this.calculateSprintMembershipPeriods(issue, sprintName, sprintEndDate);
         console.log(` original periods : ${JSON.stringify(periods)}`);
         const clippedPeriods = this.clipWithSprintPeriod(periods, sprintStartDate, sprintEndDate);
         return clippedPeriods;
-    }
+    };
 
     private readonly calculateWorkLogsInSprint = (worklogsJson: WorklogsJson, periods: Array<Period>): Array<WorkLog> => {
 
@@ -460,31 +454,33 @@ export class Jira {
         return worklogsJson.worklogs.filter(
             worklogJson => isWorkLogPartOfSprint(worklogJson, periods)
         ).map(
-            (worklogJson) : WorkLog => ({
+            (worklogJson): WorkLog => ({
                 author: worklogJson.author.displayName,
                 date: new Date(worklogJson.started),
                 timeSpent: worklogJson.timeSpentSeconds
             })
         );
 
-    }
+    };
 
-    private readonly calculateUsersInfo = (issues: Array<Issue>) : Array<User> => {
+    private readonly calculateUsersInfo = (issues: Array<Issue>): Array<User> => {
 
         // Calculate work spent for each user
         const usersMap = issues.flatMap(
             issue => issue.worklogs
         ).reduce(
             (summary, worklog) => {
-                const worklogForUser = summary.get(worklog.author);
-                const timeSpent = worklogForUser ? worklogForUser + worklog.timeSpent : 0;
-                return new Map([...summary, [worklog.author, timeSpent]]);
+                const userTimeSpent = orElse(summary.get(worklog.author), 0);
+                return new Map([
+                    ...summary,
+                    [worklog.author, userTimeSpent + worklog.timeSpent]
+                ]);
             },
             new Map<string, number>()
         );
 
         const users = Array.from(usersMap).map(
-            ([key, value]) : User => {
+            ([key, value]): User => {
                 return {
                     name: key,
                     timeSpent: value
@@ -493,7 +489,7 @@ export class Jira {
         );
 
         return users;
-    }
+    };
 
 }
 

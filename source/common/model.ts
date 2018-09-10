@@ -14,8 +14,8 @@ export interface Board {
 export interface SprintDetails {
     readonly board: Board;
     readonly sprint: Sprint;
-    readonly startDate: Date;
-    readonly endDate: Date;
+    readonly startDate: string;
+    readonly endDate: string;
     readonly estimate: number,
     readonly timeSpent: number,
     readonly remainingEstimate: number,
