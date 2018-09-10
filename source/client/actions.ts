@@ -1,5 +1,5 @@
 import {ActionsType} from "hyperapp";
-import * as R from 'ramda';
+import {defaultTo} from 'ramda';
 
 import {Board, ClientConfig, SprintDetails, Sprint} from "../common/model";
 import {State} from "./state";
@@ -40,7 +40,7 @@ export class Actions implements ActionsType<State, Actions> {
     };
     updateSelectedBoard = (boardId: number|undefined) => (state: State) => {
         const saved = orElse(getNumberFromLocalStorage("selectBoardId"), state.boards[0].id);
-        const newBoardId = R.defaultTo(saved)(boardId);
+        const newBoardId = defaultTo(saved)(boardId);
         console.log(`Selected board updated to ${newBoardId}`);
         window.localStorage.setItem("selectedBoardId", newBoardId.toString());
         return { selectedBoardId: newBoardId };
