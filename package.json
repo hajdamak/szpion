@@ -24,7 +24,9 @@
     "@hyperapp/html": "^1.1.1",
     "@types/koa": "^2.0.46",
     "@types/koa-router": "^7.0.31",
+    "@types/node": "^10.9.4",
     "@types/node-fetch": "^2.1.2",
+    "@types/ramda": "github:types/npm-ramda#dist",
     "bulma": "0.7.1",
     "classcat": "^3.2.3",
     "hyperapp": "^1.2.9",
@@ -33,11 +35,11 @@
     "koa-router": "^7.4.0",
     "node-fetch": "^2.2.0",
     "node-sass": "^4.9.3",
+    "ramda": "^0.25.0",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
     "@types/jest": "^23.3.1",
-    "@types/node": "^10.9.4",
     "cross-env": "^5.1.6",
     "jest": "^23.5.0",
     "nodemon": "^1.18.3",
