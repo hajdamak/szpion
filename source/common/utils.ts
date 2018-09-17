@@ -2,7 +2,7 @@
 export const getNumberFromLocalStorage = (name: string): number|undefined => {
     const value = window.localStorage.getItem(name);
     if (value)
-        return parseInt(name);
+        return parseInt(value);
     else
         return undefined;
 }
@@ -37,11 +37,11 @@ export type Lazy<T> = () => T;
 export const ifElse = <T, F>(expr: boolean, t: Lazy<T>, f: Lazy<F>) =>
     expr ? t() : f();
 
-export const orElse = <T>(optional : T|undefined, elseValue: T) => {
+export const orElse = <T>(optional : T|undefined, elseF: Lazy<T>) => {
     if (optional)
         return optional;
     else
-        return elseValue;
+        return elseF();
 }
 
 export const orElseNull = <T>(optional : T|null, elseValue: T) => {

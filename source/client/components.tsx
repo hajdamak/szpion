@@ -79,13 +79,13 @@ type SelectorItem = { id: number, name: string }
 
 const Selector = ({items, selectedId, onchange}: { items: Array<SelectorItem>, selectedId: number | undefined, onchange: (item: number) => any }) => (
     <div class="select">
-        <select value={selectedId} onchange={(e: any) => onchange(e.target.value)}>
+        <select value={selectedId} onchange={(e: any) => onchange(parseInt(e.target.value))}>
             {items.map(item =>
                 <option value={item.id}>{item.name}</option>
             )}
         </select>
     </div>
-)
+);
 
 
 const IssuesTable = ({issues}: { issues: Array<Issue> }) => (

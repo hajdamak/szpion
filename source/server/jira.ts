@@ -15,14 +15,13 @@ type SprintsJson = {
     sprints: [{
         id: number,
         name: string
-
     }]
 };
 
 type SprintReportJson = {
     sprint: {
         startDate: string,
-        endDate: string,
+        endDate: string
     }
 }
 
@@ -470,7 +469,7 @@ export class Jira {
             issue => issue.worklogs
         ).reduce(
             (summary, worklog) => {
-                const userTimeSpent = orElse(summary.get(worklog.author), 0);
+                const userTimeSpent = orElse(summary.get(worklog.author), () => 0);
                 return new Map([
                     ...summary,
                     [worklog.author, userTimeSpent + worklog.timeSpent]

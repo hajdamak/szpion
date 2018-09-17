@@ -1,9 +1,7 @@
 import {ActionsType} from "hyperapp";
-import {defaultTo} from 'ramda';
-
 import {Board, ClientConfig, SprintDetails, Sprint} from "../common/model";
 import {State} from "./state";
-import {getNumberFromLocalStorage, orElse} from "../common/utils";
+import {getNumberFromLocalStorage} from "../common/utils";
 
 export class Actions implements ActionsType<State, Actions> {
 
@@ -22,8 +20,9 @@ export class Actions implements ActionsType<State, Actions> {
     };
     updateConfig = (config: ClientConfig) => (state: State) => {
         console.log("Config updated.");
-        return { config: config };
+        return {config: config};
     };
+
 
     fetchBoards = () => async (state: State, actions: Actions) => {
         console.log("Fetching boards...");
@@ -34,16 +33,24 @@ export class Actions implements ActionsType<State, Actions> {
     };
     updateBoards = (boards: Array<Board>) => (state: State) => {
         console.log("Boards updated.")
-        return {
-            boards: boards
-        };
+        return {boards: boards};
     };
-    updateSelectedBoard = (boardId: number|undefined) => (state: State) => {
-        const saved = orElse(getNumberFromLocalStorage("selectBoardId"), state.boards[0].id);
-        const newBoardId = defaultTo(saved)(boardId);
-        console.log(`Selected board updated to ${newBoardId}`);
-        window.localStorage.setItem("selectedBoardId", newBoardId.toString());
-        return { selectedBoardId: newBoardId };
+    updateSelectedBoard = (boardId: number | undefined) => (state: State) => {
+        const id = boardId ? boardId : getNumberFromLocalStorage("selectedBoardId");
+        const foundBoard = state.boards.find(board => board.id === id);
+        const board = foundBoard ? foundBoard : state.boards[0];
+        const targetId = board ? board.id : undefined;
+
+        console.log(`Selected board updated to ${targetId}`);
+        window.localStorage.setItem("selectedBoardId", String(targetId));
+        return {selectedBoardId: targetId};
+    };
+    changeBoard = (boardId: number) => async (state: State, actions: Actions) => {
+        console.log(`Changing board to ${boardId} ...`);
+        if (boardId == state.selectedBoardId) return;
+        actions.updateSelectedBoard(boardId);
+        await actions.fetchSprints();
+        await actions.fetchSprintDetails();
     };
 
 
@@ -52,20 +59,27 @@ export class Actions implements ActionsType<State, Actions> {
         const sprintsJson = await fetch(`/boards/${state.selectedBoardId}/sprints`);
         const sprints = await sprintsJson.json();
         actions.updateSprints(sprints);
-        actions.updateSelectedSprint(1);
+        actions.updateSelectedSprint(undefined);
     };
     updateSprints = (sprints: Array<Sprint>) => (state: State) => {
         console.log("Sprints updated.");
-        return {
-            sprints: sprints
-        };
+        return {sprints: sprints};
     };
-    updateSelectedSprint = (sprintId: number|number) => (state: State) => {
-        const saved = orElse(getNumberFromLocalStorage("selectSprintId"), state.sprints[0].id);
-        const newSprintId = orElse(sprintId, saved);
-        console.log(`Selected sprint updated to ${newSprintId}`);
-        window.localStorage.setItem("selectedSprintId", newSprintId.toString());
-        return { selectedSprintId: newSprintId };
+    updateSelectedSprint = (sprintId: number | undefined) => (state: State) => {
+        const id = sprintId ? sprintId : getNumberFromLocalStorage("selectedSprintId");
+        const foundSprint = state.sprints.find(sprint => sprint.id === id);
+        const sprint = foundSprint ? foundSprint : state.sprints[0];
+        const targetId = sprint ? sprint.id : undefined;
+
+        console.log(`Selected sprint updated to ${targetId}`);
+        window.localStorage.setItem("selectedSprintId", String(targetId));
+        return {selectedSprintId: targetId};
+    };
+    changeSprint = (sprintId: number) => async (state: State, actions: Actions) => {
+        console.log(`Changing sprint to ${sprintId} ...`);
+        if (sprintId == state.selectedSprintId) return;
+        actions.updateSelectedSprint(sprintId);
+        await actions.fetchSprintDetails();
     };
 
 
@@ -77,22 +91,7 @@ export class Actions implements ActionsType<State, Actions> {
     };
     updateSprintDetails = (sprintDetails: SprintDetails) => (state: State) => {
         console.log("Sprint updated.")
-        return { sprintDetails: sprintDetails };
-    };
-
-    changeBoard = (boardId: number) => async (state: State, actions: Actions) => {
-        console.log(`Changing board to ${boardId} ...`);
-        if (boardId == state.selectedBoardId) return;
-        actions.updateSelectedBoard(boardId);
-        await actions.fetchSprints();
-        await actions.fetchSprintDetails();
-    };
-
-    changeSprint = (sprintId: number) => async (state: State, actions: Actions) => {
-        console.log(`Changing sprint to ${sprintId} ...`);
-        if (sprintId == state.selectedSprintId) return;
-        actions.updateSelectedSprint(sprintId);
-        await actions.fetchSprintDetails();
+        return {sprintDetails: sprintDetails};
     };
 
 }
