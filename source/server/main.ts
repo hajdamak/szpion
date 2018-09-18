@@ -13,7 +13,7 @@ console.log("Szpion server starts... ");
 const mock = false;
 
 const config = loadConfig();
-const issueSource = new Jira(config.jiraURL, config.jiraBasicAuthToken);
+const issueSource = new Jira(config.jiraURL, config.jiraBasicAuthToken, true);
 
 console.log("Using JIRA : " + config.jiraURL)
 

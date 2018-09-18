@@ -1,0 +1,24 @@
+{
+  "worklogs": [
+    {
+      "author": {
+        "name": "kater",
+        "displayName": "Kate Rubin"
+      },
+      "created": "2018-08-29T17:18:38.000+0200",
+      "updated": "2018-08-31T12:53:49.000+0200",
+      "started": "2018-08-29T17:18:00.000+0200",
+      "timeSpentSeconds": 6300
+    },
+    {
+      "author": {
+        "name": "kater",
+        "displayName": "Kate Rubin"
+      },
+      "created": "2018-08-31T12:05:01.000+0200",
+      "updated": "2018-08-31T12:53:35.000+0200",
+      "started": "2018-08-30T17:03:00.000+0200",
+      "timeSpentSeconds": 1800
+    }
+  ]
+}

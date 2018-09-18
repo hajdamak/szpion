@@ -1,0 +1,35 @@
+{
+  "worklogs": [
+    {
+      "author": {
+        "name": "kater",
+        "displayName": "Kate Rubin"
+      },
+      "created": "2018-09-14T16:34:35.000+0200",
+      "updated": "2018-09-14T16:34:35.000+0200",
+      "started": "2018-09-13T17:33:00.000+0200",
+      "timeSpentSeconds": 15300
+    },
+    {
+      "author": {
+        "name": "kater",
+        "displayName": "Kate Rubin"
+      },
+      "created": "2018-09-14T16:37:42.000+0200",
+      "updated": "2018-09-14T16:37:42.000+0200",
+      "started": "2018-09-14T16:37:00.000+0200",
+      "timeSpentSeconds": 7200
+    },
+    {
+      "author": {
+        "name": "kater",
+        "displayName": "Kate Rubin"
+      },
+      "created": "2018-09-17T11:26:27.000+0200",
+      "updated": "2018-09-17T11:26:27.000+0200",
+      "started": "2018-09-17T11:26:00.000+0200",
+      "timeSpent": "2h 30m",
+      "timeSpentSeconds": 9000
+    }
+  ]
+}

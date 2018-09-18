@@ -1,4 +1,6 @@
 import fetch from 'node-fetch';
+import fs from 'fs';
+//import path from 'path';
 
 import {SprintDetails, Issue, WorkLog, User, Board, Sprint} from '../common/model';
 import {ifElse, numberOr, orElse} from '../common/utils';
@@ -96,7 +98,9 @@ export class Jira {
 
     constructor(
         private readonly jiraURL: string,
-        private readonly basicAuthToken: string) {
+        private readonly basicAuthToken: string,
+        private readonly mock: boolean = false
+    ) {
         this.init = {
             headers: {
                 'Authorization': 'Basic ' + this.basicAuthToken
@@ -249,10 +253,22 @@ export class Jira {
         return sprints.reverse();
     };
 
-    private readonly fetchFromJira = async <T>(path: string): Promise<T> => {
-        const response = await fetch(`${this.jiraURL}${path}`, this.init);
-        const json: T = await response.json();
-        return json;
+    private readonly fetchFromJira = async <T>(resourcePath: string): Promise<T> => {
+        if (!this.mock) {
+
+            const response = await fetch(`${this.jiraURL}${resourcePath}`, this.init);
+            const json: T = await response.json();
+            return json;
+
+        } else {
+            const file = `test/data${resourcePath}.json`;
+            console.log(`Reading file : ${file}`);
+            const response = fs.readFileSync(file, "UTF-8");
+
+            const json = JSON.parse(response);
+            return json;
+        }
+
     };
 
     private readonly fetchIssuesFromSprint = async (sprintName: string): Promise<SearchJson> => {
@@ -310,8 +326,6 @@ export class Jira {
                     return false;
                 }
             };
-
-            console.log(` histories: ${JSON.stringify(issue.changelog.histories)}`)
 
             const points = issue.changelog.histories.map(
                 history => {
