@@ -4,7 +4,7 @@
     "moduleResolution": "node",
     "newLine": "LF",
     "outDir": "./build/compile",
-    "target": "es5",
+    "target": "es2016",
     "declaration": true,
     "sourceMap": true,
     "jsx": "react",
@@ -12,7 +12,7 @@
     "esModuleInterop": true,
     "noEmitOnError": true,
     "lib": [
-      "es2017",
+      "es2016",
       "dom"
     ],
     "downlevelIteration": true,

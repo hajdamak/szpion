@@ -9,7 +9,6 @@ import {Issue, User} from "../common/model";
 export const view: View<State, Actions> = (state: State, actions: Actions) => (
 
     <div oncreate={actions.init}>
-
         <section className="section">
             <nav class="level">
                 <div class="level-left">

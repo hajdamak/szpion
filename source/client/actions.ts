@@ -1,41 +1,51 @@
+import fetch from 'cross-fetch';
 import {ActionsType} from "hyperapp";
+
 import {Board, ClientConfig, SprintDetails, Sprint} from "../common/model";
 import {State} from "./state";
 import {getNumberFromLocalStorage} from "../common/utils";
 
+// Move it to Action class after bug with infinite recursion in Hyperapp is fixed.
+export let serverURL: string = "";
+
 export class Actions implements ActionsType<State, Actions> {
 
-    init = () => async (state: State, actions: Actions) => {
+    private readonly fetch = async <T>(resourcePath: string): Promise<T> => {
+        const response = await fetch(`${serverURL}${resourcePath}`);
+        const json: T = await response.json();
+        return json;
+    };
+
+    readonly init = () => async (state: State, actions: Actions) => {
+        console.log("Initialize application...");
         await actions.fetchConfig();
         await actions.fetchBoards();
         await actions.fetchSprints();
         await actions.fetchSprintDetails();
     };
 
-    fetchConfig = () => async (state: State, actions: Actions) => {
+    readonly fetchConfig = () => async (state: State, actions: Actions) => {
         console.log("Fetching config...");
-        const configJson = await fetch('/config');
-        const config = await configJson.json();
+        const config = await this.fetch<ClientConfig>('/config');
         actions.updateConfig(config);
     };
-    updateConfig = (config: ClientConfig) => (state: State) => {
+    readonly updateConfig = (config: ClientConfig) => (state: State) => {
         console.log("Config updated.");
         return {config: config};
     };
 
 
-    fetchBoards = () => async (state: State, actions: Actions) => {
+    readonly fetchBoards = () => async (state: State, actions: Actions) => {
         console.log("Fetching boards...");
-        const boardsJson = await fetch('/boards');
-        const boards = await boardsJson.json();
+        const boards = await this.fetch<Array<Board>>('/boards');
         actions.updateBoards(boards);
         actions.updateSelectedBoard(undefined);
     };
-    updateBoards = (boards: Array<Board>) => (state: State) => {
+    readonly updateBoards = (boards: Array<Board>) => (state: State) => {
         console.log("Boards updated.")
         return {boards: boards};
     };
-    updateSelectedBoard = (boardId: number | undefined) => (state: State) => {
+    readonly updateSelectedBoard = (boardId: number | undefined) => (state: State) => {
         const id = boardId ? boardId : getNumberFromLocalStorage("selectedBoardId");
         const foundBoard = state.boards.find(board => board.id === id);
         const board = foundBoard ? foundBoard : state.boards[0];
@@ -45,7 +55,7 @@ export class Actions implements ActionsType<State, Actions> {
         window.localStorage.setItem("selectedBoardId", String(targetId));
         return {selectedBoardId: targetId};
     };
-    changeBoard = (boardId: number) => async (state: State, actions: Actions) => {
+    readonly changeBoard = (boardId: number) => async (state: State, actions: Actions) => {
         console.log(`Changing board to ${boardId} ...`);
         if (boardId == state.selectedBoardId) return;
         actions.updateSelectedBoard(boardId);
@@ -54,18 +64,18 @@ export class Actions implements ActionsType<State, Actions> {
     };
 
 
-    fetchSprints = () => async (state: State, actions: Actions) => {
+    readonly fetchSprints = () => async (state: State, actions: Actions) => {
         console.log("Fetching sprints...");
-        const sprintsJson = await fetch(`/boards/${state.selectedBoardId}/sprints`);
-        const sprints = await sprintsJson.json();
+        const sprints = await this.fetch<Array<Sprint>>(
+            `/boards/${state.selectedBoardId}/sprints`);
         actions.updateSprints(sprints);
         actions.updateSelectedSprint(undefined);
     };
-    updateSprints = (sprints: Array<Sprint>) => (state: State) => {
+    readonly updateSprints = (sprints: Array<Sprint>) => (state: State) => {
         console.log("Sprints updated.");
         return {sprints: sprints};
     };
-    updateSelectedSprint = (sprintId: number | undefined) => (state: State) => {
+    readonly updateSelectedSprint = (sprintId: number | undefined) => (state: State) => {
         const id = sprintId ? sprintId : getNumberFromLocalStorage("selectedSprintId");
         const foundSprint = state.sprints.find(sprint => sprint.id === id);
         const sprint = foundSprint ? foundSprint : state.sprints[0];
@@ -75,7 +85,7 @@ export class Actions implements ActionsType<State, Actions> {
         window.localStorage.setItem("selectedSprintId", String(targetId));
         return {selectedSprintId: targetId};
     };
-    changeSprint = (sprintId: number) => async (state: State, actions: Actions) => {
+    readonly changeSprint = (sprintId: number) => async (state: State, actions: Actions) => {
         console.log(`Changing sprint to ${sprintId} ...`);
         if (sprintId == state.selectedSprintId) return;
         actions.updateSelectedSprint(sprintId);
@@ -83,13 +93,13 @@ export class Actions implements ActionsType<State, Actions> {
     };
 
 
-    fetchSprintDetails = () => async (state: State, actions: Actions) => {
+    readonly fetchSprintDetails = () => async (state: State, actions: Actions) => {
         console.log("Fetching sprint...");
-        const sprintJson = await fetch(`/boards/${state.selectedBoardId}/sprints/${state.selectedSprintId}`);
-        const sprint = await sprintJson.json();
-        actions.updateSprintDetails(sprint);
+        const sprintDetails = await this.fetch<SprintDetails>(
+            `/boards/${state.selectedBoardId}/sprints/${state.selectedSprintId}`);
+        actions.updateSprintDetails(sprintDetails);
     };
-    updateSprintDetails = (sprintDetails: SprintDetails) => (state: State) => {
+    readonly updateSprintDetails = (sprintDetails: SprintDetails) => (state: State) => {
         console.log("Sprint updated.")
         return {sprintDetails: sprintDetails};
     };

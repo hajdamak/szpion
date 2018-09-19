@@ -1,9 +1,8 @@
-import fetch from 'node-fetch';
+import fetch from 'cross-fetch';
 import fs from 'fs';
-//import path from 'path';
 
 import {SprintDetails, Issue, WorkLog, User, Board, Sprint} from '../common/model';
-import {ifElse, numberOr, orElse} from '../common/utils';
+import {flatMap, ifElse, numberOr, orElse, zip} from '../common/utils';
 
 type ViewsJson = {
     views: [{
@@ -137,10 +136,9 @@ export class Jira {
             searchJson.issues.map(issueJson => this.fetchIssueWorklog(issueJson.key))
         );
 
-        const issues = searchJson.issues.zip(worklogJsons).map(
+        const issuesAndWorklogs = zip(searchJson.issues, worklogJsons);
+        const issues = issuesAndWorklogs.map(
             ([issueJson, worklogJson]): Issue => {
-
-                console.log(`-- ${issueJson.key} ----------------------------------------------------------`);
 
                 const issueToCheck = ifElse(
                     issueJson.fields.issuetype.subtask,
@@ -156,15 +154,12 @@ export class Jira {
                 );
 
                 const periods = this.calculateIssueAvailabilityInSprint(issueToCheck, sprint.name, sprintStartDate, sprintEndDate);
-                console.log(`periods  : ${JSON.stringify(periods)}`);
 
                 const sprintEstimate = this.calculateSprintEstimate(issueJson, periods);
-                console.log(`sprintEstimate  : ${sprintEstimate}`);
 
                 const worklogs = this.calculateWorkLogsInSprint(worklogJson, periods);
 
                 const sprintTimeSpent = worklogs.reduce((sum, worklog) => sum + worklog.timeSpent, 0);
-                console.log(`sprintTimeSpent  : ${sprintTimeSpent}`);
 
                 const sprintWorkRatio =
                     (sprintTimeSpent == 0 || sprintEstimate == 0) ? 0 : Math.floor((sprintTimeSpent / sprintEstimate) * 100);
@@ -415,7 +410,6 @@ export class Jira {
         ).filter(
             (change): change is Changes => change.estimate !== undefined
         );
-        console.log(`Remaining estimate changes : ${JSON.stringify(remainingEstimateChanges)}`);
 
         const defaultSprintEstimate =
             ((issue.fields.timetracking.originalEstimateSeconds != issue.fields.timetracking.remainingEstimateSeconds)
@@ -441,9 +435,7 @@ export class Jira {
     // Calculate issue availability periods in sprint.
     private readonly calculateIssueAvailabilityInSprint = (
         issue: IssueJson, sprintName: string, sprintStartDate: Date, sprintEndDate: Date): Array<Period> => {
-        console.log(`Checking periods for ${issue.key}`);
         const periods = this.calculateSprintMembershipPeriods(issue, sprintName, sprintEndDate);
-        console.log(` original periods : ${JSON.stringify(periods)}`);
         const clippedPeriods = this.clipWithSprintPeriod(periods, sprintStartDate, sprintEndDate);
         return clippedPeriods;
     };
@@ -479,9 +471,8 @@ export class Jira {
     private readonly calculateUsersInfo = (issues: Array<Issue>): Array<User> => {
 
         // Calculate work spent for each user
-        const usersMap = issues.flatMap(
-            issue => issue.worklogs
-        ).reduce(
+        const worklogs = flatMap(issues, issue => issue.worklogs);
+        const usersMap = worklogs.reduce(
             (summary, worklog) => {
                 const userTimeSpent = orElse(summary.get(worklog.author), () => 0);
                 return new Map([

@@ -23,13 +23,12 @@
   "dependencies": {
     "bulma": "0.7.1",
     "classcat": "^3.2.3",
+    "cross-fetch": "^2.2.2",
     "hyperapp": "^1.2.9",
     "koa": "^2.5.2",
     "koa-better-http-proxy": "^0.2.4",
     "koa-router": "^7.4.0",
-    "node-fetch": "^2.2.0",
-    "node-sass": "^4.9.3",
-    "whatwg-fetch": "^2.0.4"
+    "node-sass": "^4.9.3"
   },
   "devDependencies": {
     "@hyperapp/html": "^1.1.1",
@@ -46,6 +45,9 @@
     "ts-node": "^7.0.1",
     "typescript": "^3.0.1"
   },
+  "browserslist": [
+    "> 5%"
+  ],
   "jest": {
     "transform": {
       "^.+\\.tsx?$": "ts-jest"

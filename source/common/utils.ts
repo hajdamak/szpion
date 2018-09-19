@@ -22,8 +22,7 @@ export const readableDuration = (seconds: number): string => {
 	const format = (amount: number, postfix: string, space = '') => amount != 0 ? space + amount + postfix : '';
 
 	return format(days, 'd') + format(hours, 'h', ' ') + format(minutes, 'm', ' ');
-}
-
+};
 
 export const numberOr = (valueToCheck: any, alternative: number): number => {
     if (Number.isInteger(valueToCheck))
@@ -49,19 +48,19 @@ export const orElseNull = <T>(optional : T|null, elseValue: T) => {
         return optional;
     else
         return elseValue;
-}
+};
 
+export const zip = <A, B>(arrayA: Array<A>, arrayB: Array<B>): Array<[A, B]> => {
+    return arrayA.map(
+        (element: A, index: number): [A, B] => [element, arrayB[index]]
+    );
+};
 
-Array.prototype.zip = function(array: any): any {
-    return this.map( (element, index) => [element, array[index]]);
-}
-
-
-Object.defineProperty(Array.prototype, 'flatMap', {
-    value: function(f: Function) {
-        return this.reduce((ys: any, x: any) => {
-            return ys.concat(f.call(this, x))
-        }, [])
-    },
-    enumerable: false,
-})
+export const flatMap = <A, B>(array: Array<A>, callback: (t: A) => Array<B>): Array<B> => {
+    return array.reduce(
+        (result: Array<B>, item: A) => {
+            return result.concat(callback(item));
+        },
+        []
+    );
+};
