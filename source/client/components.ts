@@ -1,92 +1,13 @@
-import {View} from "hyperapp";
 import cc from 'classcat';
 import {
-    div, span, section, nav,
-    img, a, h3,
+    div, span,
+    img, a,
     select, option,
     table, thead, tbody, tr, td, th,
-    ul, li
 } from "@hyperapp/html";
 
-import {readableDuration, readableTime} from "../common/utils";
-import {State} from "./state";
-import {Actions} from "./actions";
+import {readableDuration} from "../common/utils";
 import {Issue, User} from "../common/model";
-
-export const view: View<State, Actions> = (state: State, actions: Actions) =>
-    div({oncreate: actions.init}, [
-        section({class: "section"}, [
-            nav({class: "level"}, [
-                div({class: "level-left"}, [
-                    div({class: "level-item"}, [
-                        span({id: "logo"}, "Szpion"),
-                        span("Daily Sprint Invigilation")
-                    ])
-                ]),
-                div({class: "level-right"}, [
-                    div({class: "tabs"}, [
-                        ul([
-                            li({class: "is-active"}, [a("Sprint")]),
-                            li([a("Epic")])
-                        ])
-                    ])
-                ])
-            ])
-        ]),
-        section({class: "section"}, [
-
-            state.sprintDetails ? (
-                div({class: "container is-fluid"}, [
-
-                    div({class: "columns"}, [
-                        div({class: "column"}, [
-                            span("Board"),
-                            Selector({
-                                items: state.boards,
-                                selectedId: state.selectedBoardId,
-                                onchange: actions.changeBoard
-                            }),
-                            span("Sprint"),
-                            Selector({
-                                items: state.sprints, selectedId:
-                                state.selectedSprintId,
-                                onchange: actions.changeSprint
-                            })
-                        ]),
-                        div({class: "column"}, [
-                            div(`Issues: ${state.sprintDetails.issuesCount}`),
-                            div(`Issues completed: ${state.sprintDetails.completedIssuesCount}`)
-                        ]),
-                        div({class: "column"}, [
-                            div(`Start date: ${readableTime(state.sprintDetails.startDate)}`),
-                            div(`End date: ${readableTime(state.sprintDetails.endDate)}`)
-                        ]),
-                        div({class: "column"}, [
-                            div(`Estimate: ${readableDuration(state.sprintDetails.estimate)}`),
-                            div(`Time spent: ${readableDuration(state.sprintDetails.timeSpent)}`),
-                            div(`Remaining estimate: ${readableDuration(state.sprintDetails.remainingEstimate)}`)
-                        ])
-                    ]),
-
-                    IssuesTable({
-                        issues: state.sprintDetails.issues.filter(issue => issue.status !== "Closed")
-                    }),
-                    h3("Closed issues"),
-                    IssuesTable({
-                        issues: state.sprintDetails.issues.filter(issue => issue.status === "Closed")
-                    }),
-
-                    h3("Users"),
-                    UsersTable({users: state.sprintDetails.users})
-                ])
-            ) : (
-                div("Loading data")
-            )
-
-        ])
-
-    ]);
-
 
 interface SelectorItem {
     readonly id: number;
@@ -99,7 +20,7 @@ interface SelectorParams {
     readonly onchange: (item: number) => any;
 };
 
-const Selector = ({items, selectedId, onchange}: SelectorParams) =>
+export const Selector = ({items, selectedId, onchange}: SelectorParams) =>
     div({class: "select"}, [
         select({value: selectedId, onchange: (e: any) => onchange(parseInt(e.target.value))},
             items.map(item =>
@@ -113,7 +34,7 @@ interface IssuesTableParams {
     readonly issues: Array<Issue>;
 }
 
-const IssuesTable = ({issues}: IssuesTableParams) =>
+export const IssuesTable = ({issues}: IssuesTableParams) =>
     table({class: "table is-narrow is-fullwidth is-striped"}, [
         thead([
             tr([
@@ -144,7 +65,7 @@ const IssuesTable = ({issues}: IssuesTableParams) =>
     ]);
 
 
-const IssueRow = ({issue}: { issue: Issue }) =>
+export const IssueRow = ({issue}: { issue: Issue }) =>
     tr({key: issue.key}, [
         td([
             img({src: issue.issuetypeIconUrl})
@@ -189,7 +110,7 @@ const IssueRow = ({issue}: { issue: Issue }) =>
     ]);
 
 
-const UsersTable = ({users}: { users: Array<User> }) =>
+export const UsersTable = ({users}: { users: Array<User> }) =>
     table({class: "table is-striped is-narrow is-fullwidth"}, [
         thead([
             th("User"),

@@ -2,7 +2,7 @@ import {app} from "hyperapp";
 
 import {State} from "../source/client/state";
 import {Actions} from "../source/client/actions";
-import {view} from "../source/client/components";
+import {view} from "../source/client/view";
 
 import {Server} from "../source/server/server";
 
