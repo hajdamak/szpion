@@ -5,8 +5,8 @@ import {Board, ClientConfig, SprintDetails, Sprint} from "../common/model";
 import {State} from "./state";
 import {getNumberFromLocalStorage} from "../common/utils";
 
-// Move it to Action class after bug with infinite recursion in Hyperapp is fixed.
-export let serverURL: string = "";
+// TODO: Move it to Actions class after migration to Hyperapp 2
+let serverURL: string = "";
 
 export class Actions implements ActionsType<State, Actions> {
 
@@ -14,6 +14,16 @@ export class Actions implements ActionsType<State, Actions> {
         const response = await fetch(`${serverURL}${resourcePath}`);
         const json: T = await response.json();
         return json;
+    };
+
+    // TODO: This is only used to set server URL in tests. Should be constructor param in Hyperapp 2.
+    readonly setServerURL = (url: string) => {
+        serverURL = url;
+    };
+
+    // TODO: Only used in tests. Should not be needed in Hyperapp 2.
+    readonly getState = () => (state: State, actions: Actions) => {
+        return state;
     };
 
     readonly init = () => async (state: State, actions: Actions) => {

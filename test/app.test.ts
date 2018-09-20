@@ -1,43 +1,32 @@
 import {app} from "hyperapp";
-import {div} from "@hyperapp/html"
 
 import {State} from "../source/client/state";
 import {Actions} from "../source/client/actions";
-//import {view} from "../source/client/components";
+import {view} from "../source/client/components";
 
 import {Server} from "../source/server/server";
 
 const server = new Server(false, true);
+const actions = new Actions();
+actions.setServerURL("http://localhost:1212");
+const initState = new State();
+
+const getState = (app: Actions) : State => {
+   const state : any = app.getState();
+   return state as State;
+};
 
 beforeAll(() => {
     server.start();
-    document.body.innerHTML = ""
 });
 
 afterAll(() => {
     server.stop();
 });
 
-test('test app', async () => {
-
-    const view = (state: State, actions: Actions) =>
-        div({
-                oncreate: () => {
-                    console.log("It works");
-                    expect(state).toEqual({
-                        value: 2,
-                        foo: true
-                    })
-                }
-            },
-            ""
-        );
-
-    //serverURL = "http://localhost:1212";
-    const actions = new Actions();
-    const state = new State();
-    const testApp = app(state, actions, view, document.body);
-
-    //const res = await testApp.init();
-    //console.log(`Out : ${JSON.stringify(res)}`);
+test('Initialize application', async () => {
+    const testApp = app(initState, actions, view, null);
+    await testApp.init();
+    const state = getState(testApp);
+    expect(state.boards.length).toBe(3);
 });

@@ -12,7 +12,7 @@
   },
   "scripts": {
     "dev": "npm run dev-server & npm run dev-client",
-    "dev-client": "parcel serve --target browser --out-dir ./build/client ./source/client/index.html",
+    "dev-client": "parcel serve --target browser --out-dir ./target/client ./source/client/index.html",
     "dev-server": "nodemon --watch ./source --inspect -r ts-node/register ./source/server/main.ts",
     "dev-compile": "tsc --watch",
     "start-prod": "echo Not_implemented && exit 1",
