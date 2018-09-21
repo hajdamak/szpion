@@ -5,7 +5,7 @@
 	"author": "Rafał Hajdacki",
 	"license": "MIT",
 	"homepage": "https://github.com/rhajdacki/szpion#readme",
-	"main": "server/main.ts",
+	"main": "source/server/main.ts",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/rhajdacki/szpion"
@@ -15,8 +15,11 @@
 		"dev-client": "parcel serve --target browser --out-dir ./target/client ./source/client/index.html",
 		"dev-server": "nodemon --watch ./source --inspect -r ts-node/register ./source/server/main.ts",
 		"start": "echo Not_implemented && exit 1",
-		"build": "cross-env NODE_ENV=production parcel build --out-dir dist/client ./source/client/index.html --public-url .",
-		"test": "tsc && jest --coverage"
+		"test": "tsc && jest --coverage",
+		"build": "npm run build-client && npm run build-server && npm run build-pkg",
+		"build-client": "cross-env NODE_ENV=production parcel build --target browser --out-dir dist/client --public-url . ./source/client/index.html",
+		"build-server": "cross-env NODE_ENV=production parcel build --target node --out-dir ./dist/server ./source/server/main.ts",
+		"build-pkg": "pkg --targets node10-linux-x64 --output ./dist/szpion ./dist/server/main.js"
 	},
 	"dependencies": {
 		"bulma": "0.7.1",
@@ -25,20 +28,21 @@
 		"hyperapp": "^1.2.9",
 		"koa": "^2.5.2",
 		"koa-better-http-proxy": "^0.2.4",
-		"koa-router": "^7.4.0",
-		"node-sass": "^4.9.3"
+		"koa-router": "^7.4.0"
 	},
 	"devDependencies": {
 		"@hyperapp/html": "^1.1.1",
+		"@types/jest": "^23.3.1",
 		"@types/koa": "^2.0.46",
 		"@types/koa-router": "^7.0.31",
 		"@types/node": "^10.9.4",
 		"@types/node-fetch": "^2.1.2",
-		"@types/jest": "^23.3.1",
+		"node-sass": "^4.9.3",
 		"cross-env": "^5.1.6",
 		"jest": "^23.5.0",
 		"nodemon": "^1.18.3",
 		"parcel-bundler": "^1.9.7",
+		"pkg": "^4.3.4",
 		"ts-jest": "^23.1.4",
 		"ts-node": "^7.0.1",
 		"typescript": "^3.0.1"
