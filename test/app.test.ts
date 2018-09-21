@@ -5,7 +5,7 @@ import {Actions} from "../source/client/actions";
 import {view} from "../source/client/view";
 
 import {Server} from "../source/server/server";
-import {readableDuration, readableTime} from "../source/common/utils";
+import {readableDuration} from "../source/common/utils";
 
 const server = new Server(false, true);
 const actions = new Actions();

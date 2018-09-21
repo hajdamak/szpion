@@ -56,4 +56,3 @@ export interface WorkLog {
     readonly date: Date;
     readonly timeSpent: number;
 }
-

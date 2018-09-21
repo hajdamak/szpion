@@ -1,4 +1,4 @@
-import {flatMap, numberOr, orElse, readableDuration, readableTime, zip, ifElse} from "../source/common/utils";
+import {flatMap, numberOr, orElse, readableDuration, zip, ifElse} from "../source/common/utils";
 
 test('readableDuration', () => {
     expect(readableDuration(0)).toBe("0m");

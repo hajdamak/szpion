@@ -3,7 +3,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "newLine": "LF",
-    "outDir": "./build/compile",
+    "outDir": "./target/compile",
     "target": "es2016",
     "declaration": true,
     "sourceMap": true,
@@ -25,6 +25,7 @@
     ]
   },
   "include": [
-    "source"
+    "source",
+    "test"
   ]
 }

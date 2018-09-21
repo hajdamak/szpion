@@ -10,15 +10,15 @@ before_install:
 - npm i -g codecov
 
 install:
-- yarn install
+- npm install
 
 cache:
   directories:
   - "node_modules"
 
 script:
-- yarn compile
-- yarn test
+- npm run compile
+- npm test
 - codecov
 
 notifications:
