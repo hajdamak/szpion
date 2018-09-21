@@ -1,6 +1,7 @@
 # Szpion 
 
 [![Build Status](https://travis-ci.org/rhajdacki/szpion.svg?branch=master)](https://travis-ci.org/rhajdacki/szpion)
+[![Code Coverage](https://codecov.io/github/rhajdacki/szpion/branch/master/graph/badge.svg)](https://codecov.io/github/rhajdacki/szpion)
 
 Daily Sprint Invigilation
 
