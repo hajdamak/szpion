@@ -1,0 +1,141 @@
+{
+  "issues": [
+    {
+      "key": "WAP-11937",
+      "fields": {
+        "summary": "[User admin] Switch from OCaml to Ruby",
+        "timetracking": {
+          "originalEstimateSeconds": 7200,
+          "remainingEstimateSeconds": 0,
+          "timeSpentSeconds": 8100
+        },
+        "issuetype": {
+          "iconUrl": "https://jira.example.com/images/icons/issuetypes/newfeature.png",
+          "name": "New Feature"
+        },
+        "status": {
+          "iconUrl": "https://jira.example.com/images/icons/statuses/inprogress.png",
+          "name": "In Progress",
+          "statusCategory": {
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+          }
+        },
+        "created": "2018-08-16T16:31:26.000+0200",
+        "priority": {
+          "iconUrl": "https://jira.example.com/images/icons/priorities/major.png",
+          "name": "Major"
+        },
+        "assignee": {
+          "name": "fredg",
+          "displayName": "Fred Gavin"
+        },
+        "customfield_11869": [
+          "com.atlassian.greenhopper.service.sprint.Sprint@590bc4b1[rapidViewId=213,state=ACTIVE,name=WAP-JohnB 3,startDate=2018-09-13T16:04:20.101+02:00,endDate=2018-09-26T16:04:00.000+02:00,completeDate=<null>,id=1779]"
+        ]
+      },
+      "changelog": {
+        "histories": [
+          {
+            "created": "2018-08-16T16:32:29.000+0200",
+            "items": [
+              {
+                "field": "timeoriginalestimate",
+                "fieldtype": "jira",
+                "from": null,
+                "fromString": null,
+                "to": "7200",
+                "toString": "7200"
+              },
+              {
+                "field": "timeestimate",
+                "fieldtype": "jira",
+                "from": null,
+                "fromString": null,
+                "to": "7200",
+                "toString": "7200"
+              }
+            ]
+          },
+          {
+            "created": "2018-08-29T12:22:31.000+0200",
+            "items": [
+              {
+                "field": "assignee",
+                "from": "stevenr",
+                "fromString": "Steven Rogers",
+                "to": "kater",
+                "toString": "Kate Rubin"
+              }
+            ]
+          },
+          {
+            "created": "2018-08-29T17:18:38.000+0200",
+            "items": [
+              {
+                "field": "timeestimate",
+                "from": "7200",
+                "fromString": "7200",
+                "to": "900",
+                "toString": "900"
+              },
+              {
+                "field": "timespent",
+                "from": null,
+                "fromString": null,
+                "to": "6300",
+                "toString": "6300"
+              },
+              {
+                "field": "WorklogId",
+                "from": "1571702",
+                "fromString": "1571702",
+                "to": null,
+                "toString": null
+              }
+            ]
+          },
+          {
+            "created": "2018-08-31T12:05:26.000+0200",
+            "items": [
+              {
+                "field": "status",
+                "from": "1",
+                "fromString": "Open",
+                "to": "5",
+                "toString": "Resolved"
+              },
+              {
+                "field": "assignee",
+                "from": "kater",
+                "fromString": "Kate Rubin",
+                "to": "stevenr",
+                "toString": "Steven Rogers"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-03T10:10:20.000+0200",
+            "items": [
+              {
+                "field": "status",
+                "from": "5",
+                "fromString": "Resolved",
+                "to": "6",
+                "toString": "Closed"
+              },
+              {
+                "field": "assignee",
+                "from": "stevenr",
+                "fromString": "Steven Rogers",
+                "to": "fredg",
+                "toString": "Fred Gavin"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

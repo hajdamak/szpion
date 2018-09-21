@@ -312,19 +312,12 @@ export class Jira {
     };
 
     private readonly calculateSprintMembershipPeriods =
-        (issue: IssueJson, sprintName: string, issueEnded: Date): Array<Period> => {
+        (issue: IssueJson, sprintName: string, sprintEndDate: Date): Array<Period> => {
 
-            const inSprint = (sprintName: string) => {
-                if (issue.fields.customfield_11869) {
-                    return issue.fields.customfield_11869.reduce((res, item) => item.includes(sprintName), false)
-                } else {
-                    return false;
-                }
-            };
-
+            // Search issue history for sprint changes
             const points = issue.changelog.histories.map(
                 history => {
-                    const item = history.items.filter(item => item.field === "SprintDetails")[0];
+                    const item = history.items.find(item => item.field === "Sprint");
                     if (item) {
                         const point = {
                             createdDate: new Date(history.created),
@@ -344,10 +337,18 @@ export class Jira {
                 }
             ).filter(
                 point => point != undefined
-            )
+            );
+
+            const inSprint = (sprintName: string) => {
+                if (issue.fields.customfield_11869) {
+                    return issue.fields.customfield_11869.reduce((res, item) => item.includes(sprintName), false)
+                } else {
+                    return false;
+                }
+            };
 
             if ((points.length == 0) && inSprint(sprintName)) {
-                return [{start: new Date(issue.fields.created), end: issueEnded}]
+                return [{start: new Date(issue.fields.created), end: sprintEndDate}];
             }
 
             const periods = points.map(
@@ -357,7 +358,7 @@ export class Jira {
                     if ((index == 0) && currentPoint.fromCurrentSprint) {
                         return {start: new Date(issue.fields.created), end: currentPoint.createdDate};
                     } else if ((index == (points.length - 1)) && currentPoint.toCurrentSprint) {
-                        return {start: currentPoint.createdDate, end: issueEnded};
+                        return {start: currentPoint.createdDate, end: sprintEndDate};
                     } else if ((index > 0)) {
                         const previousPoint = points[index - 1];
                         if (!previousPoint) return undefined;

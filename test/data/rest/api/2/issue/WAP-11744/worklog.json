@@ -5,34 +5,24 @@
         "name": "maxw",
         "displayName": "Max White"
       },
-      "created": "2018-09-13T16:08:19.000+0200",
-      "updated": "2018-09-13T16:08:19.000+0200",
-      "started": "2018-09-13T16:07:00.000+0200",
-      "timeSpentSeconds": 600
+      "started": "2018-09-10T16:07:00.000+0200",
+      "timeSpentSeconds": 900
     },
     {
       "author": {
         "name": "johns",
         "displayName": "John Smith"
       },
-      "updateAuthor": {
-        "name": "johns",
-        "displayName": "John Smith"
-      },
-      "created": "2018-09-13T17:44:43.000+0200",
-      "updated": "2018-09-13T17:46:19.000+0200",
-      "started": "2018-09-13T17:44:00.000+0200",
-      "timeSpentSeconds": 5400
+      "started": "2018-09-15T17:44:00.000+0200",
+      "timeSpentSeconds": 3600
     },
     {
       "author": {
         "name": "kater",
         "displayName": "Kate Rubin"
       },
-      "created": "2018-09-13T17:52:33.000+0200",
-      "updated": "2018-09-13T17:52:33.000+0200",
-      "started": "2018-09-13T17:52:00.000+0200",
-      "timeSpentSeconds": 600
+      "started": "2018-09-17T17:52:00.000+0200",
+      "timeSpentSeconds": 7200
     }
   ]
 }

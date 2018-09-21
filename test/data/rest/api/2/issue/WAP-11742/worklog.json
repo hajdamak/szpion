@@ -5,50 +5,24 @@
         "name": "johns",
         "displayName": "John Smith"
       },
-      "created": "2018-08-23T18:02:27.000+0200",
-      "updated": "2018-08-23T18:02:27.000+0200",
-      "started": "2018-08-23T18:02:00.000+0200",
-      "timeSpentSeconds": 9000
-    },
-    {
-      "author": {
-        "name": "johns",
-        "displayName": "John Smith"
-      },
-      "created": "2018-08-24T18:05:20.000+0200",
-      "updated": "2018-08-24T18:05:20.000+0200",
-      "started": "2018-08-24T18:05:00.000+0200",
-      "timeSpentSeconds": 27900
-    },
-    {
-      "author": {
-        "name": "gregoryj",
-        "displayName": "Gregory Johannson"
-      },
-      "created": "2018-08-27T09:04:40.000+0200",
-      "updated": "2018-08-27T09:04:40.000+0200",
-      "started": "2018-08-24T09:04:00.000+0200",
-      "timeSpentSeconds": 3600
-    },
-    {
-      "author": {
-        "name": "johns",
-        "displayName": "John Smith"
-      },
-      "created": "2018-08-27T18:40:20.000+0200",
-      "updated": "2018-08-27T18:40:20.000+0200",
-      "started": "2018-08-27T18:40:00.000+0200",
+      "started": "2018-09-06T18:02:27.000+0200",
       "timeSpentSeconds": 25200
     },
     {
       "author": {
+        "name": "johns",
+        "displayName": "John Smith"
+      },
+      "started": "2018-09-14T18:05:20.000+0200",
+      "timeSpentSeconds": 3600
+    },
+    {
+      "author": {
         "name": "gregoryj",
         "displayName": "Gregory Johannson"
       },
-      "created": "2018-08-28T12:39:42.000+0200",
-      "updated": "2018-08-28T12:39:42.000+0200",
-      "started": "2018-08-28T12:39:00.000+0200",
-      "timeSpentSeconds": 7200
+      "started": "2018-09-20T09:04:40.000+0200",
+      "timeSpentSeconds": 31500
     }
   ]
 }

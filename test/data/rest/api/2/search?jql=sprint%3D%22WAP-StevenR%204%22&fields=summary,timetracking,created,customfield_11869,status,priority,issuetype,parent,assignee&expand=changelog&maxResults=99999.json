@@ -1,195 +1,13 @@
 {
   "issues": [
     {
-      "key": "WAP-12356",
-      "fields": {
-        "summary": "[User admin] User administration screen",
-        "timetracking": {
-          "originalEstimateSeconds": 115200,
-          "remainingEstimateSeconds": 115200
-        },
-        "issuetype": {
-          "iconUrl": "https://jira.example.com/images/icons/issuetypes/newfeature.png",
-          "name": "New Feature",
-          "subtask": false
-        },
-        "status": {
-          "iconUrl": "https://jira.example.com/images/icons/statuses/open.png",
-          "name": "Open",
-          "statusCategory": {
-            "key": "new",
-            "colorName": "blue-gray",
-            "name": "New"
-          }
-        },
-        "created": "2018-09-13T10:55:14.000+0200",
-        "priority": {
-          "iconUrl": "https://jira.example.com/images/icons/priorities/major.png",
-          "name": "Major"
-        },
-        "assignee": {
-          "name": "johns",
-          "displayName": "John Smith"
-        },
-        "customfield_11869": [
-          "com.atlassian.greenhopper.service.sprint.Sprint@590bc4b1[rapidViewId=213,state=ACTIVE,name=WAP-StevenR 4,startDate=2018-09-13T16:04:20.101+02:00,endDate=2018-09-26T16:04:00.000+02:00,completeDate=<null>,id=1779]"
-        ]
-      },
-      "changelog": {
-        "histories": []
-      }
-    },
-    {
-      "key": "WAP-12352",
-      "fields": {
-        "summary": "Enhance nuclear reactor to support destruction of nova",
-        "timetracking": {
-          "originalEstimateSeconds": 43200,
-          "remainingEstimateSeconds": 21600,
-          "timeSpentSeconds": 21600
-        },
-        "issuetype": {
-          "iconUrl": "https://jira.example.com/images/icons/issuetypes/newfeature.png",
-          "name": "New Feature",
-          "subtask": false
-        },
-        "status": {
-          "iconUrl": "https://jira.example.com/images/icons/statuses/needinfo.png",
-          "name": "Implemented",
-          "statusCategory": {
-            "key": "indeterminate",
-            "colorName": "yellow",
-            "name": "In Progress"
-          }
-        },
-        "created": "2018-09-13T09:34:26.000+0200",
-        "priority": {
-          "iconUrl": "https://jira.example.com/images/icons/priorities/major.png",
-          "name": "Major"
-        },
-        "assignee": {
-          "name": "kater",
-          "displayName": "Kate Rubin"
-        },
-        "customfield_11869": [
-          "com.atlassian.greenhopper.service.sprint.Sprint@590bc4b1[rapidViewId=213,state=ACTIVE,name=WAP-StevenR 4,startDate=2018-09-13T16:04:20.101+02:00,endDate=2018-09-26T16:04:00.000+02:00,completeDate=<null>,id=1779]"
-        ]
-      },
-      "changelog": {
-        "histories": [
-          {
-            "created": "2018-09-13T09:34:53.000+0200",
-            "items": [
-              {
-                "field": "Epic Link",
-                "from": null,
-                "fromString": null,
-                "to": "530125",
-                "toString": "WAP-12186"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-13T11:01:29.000+0200",
-            "items": [
-              {
-                "field": "timeoriginalestimate",
-                "from": null,
-                "fromString": null,
-                "to": "43200",
-                "toString": "43200"
-              },
-              {
-                "field": "timeestimate",
-                "from": null,
-                "fromString": null,
-                "to": "43200",
-                "toString": "43200"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-13T11:01:52.000+0200",
-            "items": [
-              {
-                "field": "assignee",
-                "from": "stevenr",
-                "fromString": "Steven Rogers",
-                "to": "kater",
-                "toString": "Kate Rubin"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-14T09:58:32.000+0200",
-            "items": [
-              {
-                "field": "status",
-                "from": "1",
-                "fromString": "Open",
-                "to": "3",
-                "toString": "In Progress"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-14T16:37:01.000+0200",
-            "items": [
-              {
-                "field": "timeestimate",
-                "from": "43200",
-                "fromString": "43200",
-                "to": "21600",
-                "toString": "21600"
-              },
-              {
-                "field": "timespent",
-                "from": null,
-                "fromString": null,
-                "to": "21600",
-                "toString": "21600"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1578945",
-                "fromString": "1578945",
-                "to": null,
-                "toString": null
-              }
-            ]
-          },
-          {
-            "created": "2018-09-17T11:29:46.000+0200",
-            "items": [
-              {
-                "field": "status",
-                "fieldtype": "jira",
-                "from": "3",
-                "fromString": "In Progress",
-                "to": "10013",
-                "toString": "Implemented"
-              },
-              {
-                "field": "resolution",
-                "fieldtype": "jira",
-                "from": null,
-                "fromString": null,
-                "to": "1",
-                "toString": "Fixed"
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
       "key": "WAP-12351",
       "fields": {
         "summary": "[User admin] Add users permissions in user screen",
         "timetracking": {
           "originalEstimateSeconds": 86400,
-          "remainingEstimateSeconds": 54900,
-          "timeSpentSeconds": 31500
+          "remainingEstimateSeconds": 45000,
+          "timeSpentSeconds": 41400
         },
         "issuetype": {
           "iconUrl": "https://jira.example.com/images/icons/issuetypes/newfeature.png",
@@ -281,80 +99,59 @@
             ]
           },
           {
-            "created": "2018-09-14T16:34:35.000+0200",
+            "created": "2018-09-10T17:33:00.000+0200",
             "items": [
               {
                 "field": "timeestimate",
                 "from": "86400",
                 "fromString": "86400",
-                "to": "71100",
-                "toString": "71100"
+                "to": "82800",
+                "toString": "82800"
               },
               {
                 "field": "timespent",
                 "from": null,
                 "fromString": null,
-                "to": "15300",
-                "toString": "15300"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1578935",
-                "fromString": "1578935",
-                "to": null,
-                "toString": null
+                "to": "3600",
+                "toString": "3600"
               }
             ]
           },
           {
-            "created": "2018-09-14T16:37:42.000+0200",
+            "created": "2018-09-14T16:37:00.000+0200",
             "items": [
               {
                 "field": "timeestimate",
-                "from": "71100",
-                "fromString": "71100",
-                "to": "63900",
-                "toString": "63900"
+                "from": "82800",
+                "fromString": "82800",
+                "to": "75600",
+                "toString": "75600"
               },
               {
                 "field": "timespent",
-                "from": "15300",
-                "fromString": "15300",
-                "to": "22500",
-                "toString": "22500"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1578946",
-                "fromString": "1578946",
-                "to": null,
-                "toString": null
+                "from": "3600",
+                "fromString": "3600",
+                "to": "10800",
+                "toString": "10800"
               }
             ]
           },
           {
-            "created": "2018-09-17T11:26:27.000+0200",
+            "created": "2018-09-15T16:37:00.000+0200",
             "items": [
               {
                 "field": "timeestimate",
-                "from": "63900",
-                "fromString": "63900",
-                "to": "54900",
-                "toString": "54900"
+                "from": "75600",
+                "fromString": "75600",
+                "to": "46800",
+                "toString": "46800"
               },
               {
                 "field": "timespent",
-                "from": "22500",
-                "fromString": "22500",
-                "to": "31500",
-                "toString": "31500"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1579297",
-                "fromString": "1579297",
-                "to": null,
-                "toString": null
+                "from": "10800",
+                "fromString": "10800",
+                "to": "39600",
+                "toString": "39600"
               }
             ]
           },
@@ -376,24 +173,60 @@
                 "toString": "Fixed"
               }
             ]
+          },
+          {
+            "created": "2018-09-26T11:37:00.000+0200",
+            "items": [
+              {
+                "field": "timeestimate",
+                "from": "46800",
+                "fromString": "46800",
+                "to": "45900",
+                "toString": "45900"
+              },
+              {
+                "field": "timespent",
+                "from": "39600",
+                "fromString": "39600",
+                "to": "40500",
+                "toString": "40500"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-30T11:26:00.000+0200",
+            "items": [
+              {
+                "field": "timeestimate",
+                "from": "45900",
+                "fromString": "45900",
+                "to": "45000",
+                "toString": "45000"
+              },
+              {
+                "field": "timespent",
+                "from": "40500",
+                "fromString": "40500",
+                "to": "41400",
+                "toString": "41400"
+              }
+            ]
           }
         ]
       }
     },
-
     {
-      "key": "WAP-11744",
+      "key": "WAP-12356",
       "fields": {
-        "summary": "[TEST] [Editor screen] Add editable content actions",
+        "summary": "[User admin] User administration screen",
         "timetracking": {
-          "originalEstimateSeconds": 3600,
-          "remainingEstimateSeconds": 0,
-          "timeSpentSeconds": 6600
+          "originalEstimateSeconds": 115200,
+          "remainingEstimateSeconds": 115200
         },
         "issuetype": {
-          "iconUrl": "https://jira.example.com/images/icons/issuetypes/subtask_alternate.png",
-          "name": "Sub-task",
-          "subtask": true
+          "iconUrl": "https://jira.example.com/images/icons/issuetypes/newfeature.png",
+          "name": "New Feature",
+          "subtask": false
         },
         "status": {
           "iconUrl": "https://jira.example.com/images/icons/statuses/open.png",
@@ -404,504 +237,21 @@
             "name": "New"
           }
         },
-        "created": "2018-08-02T12:34:03.000+0200",
+        "created": "2018-09-13T10:55:14.000+0200",
         "priority": {
-          "iconUrl": "https://jira.example.com/images/icons/priorities/critical.png",
-          "name": "Critical"
-        },
-        "parent": {
-          "key": "WAP-11739"
+          "iconUrl": "https://jira.example.com/images/icons/priorities/major.png",
+          "name": "Major"
         },
         "assignee": {
           "name": "johns",
           "displayName": "John Smith"
         },
         "customfield_11869": [
-          "com.atlassian.greenhopper.service.sprint.Sprint@638d37ed[rapidViewId=213,state=CLOSED,name=WAP-StevenR 2,startDate=2018-08-16T17:19:53.225+02:00,endDate=2018-08-29T18:19:00.000+02:00,completeDate=2018-08-30T15:34:14.530+02:00,id=1765]",
-          "com.atlassian.greenhopper.service.sprint.Sprint@1820edec[rapidViewId=213,state=CLOSED,name=WAP-StevenR 3,startDate=2018-08-30T15:35:08.804+02:00,endDate=2018-09-12T18:35:00.000+02:00,completeDate=2018-09-13T09:00:39.975+02:00,id=1778]",
           "com.atlassian.greenhopper.service.sprint.Sprint@590bc4b1[rapidViewId=213,state=ACTIVE,name=WAP-StevenR 4,startDate=2018-09-13T16:04:20.101+02:00,endDate=2018-09-26T16:04:00.000+02:00,completeDate=<null>,id=1779]"
         ]
       },
       "changelog": {
-        "histories": [
-          {
-            "created": "2018-08-02T12:51:19.000+0200",
-            "items": [
-              {
-                "field": "assignee",
-                "from": "gregoryj",
-                "fromString": "Gregory Johannson",
-                "to": "fredg",
-                "toString": "Fred Gavin"
-              }
-            ]
-          },
-          {
-            "created": "2018-08-16T16:47:20.000+0200",
-            "items": [
-              {
-                "field": "timeoriginalestimate",
-                "from": null,
-                "fromString": null,
-                "to": "3600",
-                "toString": "3600"
-              },
-              {
-                "field": "timeestimate",
-                "from": null,
-                "fromString": null,
-                "to": "3600",
-                "toString": "3600"
-              },
-              {
-                "field": "Sprint",
-                "from": "1765",
-                "fromString": "WAP-StevenR 2",
-                "to": "",
-                "toString": ""
-              }
-            ]
-          },
-          {
-            "created": "2018-08-23T17:48:55.000+0200",
-            "items": [
-              {
-                "field": "Link",
-                "from": null,
-                "fromString": null,
-                "to": "RES-174",
-                "toString": "This issue is reported as RES-174"
-              }
-            ]
-          },
-          {
-            "created": "2018-08-29T12:24:03.000+0200",
-            "items": [
-              {
-                "field": "assignee",
-                "from": "fredg",
-                "fromString": "Fred Gavin",
-                "to": "stevenr",
-                "toString": "Steven Rogers"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-13T09:00:43.000+0200",
-            "items": [
-              {
-                "field": "Rank",
-                "from": "",
-                "fromString": "",
-                "to": "",
-                "toString": "Ranked higher"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-13T15:58:32.000+0200",
-            "items": [
-              {
-                "field": "assignee",
-                "from": "stevenr",
-                "fromString": "Steven Rogers",
-                "to": "johns",
-                "toString": "John Smith"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-13T16:08:19.000+0200",
-            "items": [
-              {
-                "field": "timeestimate",
-                "from": "3600",
-                "fromString": "3600",
-                "to": "3000",
-                "toString": "3000"
-              },
-              {
-                "field": "timespent",
-                "from": null,
-                "fromString": null,
-                "to": "600",
-                "toString": "600"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1578321",
-                "fromString": "1578321",
-                "to": null,
-                "toString": null
-              }
-            ]
-          },
-          {
-            "created": "2018-09-13T17:44:43.000+0200",
-            "items": [
-              {
-                "field": "timeestimate",
-                "from": "3000",
-                "fromString": "3000",
-                "to": "0",
-                "toString": "0"
-              },
-              {
-                "field": "timespent",
-                "from": "600",
-                "fromString": "600",
-                "to": "7800",
-                "toString": "7800"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1578422",
-                "fromString": "1578422",
-                "to": null,
-                "toString": null
-              }
-            ]
-          },
-          {
-            "created": "2018-09-13T17:46:20.000+0200",
-            "items": [
-              {
-                "field": "timespent",
-                "from": "7800",
-                "fromString": "7800",
-                "to": "6000",
-                "toString": "6000"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1578422",
-                "fromString": "1578422",
-                "to": null,
-                "toString": null
-              }
-            ]
-          },
-          {
-            "created": "2018-09-13T17:52:33.000+0200",
-            "items": [
-              {
-                "field": "timespent",
-                "from": "6000",
-                "fromString": "6000",
-                "to": "6600",
-                "toString": "6600"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1578430",
-                "fromString": "1578430",
-                "to": null,
-                "toString": null
-              }
-            ]
-          }
-        ]
-      }
-    },
-    {
-      "key": "WAP-11742",
-      "fields": {
-        "summary": "[DEV] [Editor screen] Add editable content actions",
-        "timetracking": {
-          "originalEstimateSeconds": 115200,
-          "remainingEstimateSeconds": 0,
-          "timeSpentSeconds": 272700
-        },
-        "issuetype": {
-          "iconUrl": "https://jira.example.com/images/icons/issuetypes/subtask.png",
-          "name": "Implementation Subtask",
-          "subtask": true
-        },
-        "status": {
-          "iconUrl": "https://jira.example.com/images/icons/statuses/closed.png",
-          "name": "Closed",
-          "statusCategory": {
-            "key": "done",
-            "colorName": "green",
-            "name": "Complete"
-          }
-        },
-        "created": "2018-08-02T12:34:03.000+0200",
-        "priority": {
-          "iconUrl": "https://jira.example.com/images/icons/priorities/critical.png",
-          "name": "Critical"
-        },
-        "parent": {
-          "key": "WAP-11739"
-        },
-        "assignee": {
-          "name": "fredg",
-          "displayName": "Fred Gavin"
-        },
-        "customfield_11869": [
-          "com.atlassian.greenhopper.service.sprint.Sprint@638d37ed[rapidViewId=213,state=CLOSED,name=WAP-StevenR 2,startDate=2018-08-16T17:19:53.225+02:00,endDate=2018-08-29T18:19:00.000+02:00,completeDate=2018-08-30T15:34:14.530+02:00,id=1765]",
-          "com.atlassian.greenhopper.service.sprint.Sprint@1820edec[rapidViewId=213,state=CLOSED,name=WAP-StevenR 3,startDate=2018-08-30T15:35:08.804+02:00,endDate=2018-09-12T18:35:00.000+02:00,completeDate=2018-09-13T09:00:39.975+02:00,id=1778]",
-          "com.atlassian.greenhopper.service.sprint.Sprint@590bc4b1[rapidViewId=213,state=ACTIVE,name=WAP-StevenR 4,startDate=2018-09-13T16:04:20.101+02:00,endDate=2018-09-26T16:04:00.000+02:00,completeDate=<null>,id=1779]"
-        ]
-      },
-      "changelog": {
-        "histories": [
-          {
-            "created": "2018-08-02T12:51:10.000+0200",
-            "items": [
-              {
-                "field": "assignee",
-                "from": "gregoryj",
-                "fromString": "Gregory Johannson",
-                "to": "fredg",
-                "toString": "Fred Gavin"
-              }
-            ]
-          },
-          {
-            "created": "2018-08-16T16:46:28.000+0200",
-            "items": [
-              {
-                "field": "timeoriginalestimate",
-                "from": null,
-                "fromString": null,
-                "to": "115200",
-                "toString": "115200"
-              },
-              {
-                "field": "timeestimate",
-                "from": null,
-                "fromString": null,
-                "to": "115200",
-                "toString": "115200"
-              },
-              {
-                "field": "Sprint",
-                "from": "1765",
-                "fromString": "WAP-StevenR 2",
-                "to": "",
-                "toString": ""
-              }
-            ]
-          },
-          {
-            "created": "2018-08-23T17:43:30.000+0200",
-            "items": [
-              {
-                "field": "assignee",
-                "from": "fredg",
-                "fromString": "Fred Gavin",
-                "to": "johns",
-                "toString": "John Smith"
-              }
-            ]
-          },
-          {
-            "created": "2018-08-23T17:43:34.000+0200",
-            "items": [
-              {
-                "field": "status",
-                "from": "1",
-                "fromString": "Open",
-                "to": "3",
-                "toString": "In Progress"
-              }
-            ]
-          },
-          {
-            "created": "2018-08-23T17:48:38.000+0200",
-            "items": [
-              {
-                "field": "Link",
-                "from": null,
-                "fromString": null,
-                "to": "RES-174",
-                "toString": "This issue is reported as RES-174"
-              }
-            ]
-          },
-          {
-            "created": "2018-08-23T18:02:27.000+0200",
-            "items": [
-              {
-                "field": "timeestimate",
-                "from": "115200",
-                "fromString": "115200",
-                "to": "106200",
-                "toString": "106200"
-              },
-              {
-                "field": "timespent",
-                "from": null,
-                "fromString": null,
-                "to": "9000",
-                "toString": "9000"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1569519",
-                "fromString": "1569519",
-                "to": null,
-                "toString": null
-              }
-            ]
-          },
-          {
-            "created": "2018-08-24T18:05:20.000+0200",
-            "items": [
-              {
-                "field": "timeestimate",
-                "from": "106200",
-                "fromString": "106200",
-                "to": "78300",
-                "toString": "78300"
-              },
-              {
-                "field": "timespent",
-                "from": "9000",
-                "fromString": "9000",
-                "to": "36900",
-                "toString": "36900"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1570042",
-                "fromString": "1570042",
-                "to": null,
-                "toString": null
-              }
-            ]
-          },
-          {
-            "created": "2018-08-27T09:04:40.000+0200",
-            "items": [
-              {
-                "field": "timeestimate",
-                "from": "78300",
-                "fromString": "78300",
-                "to": "74700",
-                "toString": "74700"
-              },
-              {
-                "field": "timespent",
-                "from": "36900",
-                "fromString": "36900",
-                "to": "40500",
-                "toString": "40500"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1570134",
-                "fromString": "1570134",
-                "to": null,
-                "toString": null
-              }
-            ]
-          },
-          {
-            "created": "2018-08-29T12:44:04.000+0200",
-            "items": [
-              {
-                "field": "timeestimate",
-                "from": "0",
-                "fromString": "0",
-                "to": "50400",
-                "toString": "50400"
-              },
-              {
-                "field": "Sprint",
-                "from": "1765",
-                "fromString": "WAP-StevenR 2",
-                "to": "",
-                "toString": ""
-              }
-            ]
-          },
-          {
-            "created": "2018-09-06T19:04:13.000+0200",
-            "items": [
-              {
-                "field": "status",
-                "from": "3",
-                "fromString": "In Progress",
-                "to": "10013",
-                "toString": "Implemented"
-              },
-              {
-                "field": "resolution",
-                "from": null,
-                "fromString": null,
-                "to": "1",
-                "toString": "Fixed"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-11T10:38:08.000+0200",
-            "items": [
-              {
-                "field": "status",
-                "from": "10013",
-                "fromString": "Implemented",
-                "to": "5",
-                "toString": "Resolved"
-              },
-              {
-                "field": "assignee",
-                "from": "johns",
-                "fromString": "John Smith",
-                "to": "stevenr",
-                "toString": "Steven Rogers"
-              },
-              {
-                "field": "Fix Version",
-                "from": null,
-                "fromString": null,
-                "to": "34064",
-                "toString": "master"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-12T13:33:08.000+0200",
-            "items": [
-              {
-                "field": "Sprint",
-                "from": "1765, 1778",
-                "fromString": "WAP-StevenR 2, WAP-StevenR 3",
-                "to": "",
-                "toString": ""
-              },
-              {
-                "field": "Security Review Status",
-                "from": "11928",
-                "fromString": "Further review required",
-                "to": null,
-                "toString": ""
-              }
-            ]
-          },
-          {
-            "created": "2018-09-12T13:33:17.000+0200",
-            "items": [
-              {
-                "field": "status",
-                "from": "5",
-                "fromString": "Resolved",
-                "to": "6",
-                "toString": "Closed"
-              },
-              {
-                "field": "assignee",
-                "from": "stevenr",
-                "fromString": "Steven Rogers",
-                "to": "fredg",
-                "toString": "Fred Gavin"
-              }
-            ]
-          }
-
-        ]
+        "histories": []
       }
     },
     {
@@ -1078,7 +428,7 @@
             ]
           },
           {
-            "created": "2018-09-13T09:00:40.000+0200",
+            "created": "2018-09-05T09:00:40.000+0200",
             "items": [
               {
                 "field": "Sprint",
@@ -1092,15 +442,14 @@
         ]
       }
     },
-
     {
-      "key": "WAP-11939",
+      "key": "WAP-11742",
       "fields": {
-        "summary": "[DEV] [User admin] Switch from Perl to Scala",
+        "summary": "[DEV] [Editor screen] Add editable content actions",
         "timetracking": {
-          "originalEstimateSeconds": 115200,
-          "remainingEstimateSeconds": 0,
-          "timeSpentSeconds": 201600
+          "originalEstimateSeconds": 187200,
+          "remainingEstimateSeconds": 126900,
+          "timeSpentSeconds": 60300
         },
         "issuetype": {
           "iconUrl": "https://jira.example.com/images/icons/issuetypes/subtask.png",
@@ -1116,13 +465,13 @@
             "name": "Complete"
           }
         },
-        "created": "2018-08-16T16:31:26.000+0200",
+        "created": "2018-08-02T12:34:03.000+0200",
         "priority": {
-          "iconUrl": "https://jira.example.com/images/icons/priorities/major.png",
-          "name": "Major"
+          "iconUrl": "https://jira.example.com/images/icons/priorities/critical.png",
+          "name": "Critical"
         },
         "parent": {
-          "key": "WAP-11933"
+          "key": "WAP-11739"
         },
         "assignee": {
           "name": "fredg",
@@ -1137,57 +486,50 @@
       "changelog": {
         "histories": [
           {
-            "created": "2018-08-16T16:36:50.000+0200",
+            "created": "2018-08-02T12:51:10.000+0200",
             "items": [
               {
-                "field": "summary",
-                "from": null,
-                "fromString": "Summary A",
-                "to": null,
-                "toString": "Summary B"
+                "field": "assignee",
+                "from": "gregoryj",
+                "fromString": "Gregory Johannson",
+                "to": "fredg",
+                "toString": "Fred Gavin"
               }
             ]
           },
           {
-            "created": "2018-08-16T16:36:56.000+0200",
+            "created": "2018-08-16T16:46:28.000+0200",
             "items": [
               {
                 "field": "timeoriginalestimate",
                 "from": null,
                 "fromString": null,
-                "to": "115200",
-                "toString": "115200"
+                "to": "187200",
+                "toString": "187200"
               },
               {
                 "field": "timeestimate",
                 "from": null,
                 "fromString": null,
-                "to": "115200",
-                "toString": "115200"
-              },
-              {
-                "field": "Sprint",
-                "from": "1765",
-                "fromString": "WAP-StevenR 2",
-                "to": "",
-                "toString": ""
+                "to": "187200",
+                "toString": "187200"
               }
             ]
           },
           {
-            "created": "2018-08-17T17:20:45.000+0200",
+            "created": "2018-08-23T17:43:30.000+0200",
             "items": [
               {
                 "field": "assignee",
-                "from": "stevenr",
-                "fromString": "Steven Rogers",
-                "to": "kater",
-                "toString": "Kate Rubin"
+                "from": "fredg",
+                "fromString": "Fred Gavin",
+                "to": "johns",
+                "toString": "John Smith"
               }
             ]
           },
           {
-            "created": "2018-08-20T12:45:45.000+0200",
+            "created": "2018-08-23T17:43:34.000+0200",
             "items": [
               {
                 "field": "status",
@@ -1199,7 +541,7 @@
             ]
           },
           {
-            "created": "2018-08-20T15:41:17.000+0200",
+            "created": "2018-08-23T17:48:38.000+0200",
             "items": [
               {
                 "field": "Link",
@@ -1211,85 +553,64 @@
             ]
           },
           {
-            "created": "2018-08-20T15:42:04.000+0200",
+            "created": "2018-09-06T18:02:27.000+0200",
             "items": [
               {
                 "field": "timeestimate",
                 "from": "115200",
                 "fromString": "115200",
-                "to": "108000",
-                "toString": "108000"
+                "to": "162000",
+                "toString": "162000"
               },
               {
                 "field": "timespent",
                 "from": null,
                 "fromString": null,
-                "to": "7200",
-                "toString": "7200"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1567932",
-                "fromString": "1567932",
-                "to": null,
-                "toString": null
+                "to": "25200",
+                "toString": "25200"
               }
             ]
           },
           {
-            "created": "2018-08-20T15:42:17.000+0200",
+            "created": "2018-09-14T18:05:20.000+0200",
             "items": [
               {
                 "field": "timeestimate",
-                "from": "108000",
-                "fromString": "108000",
-                "to": "80100",
-                "toString": "80100"
+                "from": "162000",
+                "fromString": "162000",
+                "to": "158400",
+                "toString": "158400"
               },
               {
                 "field": "timespent",
-                "from": "7200",
-                "fromString": "7200",
-                "to": "35100",
-                "toString": "35100"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1567933",
-                "fromString": "1567933",
-                "to": null,
-                "toString": null
+                "from": "25200",
+                "fromString": "25200",
+                "to": "28800",
+                "toString": "28800"
               }
             ]
           },
           {
-            "created": "2018-08-21T17:39:28.000+0200",
+            "created": "2018-09-20T09:04:40.000+0200",
             "items": [
               {
                 "field": "timeestimate",
-                "from": "80100",
-                "fromString": "80100",
-                "to": "54900",
-                "toString": "54900"
+                "from": "158400",
+                "fromString": "158400",
+                "to": "126900",
+                "toString": "126900"
               },
               {
                 "field": "timespent",
-                "from": "35100",
-                "fromString": "35100",
+                "from": "28800",
+                "fromString": "28800",
                 "to": "60300",
                 "toString": "60300"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1568615",
-                "fromString": "1568615",
-                "to": null,
-                "toString": null
               }
             ]
           },
           {
-            "created": "2018-08-29T16:55:09.000+0200",
+            "created": "2018-09-21T19:04:13.000+0200",
             "items": [
               {
                 "field": "status",
@@ -1308,7 +629,7 @@
             ]
           },
           {
-            "created": "2018-08-31T15:08:58.000+0200",
+            "created": "2018-09-22T10:38:08.000+0200",
             "items": [
               {
                 "field": "status",
@@ -1319,27 +640,22 @@
               },
               {
                 "field": "assignee",
-                "from": "kater",
-                "fromString": "Kate Rubin",
+                "from": "johns",
+                "fromString": "John Smith",
                 "to": "stevenr",
                 "toString": "Steven Rogers"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-03T10:10:41.000+0200",
-            "items": [
+              },
               {
-                "field": "Sprint",
-                "from": "1765, 1778",
-                "fromString": "WAP-StevenR 2, WAP-StevenR 3",
-                "to": "",
-                "toString": ""
+                "field": "Fix Version",
+                "from": null,
+                "fromString": null,
+                "to": "34064",
+                "toString": "master"
               }
             ]
           },
           {
-            "created": "2018-09-03T10:10:49.000+0200",
+            "created": "2018-09-23T13:33:17.000+0200",
             "items": [
               {
                 "field": "status",
@@ -1361,39 +677,39 @@
       }
     },
     {
-      "key": "WAP-11937",
+      "key": "WAP-11744",
       "fields": {
-        "summary": "[TD] [User admin] Switch from Perl to Scala",
+        "summary": "[TEST] [Editor screen] Add editable content actions",
         "timetracking": {
           "originalEstimateSeconds": 7200,
           "remainingEstimateSeconds": 0,
-          "timeSpentSeconds": 8100
+          "timeSpentSeconds": 11700
         },
         "issuetype": {
-          "iconUrl": "https://jira.example.com/images/icons/issuetypes/documentation.png",
-          "name": "Document Subtask",
+          "iconUrl": "https://jira.example.com/images/icons/issuetypes/subtask_alternate.png",
+          "name": "Sub-task",
           "subtask": true
         },
         "status": {
-          "iconUrl": "https://jira.example.com/images/icons/statuses/closed.png",
-          "name": "Closed",
+          "iconUrl": "https://jira.example.com/images/icons/statuses/open.png",
+          "name": "Open",
           "statusCategory": {
-            "key": "done",
-            "colorName": "green",
-            "name": "Complete"
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "New"
           }
         },
-        "created": "2018-08-16T16:31:26.000+0200",
+        "created": "2018-08-02T12:34:03.000+0200",
         "priority": {
-          "iconUrl": "https://jira.example.com/images/icons/priorities/major.png",
-          "name": "Major"
+          "iconUrl": "https://jira.example.com/images/icons/priorities/critical.png",
+          "name": "Critical"
         },
         "parent": {
-          "key": "WAP-11933"
+          "key": "WAP-11739"
         },
         "assignee": {
-          "name": "fredg",
-          "displayName": "Fred Gavin"
+          "name": "johns",
+          "displayName": "John Smith"
         },
         "customfield_11869": [
           "com.atlassian.greenhopper.service.sprint.Sprint@638d37ed[rapidViewId=213,state=CLOSED,name=WAP-StevenR 2,startDate=2018-08-16T17:19:53.225+02:00,endDate=2018-08-29T18:19:00.000+02:00,completeDate=2018-08-30T15:34:14.530+02:00,id=1765]",
@@ -1404,187 +720,38 @@
       "changelog": {
         "histories": [
           {
-            "created": "2018-08-16T16:32:29.000+0200",
-            "items": [
-              {
-                "field": "timeoriginalestimate",
-                "fieldtype": "jira",
-                "from": null,
-                "fromString": null,
-                "to": "7200",
-                "toString": "7200"
-              },
-              {
-                "field": "timeestimate",
-                "fieldtype": "jira",
-                "from": null,
-                "fromString": null,
-                "to": "7200",
-                "toString": "7200"
-              },
-              {
-                "field": "Sprint",
-                "fieldtype": "custom",
-                "from": "1765",
-                "fromString": "WAP-StevenR 2",
-                "to": "",
-                "toString": ""
-              }
-            ]
-          },
-          {
-            "created": "2018-08-29T12:22:31.000+0200",
+            "created": "2018-08-02T12:51:19.000+0200",
             "items": [
               {
                 "field": "assignee",
-                "from": "stevenr",
-                "fromString": "Steven Rogers",
-                "to": "kater",
-                "toString": "Kate Rubin"
-              }
-            ]
-          },
-          {
-            "created": "2018-08-29T17:18:38.000+0200",
-            "items": [
-              {
-                "field": "timeestimate",
-                "from": "7200",
-                "fromString": "7200",
-                "to": "900",
-                "toString": "900"
-              },
-              {
-                "field": "timespent",
-                "from": null,
-                "fromString": null,
-                "to": "6300",
-                "toString": "6300"
-              },
-              {
-                "field": "WorklogId",
-                "from": "1571702",
-                "fromString": "1571702",
-                "to": null,
-                "toString": null
-              }
-            ]
-          },
-          {
-            "created": "2018-08-31T12:05:26.000+0200",
-            "items": [
-              {
-                "field": "status",
-                "from": "1",
-                "fromString": "Open",
-                "to": "5",
-                "toString": "Resolved"
-              },
-              {
-                "field": "assignee",
-                "from": "kater",
-                "fromString": "Kate Rubin",
-                "to": "stevenr",
-                "toString": "Steven Rogers"
-              }
-            ]
-          },
-          {
-            "created": "2018-09-03T10:10:01.000+0200",
-            "items": [
-              {
-                "field": "Sprint",
-                "from": "1765, 1778",
-                "fromString": "WAP-StevenR 2, WAP-StevenR 3",
-                "to": "",
-                "toString": ""
-              }
-            ]
-          },
-          {
-            "created": "2018-09-03T10:10:20.000+0200",
-            "items": [
-              {
-                "field": "status",
-                "from": "5",
-                "fromString": "Resolved",
-                "to": "6",
-                "toString": "Closed"
-              },
-              {
-                "field": "assignee",
-                "from": "stevenr",
-                "fromString": "Steven Rogers",
+                "from": "gregoryj",
+                "fromString": "Gregory Johannson",
                 "to": "fredg",
                 "toString": "Fred Gavin"
               }
             ]
-          }
-        ]
-      }
-    },
-    {
-      "key": "WAP-11933",
-      "fields": {
-        "summary": "[User admin] Switch from Perl to Scala",
-        "timetracking": {},
-        "issuetype": {
-          "iconUrl": "https://jira.example.com/images/icons/issuetypes/story.png",
-          "name": "Story",
-          "subtask": false
-        },
-        "status": {
-          "iconUrl": "https://jira.example.com/images/icons/statuses/inprogress.png",
-          "name": "In Progress",
-          "statusCategory": {
-            "key": "indeterminate",
-            "colorName": "yellow",
-            "name": "In Progress"
-          }
-        },
-        "created": "2018-08-16T16:23:28.000+0200",
-        "priority": {
-          "iconUrl": "https://jira.example.com/images/icons/priorities/major.png",
-          "name": "Major"
-        },
-        "assignee": {
-          "name": "stevenr",
-          "displayName": "Steven Rogers"
-        },
-        "customfield_11869": [
-          "com.atlassian.greenhopper.service.sprint.Sprint@638d37ed[rapidViewId=213,state=CLOSED,name=WAP-StevenR 2,startDate=2018-08-16T17:19:53.225+02:00,endDate=2018-08-29T18:19:00.000+02:00,completeDate=2018-08-30T15:34:14.530+02:00,id=1765]",
-          "com.atlassian.greenhopper.service.sprint.Sprint@1820edec[rapidViewId=213,state=CLOSED,name=WAP-StevenR 3,startDate=2018-08-30T15:35:08.804+02:00,endDate=2018-09-12T18:35:00.000+02:00,completeDate=2018-09-13T09:00:39.975+02:00,id=1778]",
-          "com.atlassian.greenhopper.service.sprint.Sprint@590bc4b1[rapidViewId=213,state=ACTIVE,name=WAP-StevenR 4,startDate=2018-09-13T16:04:20.101+02:00,endDate=2018-09-26T16:04:00.000+02:00,completeDate=<null>,id=1779]"
-        ]
-      },
-      "changelog": {
-        "histories": [
+          },
           {
-            "created": "2018-08-16T16:29:46.000+0200",
+            "created": "2018-08-16T16:47:20.000+0200",
             "items": [
               {
-                "field": "Epic Link",
+                "field": "timeoriginalestimate",
                 "from": null,
                 "fromString": null,
-                "to": "469207",
-                "toString": "WAP-5030"
-              }
-            ]
-          },
-          {
-            "created": "2018-08-16T16:31:26.000+0200",
-            "items": [
+                "to": "7200",
+                "toString": "7200"
+              },
               {
-                "field": "status",
-                "from": "1",
-                "fromString": "Open",
-                "to": "3",
-                "toString": "In Progress"
+                "field": "timeestimate",
+                "from": null,
+                "fromString": null,
+                "to": "7200",
+                "toString": "7200"
               }
             ]
           },
           {
-            "created": "2018-08-20T15:40:46.000+0200",
+            "created": "2018-08-23T17:48:55.000+0200",
             "items": [
               {
                 "field": "Link",
@@ -1596,27 +763,298 @@
             ]
           },
           {
-            "created": "2018-08-30T15:34:16.000+0200",
+            "created": "2018-08-29T12:24:03.000+0200",
+            "items": [
+              {
+                "field": "assignee",
+                "from": "fredg",
+                "fromString": "Fred Gavin",
+                "to": "stevenr",
+                "toString": "Steven Rogers"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-10T16:07:00.000+0200",
+            "items": [
+              {
+                "field": "timeestimate",
+                "from": "7200",
+                "fromString": "7200",
+                "to": "6300",
+                "toString": "6300"
+              },
+              {
+                "field": "timespent",
+                "from": null,
+                "fromString": null,
+                "to": "900",
+                "toString": "900"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-13T09:00:43.000+0200",
+            "items": [
+              {
+                "field": "Rank",
+                "from": "",
+                "fromString": "",
+                "to": "",
+                "toString": "Ranked higher"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-13T15:58:32.000+0200",
+            "items": [
+              {
+                "field": "assignee",
+                "from": "stevenr",
+                "fromString": "Steven Rogers",
+                "to": "johns",
+                "toString": "John Smith"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-15T17:44:43.000+0200",
+            "items": [
+              {
+                "field": "timeestimate",
+                "from": "6300",
+                "fromString": "6300",
+                "to": "2700",
+                "toString": "2700"
+              },
+              {
+                "field": "timespent",
+                "from": "900",
+                "fromString": "900",
+                "to": "4500",
+                "toString": "4500"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-17T17:52:00.000+0200",
+            "items": [
+              {
+                "field": "timeestimate",
+                "from": "2700",
+                "fromString": "2700",
+                "to": "0",
+                "toString": "0"
+              },
+              {
+                "field": "timespent",
+                "from": "4500",
+                "fromString": "4500",
+                "to": "11700",
+                "toString": "11700"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "WAP-12352",
+      "fields": {
+        "summary": "Enhance nuclear reactor to support destruction of nova",
+        "timetracking": {
+          "originalEstimateSeconds": 144000,
+          "remainingEstimateSeconds": 96300,
+          "timeSpentSeconds": 18900
+        },
+        "issuetype": {
+          "iconUrl": "https://jira.example.com/images/icons/issuetypes/newfeature.png",
+          "name": "New Feature",
+          "subtask": false
+        },
+        "status": {
+          "iconUrl": "https://jira.example.com/images/icons/statuses/needinfo.png",
+          "name": "Implemented",
+          "statusCategory": {
+            "key": "indeterminate",
+            "colorName": "yellow",
+            "name": "In Progress"
+          }
+        },
+        "created": "2018-08-01T09:34:26.000+0200",
+        "priority": {
+          "iconUrl": "https://jira.example.com/images/icons/priorities/major.png",
+          "name": "Major"
+        },
+        "assignee": {
+          "name": "kater",
+          "displayName": "Kate Rubin"
+        },
+        "customfield_11869": [
+          "com.atlassian.greenhopper.service.sprint.Sprint@590bc4b1[rapidViewId=213,state=ACTIVE,name=WAP-StevenR 4,startDate=2018-09-13T16:04:20.101+02:00,endDate=2018-09-26T16:04:00.000+02:00,completeDate=<null>,id=1779]"
+        ]
+      },
+      "changelog": {
+        "histories": [
+          {
+            "created": "2018-08-02T12:44:22.000+0200",
+            "items": [
+              {
+                "field": "Sprint",
+                "from": null,
+                "fromString": null,
+                "to": "1765",
+                "toString": "WAP-StevenR 2"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-10T09:34:53.000+0200",
+            "items": [
+              {
+                "field": "Epic Link",
+                "from": null,
+                "fromString": null,
+                "to": "530125",
+                "toString": "WAP-12186"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-11T11:01:29.000+0200",
+            "items": [
+              {
+                "field": "timeestimate",
+                "from": "144000",
+                "fromString": "144000",
+                "to": "115200",
+                "toString": "115200"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-18T16:37:01.000+0200",
+            "items": [
+              {
+                "field": "timeestimate",
+                "from": "115200",
+                "fromString": "115200",
+                "to": "100800",
+                "toString": "100800"
+              },
+              {
+                "field": "timespent",
+                "from": null,
+                "fromString": null,
+                "to": "14400",
+                "toString": "14400"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-20T15:34:15.000+0200",
             "items": [
               {
                 "field": "Sprint",
                 "from": "1765",
                 "fromString": "WAP-StevenR 2",
                 "to": "1765, 1778",
-                "toString": "WAP-StevenR 2, WAP-StevenR 3"
+                "toString": "WAP-StevenR 2, WAP-StevenR 4"
               }
             ]
           },
           {
-            "created": "2018-09-13T09:00:41.000+0200",
+            "created": "2018-09-21T17:37:01.000+0200",
+            "items": [
+              {
+                "field": "timeestimate",
+                "from": "100800",
+                "fromString": "100800",
+                "to": "97200",
+                "toString": "97200"
+              },
+              {
+                "field": "timespent",
+                "from": "14400",
+                "fromString": "14400",
+                "to": "18000",
+                "toString": "18000"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-23T12:44:22.000+0200",
             "items": [
               {
                 "field": "Sprint",
-                "fieldtype": "custom",
-                "from": "1765, 1778",
-                "fromString": "WAP-StevenR 2, WAP-StevenR 3",
-                "to": "1765, 1778, 1779",
-                "toString": "WAP-StevenR 2, WAP-StevenR 3, WAP-StevenR 4"
+                "from": "1765",
+                "fromString": "WAP-StevenR 4",
+                "to": "2000",
+                "toString": "WAP-StevenR 5"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-23T14:01:52.000+0200",
+            "items": [
+              {
+                "field": "assignee",
+                "from": "stevenr",
+                "fromString": "Steven Rogers",
+                "to": "kater",
+                "toString": "Kate Rubin"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-24T18:37:01.000+0200",
+            "items": [
+              {
+                "field": "timeestimate",
+                "from": "97200",
+                "fromString": "97200",
+                "to": "96300",
+                "toString": "96300"
+              },
+              {
+                "field": "timespent",
+                "from": "18000",
+                "fromString": "18000",
+                "to": "18900",
+                "toString": "18900"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-25T09:58:32.000+0200",
+            "items": [
+              {
+                "field": "status",
+                "from": "1",
+                "fromString": "Open",
+                "to": "3",
+                "toString": "In Progress"
+              }
+            ]
+          },
+          {
+            "created": "2018-09-26T11:29:46.000+0200",
+            "items": [
+              {
+                "field": "status",
+                "fieldtype": "jira",
+                "from": "3",
+                "fromString": "In Progress",
+                "to": "10013",
+                "toString": "Implemented"
+              },
+              {
+                "field": "resolution",
+                "fieldtype": "jira",
+                "from": null,
+                "fromString": null,
+                "to": "1",
+                "toString": "Fixed"
               }
             ]
           }

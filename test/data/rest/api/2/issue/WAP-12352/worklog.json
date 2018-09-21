@@ -5,10 +5,25 @@
         "name": "kater",
         "displayName": "Kate Rubin"
       },
-      "created": "2018-09-14T16:37:01.000+0200",
-      "updated": "2018-09-14T16:37:01.000+0200",
-      "started": "2018-09-14T16:36:00.000+0200",
-      "timeSpentSeconds": 21600
+      "started": "2018-09-18T16:37:01.000+0200",
+      "timeSpentSeconds": 14400
+    },
+    {
+      "author": {
+        "name": "kater",
+        "displayName": "Kate Rubin"
+      },
+      "started": "2018-09-21T17:37:01.000+0200",
+      "timeSpentSeconds": 3600
+    },
+    {
+      "author": {
+        "name": "kater",
+        "displayName": "Kate Rubin"
+      },
+      "started": "2018-09-24T18:37:01.000+0200",
+      "timeSpentSeconds": 900
     }
+
   ]
 }

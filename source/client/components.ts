@@ -89,9 +89,9 @@ export const IssueRow = ({issue}: { issue: Issue }) =>
 
         td({class: "text-nowrap"}, [
             issue.sprintWorkRatio < 100 ?
-                span({class: "green"}, `${issue.sprintWorkRatio} %`)
+                span({class: "green"}, `${issue.sprintWorkRatio}%`)
                 :
-                span({class: "red"}, `${issue.sprintWorkRatio} %`)
+                span({class: "red"}, `${issue.sprintWorkRatio}%`)
         ]),
 
         td({class: "text-nowrap"}, [

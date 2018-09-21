@@ -104,10 +104,12 @@ export class Actions implements ActionsType<State, Actions> {
 
 
     readonly fetchSprintDetails = () => async (state: State, actions: Actions) => {
-        console.log("Fetching sprint...");
-        const sprintDetails = await this.fetch<SprintDetails>(
-            `/boards/${state.selectedBoardId}/sprints/${state.selectedSprintId}`);
-        actions.updateSprintDetails(sprintDetails);
+        if (state.selectedBoardId && state.selectedSprintId) {
+            console.log("Fetching sprint details...");
+            const sprintDetails = await this.fetch<SprintDetails>(
+                `/boards/${state.selectedBoardId}/sprints/${state.selectedSprintId}`);
+            actions.updateSprintDetails(sprintDetails);
+        }
     };
     readonly updateSprintDetails = (sprintDetails: SprintDetails) => (state: State) => {
         console.log("Sprint updated.")

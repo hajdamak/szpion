@@ -30,6 +30,20 @@ export const view: View<State, Actions> = (state: State, actions: Actions) =>
                 ])
             ])
         ]),
+
+        span("Board"),
+        Selector({
+            items: state.boards,
+            selectedId: state.selectedBoardId,
+            onchange: actions.changeBoard
+        }),
+        span("Sprint"),
+        Selector({
+            items: state.sprints, selectedId:
+            state.selectedSprintId,
+            onchange: actions.changeSprint
+        }),
+
         section({class: "section"}, [
 
             state.sprintDetails ? (
@@ -37,18 +51,7 @@ export const view: View<State, Actions> = (state: State, actions: Actions) =>
 
                     div({class: "columns"}, [
                         div({class: "column"}, [
-                            span("Board"),
-                            Selector({
-                                items: state.boards,
-                                selectedId: state.selectedBoardId,
-                                onchange: actions.changeBoard
-                            }),
-                            span("Sprint"),
-                            Selector({
-                                items: state.sprints, selectedId:
-                                state.selectedSprintId,
-                                onchange: actions.changeSprint
-                            })
+
                         ]),
                         div({class: "column"}, [
                             div(`Issues: ${state.sprintDetails.issuesCount}`),
