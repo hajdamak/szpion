@@ -1,6 +1,6 @@
 import {Server} from './server';
 
 const server = new Server(
-    true, true
+	true, true
 );
 server.start();

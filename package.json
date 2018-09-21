@@ -1,65 +1,63 @@
 {
-  "name": "szpion",
-  "version": "0.0.2",
-  "description": "Daily Sprint Invigilation",
-  "author": "Rafał Hajdacki",
-  "license": "MIT",
-  "homepage": "https://github.com/rhajdacki/szpion#readme",
-  "main": "server/main.ts",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rhajdacki/szpion"
-  },
-  "scripts": {
-    "dev": "npm run dev-server & npm run dev-client",
-    "dev-client": "parcel serve --target browser --out-dir ./target/client ./source/client/index.html",
-    "dev-server": "nodemon --watch ./source --inspect -r ts-node/register ./source/server/main.ts",
-    "dev-compile": "tsc --watch",
-    "start-prod": "echo Not_implemented && exit 1",
-    "build": "cross-env NODE_ENV=production parcel build src/index.html --public-url .",
-    "compile": "tsc",
-    "test": "jest --coverage"
-  },
-  "dependencies": {
-    "bulma": "0.7.1",
-    "classcat": "^3.2.3",
-    "cross-fetch": "^2.2.2",
-    "hyperapp": "^1.2.9",
-    "koa": "^2.5.2",
-    "koa-better-http-proxy": "^0.2.4",
-    "koa-router": "^7.4.0",
-    "node-sass": "^4.9.3"
-  },
-  "devDependencies": {
-    "@hyperapp/html": "^1.1.1",
-    "@types/koa": "^2.0.46",
-    "@types/koa-router": "^7.0.31",
-    "@types/node": "^10.9.4",
-    "@types/node-fetch": "^2.1.2",
-    "@types/jest": "^23.3.1",
-    "cross-env": "^5.1.6",
-    "jest": "^23.5.0",
-    "nodemon": "^1.18.3",
-    "parcel-bundler": "^1.9.7",
-    "ts-jest": "^23.1.4",
-    "ts-node": "^7.0.1",
-    "typescript": "^3.0.1"
-  },
-  "browserslist": [
-    "> 5%"
-  ],
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
-  }
+	"name": "szpion",
+	"version": "0.0.2",
+	"description": "Daily Sprint Invigilation",
+	"author": "Rafał Hajdacki",
+	"license": "MIT",
+	"homepage": "https://github.com/rhajdacki/szpion#readme",
+	"main": "server/main.ts",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/rhajdacki/szpion"
+	},
+	"scripts": {
+		"dev": "npm run dev-server & npm run dev-client",
+		"dev-client": "parcel serve --target browser --out-dir ./target/client ./source/client/index.html",
+		"dev-server": "nodemon --watch ./source --inspect -r ts-node/register ./source/server/main.ts",
+		"start": "echo Not_implemented && exit 1",
+		"build": "cross-env NODE_ENV=production parcel build --out-dir dist/client ./source/client/index.html --public-url .",
+		"test": "tsc && jest --coverage"
+	},
+	"dependencies": {
+		"bulma": "0.7.1",
+		"classcat": "^3.2.3",
+		"cross-fetch": "^2.2.2",
+		"hyperapp": "^1.2.9",
+		"koa": "^2.5.2",
+		"koa-better-http-proxy": "^0.2.4",
+		"koa-router": "^7.4.0",
+		"node-sass": "^4.9.3"
+	},
+	"devDependencies": {
+		"@hyperapp/html": "^1.1.1",
+		"@types/koa": "^2.0.46",
+		"@types/koa-router": "^7.0.31",
+		"@types/node": "^10.9.4",
+		"@types/node-fetch": "^2.1.2",
+		"@types/jest": "^23.3.1",
+		"cross-env": "^5.1.6",
+		"jest": "^23.5.0",
+		"nodemon": "^1.18.3",
+		"parcel-bundler": "^1.9.7",
+		"ts-jest": "^23.1.4",
+		"ts-node": "^7.0.1",
+		"typescript": "^3.0.1"
+	},
+	"browserslist": [
+		"> 5%"
+	],
+	"jest": {
+		"transform": {
+			"^.+\\.tsx?$": "ts-jest"
+		},
+		"testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+		"moduleFileExtensions": [
+			"ts",
+			"tsx",
+			"js",
+			"jsx",
+			"json",
+			"node"
+		]
+	}
 }

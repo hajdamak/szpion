@@ -5,42 +5,42 @@ import process from 'process';
 import {ClientConfig} from "../common/model";
 
 export interface Config {
-    jiraURL: string;
-    jiraBasicAuthToken: string;
-    clientConfig: ClientConfig;
+	jiraURL: string;
+	jiraBasicAuthToken: string;
+	clientConfig: ClientConfig;
 }
 
 export const loadConfig = (): Config => {
 
-    const encoding = 'UTF-8';
-    const fileName = `config.json`;
-    const localFile = `${os.homedir()}/.szpion/${fileName}`;
-    const mainFile = `${process.cwd()}/${fileName}`;
+	const encoding = 'UTF-8';
+	const fileName = `config.json`;
+	const localFile = `${os.homedir()}/.szpion/${fileName}`;
+	const mainFile = `${process.cwd()}/${fileName}`;
 
-    if (fs.existsSync(localFile)) {
-        console.log(`Using local config : ${localFile}`);
-        try {
-            return JSON.parse(fs.readFileSync(localFile, encoding));
-        } catch (e) {
-            console.log(`Error loading local config : ${e.message}`)
-        }
-    }
+	if (fs.existsSync(localFile)) {
+		console.log(`Using local config : ${localFile}`);
+		try {
+			return JSON.parse(fs.readFileSync(localFile, encoding));
+		} catch (e) {
+			console.log(`Error loading local config : ${e.message}`)
+		}
+	}
 
-    if (fs.existsSync(mainFile)) {
-        console.log(`Using main config : ${mainFile}`);
-        try {
-            return JSON.parse(fs.readFileSync(mainFile, encoding));
-        } catch (e) {
-            console.log(`Error loading main config : ${e.message}`)
-        }
-    }
+	if (fs.existsSync(mainFile)) {
+		console.log(`Using main config : ${mainFile}`);
+		try {
+			return JSON.parse(fs.readFileSync(mainFile, encoding));
+		} catch (e) {
+			console.log(`Error loading main config : ${e.message}`)
+		}
+	}
 
-    console.log(`Using default config.`);
-    return defaultConfig;
+	console.log(`Using default config.`);
+	return defaultConfig;
 }
 
 const defaultConfig: Config = {
-    jiraURL: `http://localhost`,
-    jiraBasicAuthToken: 'empty',
-    clientConfig: {}
+	jiraURL: `http://localhost`,
+	jiraBasicAuthToken: 'empty',
+	clientConfig: {}
 }

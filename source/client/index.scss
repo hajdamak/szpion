@@ -7,16 +7,16 @@ $section-padding: 0.5rem;
 @import '../../node_modules/bulma/bulma';
 
 #logo {
-  background-color: red;
-  border-radius: 40px;
-  font-weight: bold;
-  color: white;
-  padding: 6px;
+	background-color: red;
+	border-radius: 40px;
+	font-weight: bold;
+	color: white;
+	padding: 6px;
 }
 
 .table tbody {
-  tr.parent-issue {
-    background-color: rgba(220, 220, 220, 0.99) !important;
-  }
+	tr.parent-issue {
+		background-color: rgba(220, 220, 220, 0.99) !important;
+	}
 
 }

@@ -1,5 +1,5 @@
 {
-  "jiraURL": "localhost",
-  "jiraBasicAuthToken": "empty",
-  "clientConfig": {}
+	"jiraURL": "localhost",
+	"jiraBasicAuthToken": "empty",
+	"clientConfig": {}
 }
