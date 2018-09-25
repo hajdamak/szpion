@@ -10,22 +10,19 @@
 		"type": "git",
 		"url": "https://github.com/rhajdacki/szpion"
 	},
-	"config": {
-		"mockJIRA": false
-	},
 	"scripts": {
 		"start": "npm run start:server & npm run start:client",
 		"start:mock": "npm run start:server -- --mockJIRA & npm run start:client",
-		"start:client": "NODE_ENV=development parcel serve --target browser --port 8081 --cache-dir ./target-dev/cache --out-dir ./target-dev/client ./source/client/index.html",
+		"start:client": "NODE_ENV=development parcel serve --target browser --port 8081 --cache-dir ./target/dev/cache --out-dir ./target/dev/client ./source/client/index.html",
 		"start:server": "NODE_ENV=development nodemon --watch ./source --inspect -r ts-node/register ./source/server/main.ts",
-		"start:prod": "npm run build && ./target-prod/szpion",
-		"clean": "rm -rf ./target* ./coverage",
+		"start:prod": "npm run build && ./target/prod/szpion",
+		"clean": "rm -rf ./target",
 		"test": "tsc && jest --coverage",
 		"test:watch": "jest --watch",
 		"build": "npm run build:client && npm run build:server && npm run build:pkg",
-		"build:client": "parcel build --target browser  --cache-dir ./target-prod/cache --out-dir ./target-prod/client --public-url . ./source/client/index.html",
-		"build:server": "parcel build --target node  --cache-dir ./target-prod/cache --out-dir ./target-prod/server ./source/server/main.ts",
-		"build:pkg": "pkg --output ./target-prod/szpion ."
+		"build:client": "parcel build --target browser --cache-dir ./target/prod/cache --out-dir ./target/prod/client --public-url . ./source/client/index.html",
+		"build:server": "parcel build --target node --cache-dir ./target/prod/cache --out-dir ./target/prod/server ./source/server/main.ts",
+		"build:pkg": "pkg --output ./target/prod/szpion ."
 	},
 	"dependencies": {
 		"classcat": "^3.2.3",
@@ -48,7 +45,7 @@
 		"node-sass": "^4.9.3",
 		"jest": "^23.5.0",
 		"nodemon": "^1.18.3",
-		"parcel-bundler": "^1.9.7",
+		"parcel-bundler": "^1.10.0",
 		"pkg": "^4.3.4",
 		"ts-jest": "^23.1.4",
 		"ts-node": "^7.0.1",
@@ -72,10 +69,10 @@
 			"node"
 		]
 	},
-	"bin": "./target-prod/server/main.js",
+	"bin": "./target/prod/server/main.js",
 	"pkg": {
 		"assets": [
-			"./target-prod/client/**/*"
+			"./target/prod/client/**/*"
 		],
 		"targets": [
 			"node10-linux-x64"

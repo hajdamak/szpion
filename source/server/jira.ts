@@ -255,7 +255,7 @@ export class Jira {
 			const json: T = await response.json();
 			return json;
 		} else {
-			const file = path.join(__dirname, `../../jira-mock-data${resourcePath}.json`);
+			const file = path.join(process.cwd(), `jira-mock-data${resourcePath}.json`);
 			console.log(`Reading file : ${file}`);
 			const response = fs.readFileSync(file, "UTF-8");
 			const json = JSON.parse(response);
