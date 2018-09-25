@@ -20,8 +20,8 @@
 		"test": "tsc && jest --coverage",
 		"test:watch": "jest --watch",
 		"build": "npm run build:client && npm run build:server && npm run build:pkg",
-		"build:client": "parcel build --target browser --cache-dir ./target/prod/cache --out-dir ./target/prod/client --public-url . ./source/client/index.html",
-		"build:server": "parcel build --target node --cache-dir ./target/prod/cache --out-dir ./target/prod/server ./source/server/main.ts",
+		"build:client": "parcel build --target browser --public-url . --cache-dir ./target/prod/cache --out-dir ./target/prod/client ./source/client/index.html",
+		"build:server": "parcel build --target node --bundle-node-modules --cache-dir ./target/prod/cache --out-dir ./target/prod/server ./source/server/main.ts",
 		"build:pkg": "pkg --output ./target/prod/szpion ."
 	},
 	"dependencies": {
