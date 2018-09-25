@@ -16,16 +16,16 @@
 	"scripts": {
 		"start": "npm run start:server & npm run start:client",
 		"start:mock": "npm run start:server -- --mockJIRA & npm run start:client",
-		"start:client": "NODE_ENV=development parcel serve --target browser  --port 8081 --out-dir ./dist-dev/client ./source/client/index.html",
+		"start:client": "NODE_ENV=development parcel serve --target browser --port 8081 --cache-dir ./target-dev/cache --out-dir ./target-dev/client ./source/client/index.html",
 		"start:server": "NODE_ENV=development nodemon --watch ./source --inspect -r ts-node/register ./source/server/main.ts",
-		"start:prod": "npm run build && ./dist/szpion",
-		"clean": "rm -rf ./dist ./dist-dev ./target ./.cache ./coverage",
+		"start:prod": "npm run build && ./target-prod/szpion",
+		"clean": "rm -rf ./target* ./coverage",
 		"test": "tsc && jest --coverage",
 		"test:watch": "jest --watch",
 		"build": "npm run build:client && npm run build:server && npm run build:pkg",
-		"build:client": "parcel build --target browser --out-dir ./dist/client --public-url . ./source/client/index.html",
-		"build:server": "parcel build --target node --out-dir ./dist/server ./source/server/main.ts",
-		"build:pkg": "pkg --output ./dist/szpion ."
+		"build:client": "parcel build --target browser  --cache-dir ./target-prod/cache --out-dir ./target-prod/client --public-url . ./source/client/index.html",
+		"build:server": "parcel build --target node  --cache-dir ./target-prod/cache --out-dir ./target-prod/server ./source/server/main.ts",
+		"build:pkg": "pkg --output ./target-prod/szpion ."
 	},
 	"dependencies": {
 		"classcat": "^3.2.3",
@@ -71,10 +71,10 @@
 			"node"
 		]
 	},
-	"bin": "./dist/server/main.js",
+	"bin": "./target-prod/server/main.js",
 	"pkg": {
 		"assets": [
-			"./dist/client/**/*"
+			"./target-prod/client/**/*"
 		],
 		"targets": [
 			"node10-linux-x64"
