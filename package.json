@@ -58,6 +58,7 @@
 		"> 5%"
 	],
 	"jest": {
+		"coverageDirectory": "./target/coverage",
 		"transform": {
 			"^.+\\.tsx?$": "ts-jest"
 		},
