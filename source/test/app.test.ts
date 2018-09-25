@@ -1,15 +1,15 @@
 import {app} from "hyperapp";
 
-import {State} from "../source/client/state";
-import {Actions} from "../source/client/actions";
-import {view} from "../source/client/view";
+import {State} from "../client/state";
+import {Actions} from "../client/actions";
+import {view} from "../client/view";
 
-import {Server} from "../source/server/server";
-import {readableDuration} from "../source/common/utils";
+import {Server} from "../server/server";
+import {readableDuration} from "../common/utils";
 
 const server = new Server(false, true);
 const actions = new Actions();
-actions.setServerURL("http://localhost:1212");
+actions.setServerURL(`http://localhost:${server.port}`);
 const initState = new State();
 
 const getState = (app: Actions): State => {

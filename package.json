@@ -10,25 +10,31 @@
 		"type": "git",
 		"url": "https://github.com/rhajdacki/szpion"
 	},
+	"config": {
+		"mockJIRA": false
+	},
 	"scripts": {
-		"dev": "npm run dev-server & npm run dev-client",
-		"dev-client": "parcel serve --target browser --out-dir ./target/client ./source/client/index.html",
-		"dev-server": "nodemon --watch ./source --inspect -r ts-node/register ./source/server/main.ts",
-		"start": "echo Not_implemented && exit 1",
+		"start": "npm run start:server & npm run start:client",
+		"start:mock": "npm run start:server -- --mockJIRA & npm run start:client",
+		"start:client": "NODE_ENV=development parcel serve --target browser  --port 8081 --out-dir ./dist-dev/client ./source/client/index.html",
+		"start:server": "NODE_ENV=development nodemon --watch ./source --inspect -r ts-node/register ./source/server/main.ts",
+		"start:prod": "npm run build && ./dist/szpion",
+		"clean": "rm -rf ./dist ./dist-dev ./target ./.cache ./coverage",
 		"test": "tsc && jest --coverage",
-		"build": "npm run build-client && npm run build-server && npm run build-pkg",
-		"build-client": "cross-env NODE_ENV=production parcel build --target browser --out-dir dist/client --public-url . ./source/client/index.html",
-		"build-server": "cross-env NODE_ENV=production parcel build --target node --out-dir ./dist/server ./source/server/main.ts",
-		"build-pkg": "pkg --targets node10-linux-x64 --output ./dist/szpion ./dist/server/main.js"
+		"test:watch": "jest --watch",
+		"build": "npm run build:client && npm run build:server && npm run build:pkg",
+		"build:client": "parcel build --target browser --out-dir ./dist/client --public-url . ./source/client/index.html",
+		"build:server": "parcel build --target node --out-dir ./dist/server ./source/server/main.ts",
+		"build:pkg": "pkg --output ./dist/szpion ."
 	},
 	"dependencies": {
-		"bulma": "0.7.1",
 		"classcat": "^3.2.3",
 		"cross-fetch": "^2.2.2",
 		"hyperapp": "^1.2.9",
 		"koa": "^2.5.2",
 		"koa-better-http-proxy": "^0.2.4",
-		"koa-router": "^7.4.0"
+		"koa-router": "^7.4.0",
+		"koa-send": "^5.0.0"
 	},
 	"devDependencies": {
 		"@hyperapp/html": "^1.1.1",
@@ -37,8 +43,9 @@
 		"@types/koa-router": "^7.0.31",
 		"@types/node": "^10.9.4",
 		"@types/node-fetch": "^2.1.2",
+		"@types/koa-send": "^4.1.1",
+		"bulma": "0.7.1",
 		"node-sass": "^4.9.3",
-		"cross-env": "^5.1.6",
 		"jest": "^23.5.0",
 		"nodemon": "^1.18.3",
 		"parcel-bundler": "^1.9.7",
@@ -62,6 +69,15 @@
 			"jsx",
 			"json",
 			"node"
+		]
+	},
+	"bin": "./dist/server/main.js",
+	"pkg": {
+		"assets": [
+			"./dist/client/**/*"
+		],
+		"targets": [
+			"node10-linux-x64"
 		]
 	}
 }

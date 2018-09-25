@@ -3,6 +3,7 @@ import fs from 'fs';
 
 import {SprintDetails, Issue, WorkLog, User, Board, Sprint} from '../common/model';
 import {flatMap, ifElse, numberOr, orElse, zip} from '../common/utils';
+import path from "path";
 
 type ViewsJson = {
 	views: [{
@@ -250,20 +251,16 @@ export class Jira {
 
 	private readonly fetchFromJira = async <T>(resourcePath: string): Promise<T> => {
 		if (!this.mock) {
-
 			const response = await fetch(`${this.jiraURL}${resourcePath}`, this.init);
 			const json: T = await response.json();
 			return json;
-
 		} else {
-			const file = `test/data${resourcePath}.json`;
+			const file = path.join(__dirname, `../../jira-mock-data${resourcePath}.json`);
 			console.log(`Reading file : ${file}`);
 			const response = fs.readFileSync(file, "UTF-8");
-
 			const json = JSON.parse(response);
 			return json;
 		}
-
 	};
 
 	private readonly fetchIssuesFromSprint = async (sprintName: string): Promise<SearchJson> => {
