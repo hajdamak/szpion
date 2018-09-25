@@ -13,8 +13,8 @@ export interface Config {
 export const loadConfig = (): Config => {
 
 	const encoding = 'UTF-8';
-	const fileName = `config.json`;
-	const localFile = `${os.homedir()}/.szpion/${fileName}`;
+	const fileName = `szpion.json`;
+	const localFile = `${os.homedir()}/.config/szpion/${fileName}`;
 	const mainFile = `${process.cwd()}/${fileName}`;
 
 	if (fs.existsSync(localFile)) {

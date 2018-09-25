@@ -9,12 +9,13 @@ Szpion connects to JIRA and provides additional web based reports for sprints.
 
 ## Usage
 
-Place configuration file `config.json` in directory where Szpion executable is located 
-or `~/.szpion/config.json` and configure JIRA's URL and HTTP Basic auth:  
+Place configuration file `szpion.json` in directory where Szpion executable is located 
+or `~/.config/szpion/szpion.json` and configure JIRA's URL and HTTP Basic auth:  
 
     {
 	    "jiraURL": "localhost",
-	    "jiraBasicAuthToken": "token content"
+	    "jiraBasicAuthToken": "token content",
+	    "clientConfig": {}
     }
 
 Execute application binary:
@@ -38,7 +39,7 @@ and additionally with JIRA mocked using static files from `jira-mock-data` direc
 
     npm run start:mock
 
-Run application as self contained Linux x64 executable generated
+Start application in production mode as self contained Linux x64 executable generated
  in `target/prod/szpion`:
 
     npm run start:prod
