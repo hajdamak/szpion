@@ -31,55 +31,59 @@ export const view: View<State, Actions> = (state: State, actions: Actions) =>
 			])
 		]),
 
-		span("Board"),
-		Selector({
-			items: state.boards,
-			selectedId: state.selectedBoardId,
-			onchange: actions.changeBoard
-		}),
-		span("Sprint"),
-		Selector({
-			items: state.sprints, selectedId:
-			state.selectedSprintId,
-			onchange: actions.changeSprint
-		}),
-
 		section({class: "section"}, [
 
-			state.sprintDetails ? (
-				div({class: "container is-fluid"}, [
+			div({class: "container is-fluid"}, [
 
-					div({class: "columns"}, [
-						div({class: "column"}, []),
-						div({class: "column"}, [
-							div(`Issues: ${state.sprintDetails.issuesCount}`),
-							div(`Issues completed: ${state.sprintDetails.completedIssuesCount}`)
+				div({class: "columns"}, [
+					div({class: "column"}, [
+						div([
+							span("Board: "),
+							Selector({
+								items: state.boards,
+								selectedId: state.selectedBoardId,
+								onchange: actions.changeBoard
+							})
 						]),
-						div({class: "column"}, [
-							div(`Start date: ${readableTime(state.sprintDetails.startDate)}`),
-							div(`End date: ${readableTime(state.sprintDetails.endDate)}`)
-						]),
-						div({class: "column"}, [
-							div(`Estimate: ${readableDuration(state.sprintDetails.estimate)}`),
-							div(`Time spent: ${readableDuration(state.sprintDetails.timeSpent)}`),
-							div(`Remaining estimate: ${readableDuration(state.sprintDetails.remainingEstimate)}`)
+						div([
+							span("Sprint: "),
+							Selector({
+								items: state.sprints, selectedId:
+								state.selectedSprintId,
+								onchange: actions.changeSprint
+							})
 						])
 					]),
+					div({class: "column"}, state.sprintDetails ? [
+						div(`Issues: ${state.sprintDetails.issuesCount}`),
+						div(`Issues completed: ${state.sprintDetails.completedIssuesCount}`)
+					] : []),
+					div({class: "column"}, state.sprintDetails ? [
+						div(`Start date: ${readableTime(state.sprintDetails.startDate)}`),
+						div(`End date: ${readableTime(state.sprintDetails.endDate)}`)
+					] : []),
+					div({class: "column"}, state.sprintDetails ? [
+						div(`Estimate: ${readableDuration(state.sprintDetails.estimate)}`),
+						div(`Time spent: ${readableDuration(state.sprintDetails.timeSpent)}`),
+						div(`Remaining estimate: ${readableDuration(state.sprintDetails.remainingEstimate)}`)
+					] : [])
+				]),
+				state.sprintDetails ?
+					div([
+						IssuesTable({
+							issues: state.sprintDetails.issues //.sort((a,b) => issue.status !== "Closed")
+						}),
+						// h3("Closed issues"),
+						// IssuesTable({
+						// 	issues: state.sprintDetails.issues.filter(issue => issue.status === "Closed")
+						// }),
 
-					IssuesTable({
-						issues: state.sprintDetails.issues.filter(issue => issue.status !== "Closed")
-					}),
-					h3("Closed issues"),
-					IssuesTable({
-						issues: state.sprintDetails.issues.filter(issue => issue.status === "Closed")
-					}),
-
-					h3("Users"),
-					UsersTable({users: state.sprintDetails.users})
-				])
-			) : (
-				div("Loading data")
-			)
+						h3("Users"),
+						UsersTable({users: state.sprintDetails.users})
+					])
+					:
+					div("Loading data")
+			])
 
 		])
 

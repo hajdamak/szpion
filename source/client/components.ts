@@ -6,7 +6,7 @@ import {
 	table, thead, tbody, tr, td, th,
 } from "@hyperapp/html";
 
-import {readableDuration} from "../common/utils";
+import {readableDuration, flatMap} from "../common/utils";
 import {Issue, User} from "../common/model";
 
 interface SelectorItem {
@@ -54,10 +54,10 @@ export const IssuesTable = ({issues}: IssuesTableParams) =>
 				th("Status"),
 			])
 		]),
-		...issues.map(issue =>
-			tbody([
+		tbody(
+			flatMap(issues, issue => [
 				IssueRow({issue: issue}),
-				...issue.children.map(child =>
+				... issue.children.map(child =>
 					IssueRow({issue: child})
 				)
 			])
@@ -66,7 +66,7 @@ export const IssuesTable = ({issues}: IssuesTableParams) =>
 
 
 export const IssueRow = ({issue}: { issue: Issue }) =>
-	tr({key: issue.key}, [
+	tr({key: issue.key, class: cc({"parent-issue": issue.children.length != 0})}, [
 		td([
 			img({src: issue.issuetypeIconUrl})
 		]),

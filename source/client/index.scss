@@ -13,10 +13,8 @@ $section-padding: 0.5rem;
 	color: white;
 	padding: 6px;
 }
-
-.table tbody {
-	tr.parent-issue {
-		background-color: rgba(220, 220, 220, 0.99) !important;
-	}
-
+.parent-issue {
+	background-color: #ccccfa !important;
 }
+
+
