@@ -35,7 +35,8 @@ Start application in development mode with hot reload (accessible on
 
     npm run start
 
-and additionally with JIRA mocked using static files from `jira-mock-data` directory:
+and additionally with JIRA mocked using static files from `source/test/jira-mock-data`
+ directory:
 
     npm run start:mock
 
