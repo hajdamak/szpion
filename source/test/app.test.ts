@@ -7,9 +7,9 @@ import {view} from "../client/view";
 import {Server} from "../server/server";
 import {readableDuration} from "../common/utils";
 
-const server = new Server(false, true);
+const server = new Server(8080, false, true);
 const actions = new Actions();
-actions.setServerURL(`http://localhost:${server.port}`);
+actions.setServerURL(`http://localhost:8080`);
 const initState = new State();
 
 const getState = (app: Actions): State => {

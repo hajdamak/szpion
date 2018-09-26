@@ -10,7 +10,6 @@ import {Jira} from './jira';
 
 export class Server {
 
-	public readonly port: number = 8080;
 	private readonly parcelDevServerPort: number = 8081;
 	private readonly koa: Koa;
 	private readonly httpServer: http.Server;
@@ -18,6 +17,7 @@ export class Server {
 	private readonly staticContentDir = path.join(__dirname, '../client');
 
 	constructor(
+		private readonly port: number = 8080,
 		private readonly isDevMode: boolean = false,
 		// If set do not access JIRA and instead return mocked data.
 		private readonly mockJIRA: boolean = false
