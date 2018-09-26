@@ -4,13 +4,13 @@
     "moduleResolution": "node",
     "newLine": "LF",
     "outDir": "./target/compile",
-    "target": "es2016",
+    "target": "es6",
     "declaration": true,
     "sourceMap": true,
     "esModuleInterop": true,
     "noEmitOnError": true,
     "lib": [
-      "es2016",
+      "es6",
       "dom"
     ],
     "downlevelIteration": true,

@@ -6,7 +6,7 @@ if (!process.env.NODE_ENV) {
 }
 
 const isDev: boolean = process.env.NODE_ENV === "development";
-const mockJIRA: boolean = process.argv.includes("--mockJIRA");
+const mockJIRA: boolean = process.argv.find((arg: string) => arg ==="--mockJIRA") ? true : false;
 
 const server = new Server(
 	isDev, mockJIRA
