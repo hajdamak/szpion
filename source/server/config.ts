@@ -7,7 +7,7 @@ import {ClientConfig} from "../common/model";
 export interface Config {
 	jiraURL: string;
 	jiraBasicAuthToken: string;
-	clientConfig: ClientConfig;
+	clientConfig: ClientConfig|undefined;
 }
 
 export const loadConfig = (): Config => {

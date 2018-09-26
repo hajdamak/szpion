@@ -42,7 +42,10 @@ export class Server {
 		this.router.get('/config', (ctx, next) => {
 			console.log("Accessing config API.");
 			ctx.type = "json";
-			ctx.body = config.clientConfig;
+			if (config.clientConfig)
+				ctx.body = config.clientConfig;
+			else
+				ctx.body = {};
 		});
 
 		this.router.get('/boards', async (ctx, next) => {

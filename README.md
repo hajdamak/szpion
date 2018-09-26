@@ -14,8 +14,7 @@ or `~/.config/szpion/szpion.json` and configure JIRA's URL and HTTP Basic auth:
 
     {
 	    "jiraURL": "localhost",
-	    "jiraBasicAuthToken": "token content",
-	    "clientConfig": {}
+	    "jiraBasicAuthToken": "token content"
     }
 
 Execute application binary:
