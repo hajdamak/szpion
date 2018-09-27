@@ -71,13 +71,8 @@ export const view: View<State, Actions> = (state: State, actions: Actions) =>
 				state.sprintDetails ?
 					div([
 						IssuesTable({
-							issues: state.sprintDetails.issues //.sort((a,b) => issue.status !== "Closed")
+							issues: state.sprintDetails.issues
 						}),
-						// h3("Closed issues"),
-						// IssuesTable({
-						// 	issues: state.sprintDetails.issues.filter(issue => issue.status === "Closed")
-						// }),
-
 						h3("Users"),
 						UsersTable({users: state.sprintDetails.users})
 					])

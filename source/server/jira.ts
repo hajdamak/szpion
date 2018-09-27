@@ -198,14 +198,23 @@ export class Jira {
 		const timeSpent = issues.reduce((sum, issue) => sum + issue.sprintTimeSpent, 0);
 		const remainingEstimate = issues.reduce((sum, issue) => sum + issue.remainingEstimate, 0);
 
-		const issuesWithChildren = issues.filter(
+		const statusOrder = [
+			"Reopened", "Open", "Pre-analysed", "Analysed",
+			"In Progress", "Implemented", "Resolved",
+			"Waiting for deployment", "Released for test",
+			"Verified", "Closed"];
+		const sortedIssues = issues.slice().sort((a, b) => {
+			return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+		});
+
+		const issuesWithChildren = sortedIssues.filter(
 			issue => issue.parent == null
 		).map(
 			issue => {
-				const children = issues.filter(child => issue.key === child.parent)
+				const children = sortedIssues.filter(child => issue.key === child.parent)
 				return {...issue, children: children}
 			}
-		)
+		);
 
 		return {
 			board: board,

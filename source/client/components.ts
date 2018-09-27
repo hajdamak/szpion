@@ -88,10 +88,15 @@ export const IssueRow = ({issue}: { issue: Issue }) =>
 		}, readableDuration(issue.remainingEstimate)),
 
 		td({class: "text-nowrap"}, [
-			issue.sprintWorkRatio < 100 ?
-				span({class: "green"}, `${issue.sprintWorkRatio}%`)
-				:
-				span({class: "red"}, `${issue.sprintWorkRatio}%`)
+
+			span({
+				class: cc({
+					"has-text-danger": issue.sprintWorkRatio > 100,
+					"has-text-warning": (90 <= issue.sprintWorkRatio) && (issue.sprintWorkRatio <= 100),
+					"has-text-success": issue.sprintWorkRatio < 90
+				})
+			}, `${issue.sprintWorkRatio}%`)
+
 		]),
 
 		td({class: "text-nowrap"}, [
