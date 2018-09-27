@@ -27,7 +27,7 @@ export interface SprintDetails {
 
 export interface Issue {
 	readonly key: string;
-	readonly parent: string | null;
+	readonly parent: string | undefined;
 	readonly children: Array<Issue>;
 	readonly url: string;
 	readonly priorityIconUrl: string;

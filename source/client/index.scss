@@ -13,8 +13,13 @@ $section-padding: 0.5rem;
 	color: white;
 	padding: 6px;
 }
+
 .parent-issue {
-	background-color: #ccccfa !important;
+	//box-shadow: inset 0px 5px 10px -7px;
+	border-left: 1px solid $grey-light;
 }
 
+.child-issue {
+	border-left: 1px solid $grey-light;
+}
 

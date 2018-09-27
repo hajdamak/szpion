@@ -168,7 +168,7 @@ export class Jira {
 
 				return {
 					key: issueJson.key,
-					parent: issueJson.fields.parent ? issueJson.fields.parent.key : null,
+					parent: issueJson.fields.parent ? issueJson.fields.parent.key : undefined,
 					children: [],
 					url: `${this.jiraURL}/browse/${issueJson.key}`,
 					priorityIconUrl: issueJson.fields.priority.iconUrl,

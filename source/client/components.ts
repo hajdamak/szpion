@@ -6,7 +6,7 @@ import {
 	table, thead, tbody, tr, td, th,
 } from "@hyperapp/html";
 
-import {readableDuration, flatMap} from "../common/utils";
+import {readableDuration, flatMap, orElse} from "../common/utils";
 import {Issue, User} from "../common/model";
 
 interface SelectorItem {
@@ -40,16 +40,17 @@ export const IssuesTable = ({issues}: IssuesTableParams) =>
 			tr([
 				th("T"),
 				th("Issue"),
+				th("Parent"),
 				th("P"),
 				th("Summary"),
 				th("Assignee"),
-				th("Original estimate"),
-				th("Time spent"),
+				th("Orig est"),
+				th("Spent"),
 
-				th("Sprint estimate"),
-				th("Sprint time spent"),
-				th("Remaining estimate"),
-				th("Sprint work ratio"),
+				th("Sprint est"),
+				th("Sprint spent"),
+				th("Remaining est"),
+				th("Sprint ratio"),
 
 				th("Status"),
 			])
@@ -64,14 +65,23 @@ export const IssuesTable = ({issues}: IssuesTableParams) =>
 		)
 	]);
 
-
 export const IssueRow = ({issue}: { issue: Issue }) =>
-	tr({key: issue.key, class: cc({"parent-issue": issue.children.length != 0})}, [
+	tr({
+		key: issue.key,
+		class: cc({
+			"parent-issue": issue.children.length != 0,
+			"child-issue": issue.parent,
+			"has-background-grey-lighter": issue.children.length != 0
+		})
+	}, [
 		td([
 			img({src: issue.issuetypeIconUrl})
 		]),
 		td({class: "text-nowrap"}, [
 			a({href: issue.url}, issue.key)
+		]),
+		td({class: "text-nowrap"}, [
+			a({href: issue.url}, orElse(issue.parent, () => ""))
 		]),
 		td([
 			img({src: issue.priorityIconUrl})
