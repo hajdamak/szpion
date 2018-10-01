@@ -12,6 +12,10 @@ export class Actions implements ActionsType<State, Actions> {
 
 	private readonly fetch = async <T>(resourcePath: string): Promise<T> => {
 		const response = await fetch(`${serverURL}${resourcePath}`);
+		if (response.status != 200) {
+			throw new Error(
+				`Resource ${resourcePath} responded with status code ${response.status} and message: ${await response.text()}`);
+		}
 		const json: T = await response.json();
 		return json;
 	};
@@ -27,13 +31,17 @@ export class Actions implements ActionsType<State, Actions> {
 	};
 
 	readonly init = () => async (state: State, actions: Actions) => {
-		console.log("Initialize application...");
-		actions.updateLoading(true);
-		await actions.fetchConfig();
-		await actions.fetchBoards();
-		await actions.fetchSprints();
-		await actions.fetchSprintDetails();
-		actions.updateLoading(false);
+		try {
+			console.log("Initialize application...");
+			actions.updateLoading(true);
+			await actions.fetchConfig();
+			await actions.fetchBoards();
+			await actions.fetchSprints();
+			await actions.fetchSprintDetails();
+			actions.updateLoading(false);
+		} catch (e) {
+			actions.updateError(`Error: ${e.message}`);
+		}
 	};
 
 	readonly updateLoading = (isLoading: boolean) => (state: State) => {
@@ -41,6 +49,13 @@ export class Actions implements ActionsType<State, Actions> {
 		return {isLoading: isLoading};
 	};
 
+	readonly updateError = (message: string) => (state: State) => {
+		console.log(`Error set to "${message}"`);
+		return {
+			error: message,
+			isLoading: false
+		};
+	};
 
 	readonly fetchConfig = () => async (state: State, actions: Actions) => {
 		console.log("Fetching config...");
@@ -74,20 +89,23 @@ export class Actions implements ActionsType<State, Actions> {
 		return {selectedBoardId: targetId};
 	};
 	readonly changeBoard = (boardId: number) => async (state: State, actions: Actions) => {
-		console.log(`Changing board to ${boardId} ...`);
-		actions.updateLoading(true);
-		if (boardId == state.selectedBoardId) return;
-		actions.updateSelectedBoard(boardId);
-		await actions.fetchSprints();
-		await actions.fetchSprintDetails();
-		actions.updateLoading(false);
+		try {
+			console.log(`Changing board to ${boardId} ...`);
+			actions.updateLoading(true);
+			if (boardId == state.selectedBoardId) return;
+			actions.updateSelectedBoard(boardId);
+			await actions.fetchSprints();
+			await actions.fetchSprintDetails();
+			actions.updateLoading(false);
+		} catch (e) {
+			actions.updateError(`Error: ${e.message}`);
+		}
 	};
 
 
 	readonly fetchSprints = () => async (state: State, actions: Actions) => {
 		console.log("Fetching sprints...");
-		const sprints = await this.fetch<Array<Sprint>>(
-			`/boards/${state.selectedBoardId}/sprints`);
+		const sprints = await this.fetch<Array<Sprint>>(`/boards/${state.selectedBoardId}/sprints`);
 		actions.updateSprints(sprints);
 		actions.updateSelectedSprint(undefined);
 	};
@@ -106,12 +124,16 @@ export class Actions implements ActionsType<State, Actions> {
 		return {selectedSprintId: targetId};
 	};
 	readonly changeSprint = (sprintId: number) => async (state: State, actions: Actions) => {
-		console.log(`Changing sprint to ${sprintId} ...`);
-		actions.updateLoading(true);
-		if (sprintId == state.selectedSprintId) return;
-		actions.updateSelectedSprint(sprintId);
-		await actions.fetchSprintDetails();
-		actions.updateLoading(false);
+		try {
+			console.log(`Changing sprint to ${sprintId} ...`);
+			actions.updateLoading(true);
+			if (sprintId == state.selectedSprintId) return;
+			actions.updateSelectedSprint(sprintId);
+			await actions.fetchSprintDetails();
+			actions.updateLoading(false);
+		} catch (e) {
+			actions.updateError(`Error: ${e.message}`);
+		}
 	};
 
 

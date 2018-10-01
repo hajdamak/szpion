@@ -23,6 +23,18 @@ export const view: View<State, Actions> = (state: State, actions: Actions) =>
 			span({class: "title"}, "Receiving data...")
 		]),
 
+		div({
+			class: cc({
+				"modal": true,
+				"is-active": state.error ? true : false,
+			})
+		}, [
+			div({class: "modal-background"}),
+			div({class: "modal-content"}, [
+				div({class: "notification is-danger"}, state.error)
+			])
+		]),
+
 		section({class: "section"}, [
 			nav({class: "level"}, [
 				div({class: "level-left"}, [

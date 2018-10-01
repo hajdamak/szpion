@@ -39,6 +39,21 @@ export class Server {
 			console.log(`Using JIRA : ${config.jiraURL}`);
 		}
 
+		// Centralized error handling
+		this.koa.use(async (ctx, next) => {
+			try {
+				await next();
+			} catch (err) {
+				ctx.status = err.status || 500;
+				ctx.body = err.message;
+				ctx.app.emit('error', err, ctx);
+			}
+		});
+		this.koa.on('error', (err: Error, ctx) => {
+			console.error(`Error: ${err.message}`)
+		});
+
+
 		this.router.get('/config', (ctx, next) => {
 			console.log("Accessing config API.");
 			ctx.type = "json";

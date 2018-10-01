@@ -1,7 +1,8 @@
 import {Board, ClientConfig, SprintDetails, Sprint} from "../common/model";
 
 export class State {
-	isLoading: boolean = false
+	isLoading: boolean = false;
+	error: string|undefined = undefined;
 	config: ClientConfig = {};
 	boards: Array<Board> = [];
 	selectedBoardId: number | undefined;
