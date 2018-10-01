@@ -10,6 +10,11 @@
 		"type": "git",
 		"url": "https://github.com/rhajdacki/szpion"
 	},
+	"config": {
+		"deployHost": "example.host",
+		"deployDir": "/example/dir",
+		"deployPort": "8080"
+	},
 	"scripts": {
 		"start": "npm run start:server & npm run start:client",
 		"start:mock": "npm run start:server -- --mockJIRA & npm run start:client",
@@ -22,7 +27,8 @@
 		"build": "npm run build:client && npm run build:server && npm run build:pkg",
 		"build:client": "parcel build --target browser --public-url . --cache-dir ./target/prod/cache --out-dir ./target/prod/client ./source/client/index.html",
 		"build:server": "parcel build --target node --bundle-node-modules --cache-dir ./target/prod/cache --out-dir ./target/prod/server ./source/server/main.ts",
-		"build:pkg": "pkg --output ./target/prod/szpion ."
+		"build:pkg": "pkg --output ./target/prod/szpion .",
+		"deploy": "./deploy.sh ./target/prod/szpion $npm_package_config_deployHost $npm_package_config_deployDir $npm_package_config_deployPort"
 	},
 	"dependencies": {
 		"classcat": "^3.2.3",
@@ -38,15 +44,16 @@
 		"@types/jest": "^23.3.1",
 		"@types/koa": "^2.0.46",
 		"@types/koa-router": "^7.0.31",
+		"@types/koa-send": "^4.1.1",
 		"@types/node": "^10.9.4",
 		"@types/node-fetch": "^2.1.2",
-		"@types/koa-send": "^4.1.1",
 		"bulma": "0.7.1",
-		"node-sass": "^4.9.3",
 		"jest": "^23.5.0",
+		"node-sass": "^4.9.3",
 		"nodemon": "^1.18.3",
 		"parcel-bundler": "^1.10.0",
 		"pkg": "^4.3.4",
+		"sass": "^1.14.1",
 		"ts-jest": "^23.1.4",
 		"ts-node": "^7.0.1",
 		"typescript": "^3.0.1"
