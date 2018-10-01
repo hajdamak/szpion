@@ -28,11 +28,19 @@ export class Actions implements ActionsType<State, Actions> {
 
 	readonly init = () => async (state: State, actions: Actions) => {
 		console.log("Initialize application...");
+		actions.updateLoading(true);
 		await actions.fetchConfig();
 		await actions.fetchBoards();
 		await actions.fetchSprints();
 		await actions.fetchSprintDetails();
+		actions.updateLoading(false);
 	};
+
+	readonly updateLoading = (isLoading: boolean) => (state: State) => {
+		console.log(`Loading change to ${isLoading}`);
+		return {isLoading: isLoading};
+	};
+
 
 	readonly fetchConfig = () => async (state: State, actions: Actions) => {
 		console.log("Fetching config...");
@@ -67,10 +75,12 @@ export class Actions implements ActionsType<State, Actions> {
 	};
 	readonly changeBoard = (boardId: number) => async (state: State, actions: Actions) => {
 		console.log(`Changing board to ${boardId} ...`);
+		actions.updateLoading(true);
 		if (boardId == state.selectedBoardId) return;
 		actions.updateSelectedBoard(boardId);
 		await actions.fetchSprints();
 		await actions.fetchSprintDetails();
+		actions.updateLoading(false);
 	};
 
 
@@ -97,9 +107,11 @@ export class Actions implements ActionsType<State, Actions> {
 	};
 	readonly changeSprint = (sprintId: number) => async (state: State, actions: Actions) => {
 		console.log(`Changing sprint to ${sprintId} ...`);
+		actions.updateLoading(true);
 		if (sprintId == state.selectedSprintId) return;
 		actions.updateSelectedSprint(sprintId);
 		await actions.fetchSprintDetails();
+		actions.updateLoading(false);
 	};
 
 

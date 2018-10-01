@@ -48,6 +48,7 @@
 		"@types/node": "^10.9.4",
 		"@types/node-fetch": "^2.1.2",
 		"bulma": "0.7.1",
+		"bulma-pageloader": "^2.1.0",
 		"jest": "^23.5.0",
 		"node-sass": "^4.9.3",
 		"nodemon": "^1.18.3",

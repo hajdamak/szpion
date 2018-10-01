@@ -1,3 +1,4 @@
+import cc from 'classcat';
 import {View} from "hyperapp";
 import {
 	div, span, section, nav,
@@ -12,6 +13,16 @@ import {IssuesTable, UsersTable, Selector} from "./components";
 
 export const view: View<State, Actions> = (state: State, actions: Actions) =>
 	div({oncreate: actions.init}, [
+
+		div({
+			class: cc({
+				"pageloader": true,
+				"is-active": state.isLoading,
+			})
+		}, [
+			span({class: "title"}, "Receiving data...")
+		]),
+
 		section({class: "section"}, [
 			nav({class: "level"}, [
 				div({class: "level-left"}, [
