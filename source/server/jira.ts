@@ -157,7 +157,13 @@ export class Jira {
 
 				const periods = this.calculateIssueAvailabilityInSprint(issueToCheck, sprint.name, sprintStartDate, sprintEndDate);
 
-				const sprintEstimate = this.calculateSprintEstimate(issueJson, periods);
+				const estimates = this.calculateSprintEstimate(issueJson, periods);
+				const sprintEstimate = estimates.sprintEstimate;
+
+				const remainingEstimate = ((new Date().getTime()) < sprintEndDate.getTime()) ?
+					numberOr(issueJson.fields.timetracking.remainingEstimateSeconds, 0)
+					:
+					estimates.lastEstimateInSprint;
 
 				const worklogs = this.calculateWorkLogsInSprint(worklogJson, periods);
 
@@ -179,7 +185,7 @@ export class Jira {
 					summary: issueJson.fields.summary,
 					originalEstimate: numberOr(issueJson.fields.timetracking.originalEstimateSeconds, 0),
 					timeSpent: numberOr(issueJson.fields.timetracking.timeSpentSeconds, 0),
-					remainingEstimate: numberOr(issueJson.fields.timetracking.remainingEstimateSeconds, 0),
+					remainingEstimate: remainingEstimate,
 					sprintEstimate: sprintEstimate,
 					sprintTimeSpent: sprintTimeSpent,
 					sprintWorkRatio: sprintWorkRatio,
@@ -347,8 +353,9 @@ export class Jira {
 			);
 
 			const inSprint = (sprintName: string) => {
-				if (issue.fields.customfield_11869) {
-					return issue.fields.customfield_11869.reduce((res, item) => item.includes(sprintName), false)
+				if (issue.fields.customfield_11869
+					&& issue.fields.customfield_11869.find(item => item.includes(sprintName))) {
+					return true;
 				} else {
 					return false;
 				}
@@ -384,15 +391,18 @@ export class Jira {
 			return periods;
 		};
 
-	// Calculate sprint estimate.
+	// Calculate sprint estimate and last estimate in sprint
 	// Value is taken from:
 	// - original estimate
 	// - remaining estimate (if different than original estimate) and there are no remaining estimate changes in changelog.
 	// - last remaining estimate change in changelog before issue is part of sprint.
-	private readonly calculateSprintEstimate = (issue: IssueJson, periods: Array<Period>): number => {
-		if (periods.length == 0) return 0;
-
-		const issueInSprintStartDate = periods[0].start;
+	private readonly calculateSprintEstimate = (issue: IssueJson, periods: Array<Period>)
+		: { sprintEstimate: number, lastEstimateInSprint: number } => {
+		if (periods.length == 0)
+			return {
+				sprintEstimate: 0,
+				lastEstimateInSprint: 0
+			};
 
 		type Changes = { date: Date, estimate: number };
 
@@ -425,7 +435,9 @@ export class Jira {
 				?
 				numberOr(issue.fields.timetracking.remainingEstimateSeconds, 0)
 				:
-				numberOr(issue.fields.timetracking.originalEstimateSeconds, 0);
+				numberOr(issue.fields.timetracking.originalEstimateSeconds, 0)
+
+		const issueInSprintStartDate = periods[0].start;
 
 		const sprintEstimate = remainingEstimateChanges.reduce(
 			(estimate, change) => {
@@ -434,10 +446,22 @@ export class Jira {
 				else
 					return estimate;
 			}
-			, numberOr(defaultSprintEstimate, 0)
+			, defaultSprintEstimate
 		);
 
-		return sprintEstimate;
+		const issueInSprintEndDate = periods[periods.length - 1].end;
+
+		const lastEstimateInSprint = remainingEstimateChanges.reduce(
+			(estimate, change) =>
+				(change.date.getTime() <= issueInSprintEndDate.getTime()) ? change.estimate : estimate
+			, defaultSprintEstimate
+		);
+
+		return {
+			sprintEstimate: sprintEstimate,
+			lastEstimateInSprint: lastEstimateInSprint
+		};
+
 	};
 
 	// Calculate issue availability periods in sprint.

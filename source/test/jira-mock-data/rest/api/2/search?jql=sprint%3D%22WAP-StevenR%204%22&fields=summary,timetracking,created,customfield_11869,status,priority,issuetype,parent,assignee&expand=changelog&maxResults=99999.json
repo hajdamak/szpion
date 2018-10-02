@@ -6,8 +6,8 @@
         "summary": "[User admin] Add users permissions in user screen",
         "timetracking": {
           "originalEstimateSeconds": 86400,
-          "remainingEstimateSeconds": 45000,
-          "timeSpentSeconds": 41400
+          "remainingEstimateSeconds": 24300,
+          "timeSpentSeconds": 62100
         },
         "issuetype": {
           "iconUrl": "https://jira.example.com/images/icons/issuetypes/newfeature.png",
@@ -200,15 +200,15 @@
                 "field": "timeestimate",
                 "from": "45900",
                 "fromString": "45900",
-                "to": "45000",
-                "toString": "45000"
+                "to": "24300",
+                "toString": "24300"
               },
               {
                 "field": "timespent",
                 "from": "40500",
                 "fromString": "40500",
-                "to": "41400",
-                "toString": "41400"
+                "to": "62100",
+                "toString": "62100"
               }
             ]
           }

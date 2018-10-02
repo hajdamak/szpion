@@ -46,7 +46,7 @@ test('Initialize application', async () => {
 
 		expect(readableDuration(state.sprintDetails.estimate)).toBe("16d 1h 45m");
 		expect(readableDuration(state.sprintDetails.timeSpent)).toBe("3d");
-		expect(readableDuration(state.sprintDetails.remainingEstimate)).toBe("13d 2h 30m");
+		expect(readableDuration(state.sprintDetails.remainingEstimate)).toBe("13d 3h");
 
 		// Check work logged outside of the sprint.
 		const issueOutside = state.sprintDetails.issues.find(issue => issue.key === "WAP-12351");
@@ -54,10 +54,10 @@ test('Initialize application', async () => {
 		if (issueOutside) {
 			expect(issueOutside.assignee).toBe("Kate Rubin");
 			expect(readableDuration(issueOutside.originalEstimate)).toBe("3d");
-			expect(readableDuration(issueOutside.timeSpent)).toBe("1d 3h 30m");
+			expect(readableDuration(issueOutside.timeSpent)).toBe("2d 1h 15m");
 			expect(readableDuration(issueOutside.sprintEstimate)).toBe("2d 7h");
 			expect(readableDuration(issueOutside.sprintTimeSpent)).toBe("1d 2h 15m");
-			expect(readableDuration(issueOutside.remainingEstimate)).toBe("1d 4h 30m");
+			expect(readableDuration(issueOutside.remainingEstimate)).toBe("1d 4h 45m");
 			expect(issueOutside.status).toBe("Implemented");
 		}
 
@@ -84,7 +84,7 @@ test('Initialize application', async () => {
 			expect(readableDuration(issuePeriod.timeSpent)).toBe("5h 15m");
 			expect(readableDuration(issuePeriod.sprintEstimate)).toBe("3d 4h");
 			expect(readableDuration(issuePeriod.sprintTimeSpent)).toBe("1h");
-			expect(readableDuration(issuePeriod.remainingEstimate)).toBe("3d 2h 45m");
+			expect(readableDuration(issuePeriod.remainingEstimate)).toBe("3d 3h");
 			expect(issuePeriod.sprintWorkRatio).toBe(3);
 			expect(issuePeriod.status).toBe("Implemented");
 		}
